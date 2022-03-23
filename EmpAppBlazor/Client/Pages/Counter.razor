@@ -2,17 +2,36 @@
 
 <PageTitle>Counter</PageTitle>
 
-<h1>Counter</h1>
+<h1>Magic Counter!</h1>
 
-<p role="status">Current count: @currentCount</p>
+@if(currentCount > 0)
+{
+    <p role="status">Current count: @currentCount</p>
+}
+else
+{
+    <p>There is nothing more...!</p>
+}
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+<button class="btn btn-primary" @onclick="IncrementCount"><span class="oi oi-caret-top" aria-hidden="true"></span></button>
+<button class="btn btn-primary" @onclick="DecrementCount"><span class="oi oi-caret-bottom" aria-hidden="true"></span></button>
+
+
 
 @code {
-    private int currentCount = 0;
+    private int currentCount = 5;
 
     private void IncrementCount()
     {
         currentCount++;
+    }
+
+    private void DecrementCount()
+    {
+        currentCount--;
+        if (currentCount <= 0)
+            currentCount = 0;
+        Console.WriteLine("Test");
     }
 }

@@ -15,5 +15,9 @@
     <ProjectReference Include="..\Shared\EmpAppBlazor.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 
 </Project>

@@ -1,0 +1,63 @@
+﻿<h3 class="mt-3">ProjectList</h3>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Number</th>
+      <th scope="col">Name</th>
+      <th scope="col">Site</th>
+      <th scope="col">Description</th>
+      <th scope="col">Delivery Date</th>
+    </tr>
+  </thead>
+  <tbody>
+      @foreach (var project in Projects)
+     {
+      <tr>
+          <td>@project.Id</td>
+          <td>@project.Number</td>
+          <td>@project.Name</td>
+          <td>@project.Site</td>
+          <td>@project.Description</td>
+          <td>@project.DeliveryDate.ToString("dd-MMMMMMM yyyy")</td>
+        </tr>
+     }
+  </tbody>
+</table>
+
+
+@code {
+    private static List<Project> Projects = new List<Project>
+    {
+        new Project
+        {
+            Id = 1,
+            Number = 17156,
+            Name = "Tomason",
+            Site = "Self-Build",
+            Description = "",
+            DeliveryDate = DateTime.Now.AddDays(5),
+        },
+        new Project
+        {
+            Id = 2,
+            Number = 14104,
+            Name = "Ellesar",
+            Site = "Self-Build",
+            Description = "",
+            DeliveryDate = DateTime.Now.AddDays(35),
+        },
+        new Project
+        {
+            Id = 3,
+            Number = 21201,
+            Name = "Clark",
+            Site = "KTS",
+            Description = "This project is on hold now.",
+            DeliveryDate = DateTime.Now.AddDays(40),
+        }
+    };
+
+
+}
