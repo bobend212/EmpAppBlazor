@@ -1,4 +1,5 @@
 ﻿using EmpAppBlazor.Server.Data;
+using EmpAppBlazor.Server.Services.ProjectService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,17 +10,18 @@ namespace EmpAppBlazor.Server.Controllers
     [ApiController]
     public class ProjectController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly IProjectService _projectService;
 
-        public ProjectController(DataContext context)
+        public ProjectController(IProjectService projectService)
         {
-            _context = context;
+            _projectService = projectService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Project>>> GetProjects()
+        public async Task<ActionResult<ServiceResponse<List<Project>>>> GetProjects()
         {
-            return Ok(await _context.Projects.ToListAsync());
+            var result = await _projectService.GetProjectsAsync();
+            return Ok(result);
         }
     }
 }

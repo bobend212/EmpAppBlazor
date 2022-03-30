@@ -1,5 +1,6 @@
 global using EmpAppBlazor.Shared;
 using EmpAppBlazor.Server.Data;
+using EmpAppBlazor.Server.Services.ProjectService;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,9 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//services
+builder.Services.AddScoped<IProjectService, ProjectService>();
 
 
 var app = builder.Build();
