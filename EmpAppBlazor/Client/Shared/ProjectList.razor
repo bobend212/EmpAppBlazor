@@ -1,4 +1,5 @@
 ﻿@inject IProjectService ProjectService
+@inject NavigationManager UriHelper
 
 @if (ProjectService.Projects == null || ProjectService.Projects.Count == 0)
 {
@@ -15,6 +16,7 @@ else
             <th scope="col">Site</th>
             <th scope="col">Description</th>
             <th scope="col">Delivery Date</th>
+            <th scope="col">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -27,6 +29,7 @@ else
                 <td>@project.Site</td>
                 <td>@project.Description</td>
                 <td>@project.DeliveryDate.ToString("dd-MMMMMMM yyyy")</td>
+                <td><a href="/project/@project.Id">Show</a></td>
             </tr>
         }
     </tbody>
@@ -38,5 +41,10 @@ else
     protected override async Task OnInitializedAsync()
     {
         await ProjectService.GetProjects();
+    }
+
+    void NavigateToDetailPage(int projectId)
+    {
+        UriHelper.NavigateTo($"/project/{projectId}");
     }
 }

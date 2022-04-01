@@ -6,5 +6,6 @@ namespace EmpAppBlazor.Client.Services.ProjectService
     {
         List<Project> Projects { get; set; }
         Task GetProjects();
+        Task<ServiceResponse<Project>> GetProject(int projectId);
     }
 }

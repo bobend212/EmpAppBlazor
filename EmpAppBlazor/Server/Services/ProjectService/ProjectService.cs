@@ -12,6 +12,24 @@ namespace EmpAppBlazor.Server.Services.ProjectService
             _context = context;
         }
 
+        public async Task<ServiceResponse<Project>> GetProjectAsync(int projectId)
+        {
+            var response = new ServiceResponse<Project>();
+            var project = await _context.Projects.FindAsync(projectId);
+
+            if (project == null)
+            {
+                response.Success = false;
+                response.Message = "This project does not exist.";
+            }
+            else
+            {
+                response.Data = project;
+            }
+
+            return response;
+        }
+
         public async Task<ServiceResponse<List<Project>>> GetProjectsAsync()
         {
             var response = new ServiceResponse<List<Project>>()

@@ -23,5 +23,12 @@ namespace EmpAppBlazor.Server.Controllers
             var result = await _projectService.GetProjectsAsync();
             return Ok(result);
         }
+
+        [HttpGet("{projectId}")]
+        public async Task<ActionResult<ServiceResponse<Project>>> GetSingleProject(int projectId)
+        {
+            var result = await _projectService.GetProjectAsync(projectId);
+            return Ok(result);
+        }
     }
 }

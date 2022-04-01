@@ -1,0 +1,41 @@
+﻿@page "/project/{id:int}"
+@inject IProjectService ProjectService
+
+
+@if(project == null)
+{
+    <span>@message</span>
+}
+else
+{
+    <div>
+        <h3>@project.Id</h3>
+        <h3>@project.Name</h3>
+        <h3>@project.Site</h3>
+    </div>
+
+}
+
+
+@code {
+    private Project? project = null;
+    private string message = string.Empty;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        message = "Loading project...";
+
+        var result = await ProjectService.GetProject(Id);
+        if (!result.Success)
+        {
+            message = result.Message;
+        }
+        else 
+        {
+            project = result.Data;
+        }
+    }
+}

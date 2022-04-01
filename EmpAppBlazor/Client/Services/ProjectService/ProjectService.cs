@@ -14,6 +14,12 @@ namespace EmpAppBlazor.Client.Services.ProjectService
 
         public List<Project> Projects { get; set; } = new List<Project>();
 
+        public async Task<ServiceResponse<Project>> GetProject(int projectId)
+        {
+            var result = await _http.GetFromJsonAsync<ServiceResponse<Project>>($"/api/project/{projectId}");
+            return result;
+        }
+
         public async Task GetProjects()
         {
             var result = await _http.GetFromJsonAsync<ServiceResponse<List<Project>>>("/api/project");

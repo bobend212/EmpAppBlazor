@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpAppBlazor.Server", "EmpAppBlazor\Server\EmpAppBlazor.Server.csproj", "{519F124F-40C8-4A20-8BF7-F41BF6C55540}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmpAppBlazor.Server", "EmpAppBlazor\Server\EmpAppBlazor.Server.csproj", "{519F124F-40C8-4A20-8BF7-F41BF6C55540}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpAppBlazor.Client", "EmpAppBlazor\Client\EmpAppBlazor.Client.csproj", "{33426392-B573-4F25-81FB-AA114C4C6D0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmpAppBlazor.Client", "EmpAppBlazor\Client\EmpAppBlazor.Client.csproj", "{33426392-B573-4F25-81FB-AA114C4C6D0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpAppBlazor.Shared", "EmpAppBlazor\Shared\EmpAppBlazor.Shared.csproj", "{7E6A31A4-06C5-4933-96B6-DC640C12DC92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmpAppBlazor.Shared", "EmpAppBlazor\Shared\EmpAppBlazor.Shared.csproj", "{7E6A31A4-06C5-4933-96B6-DC640C12DC92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
