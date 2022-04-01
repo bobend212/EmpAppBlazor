@@ -8,6 +8,12 @@ namespace EmpAppBlazor.Server.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Workload>().HasData(
+                new Workload() { Id = 1, DueDate = DateTime.Now.AddDays(100), Stage = "active" },
+                new Workload() { Id = 2, DueDate = DateTime.Now.AddDays(150), Stage = "hold" },
+                new Workload() { Id = 3, DueDate = DateTime.Now.AddDays(200), Stage = "done" }
+                );
+
             modelBuilder.Entity<Project>().HasData(
                 new Project
                 {
@@ -17,6 +23,7 @@ namespace EmpAppBlazor.Server.Data
                     Site = "Self-Build",
                     Description = "",
                     DeliveryDate = DateTime.Now.AddDays(5),
+                    WorkloadId = 1
                 },
                 new Project
                 {
@@ -26,6 +33,7 @@ namespace EmpAppBlazor.Server.Data
                     Site = "Self-Build",
                     Description = "",
                     DeliveryDate = DateTime.Now.AddDays(35),
+                    WorkloadId = 2
                 },
                 new Project
                 {
@@ -35,10 +43,12 @@ namespace EmpAppBlazor.Server.Data
                     Site = "KTS",
                     Description = "This project is on hold now.",
                     DeliveryDate = DateTime.Now.AddDays(4),
+                    WorkloadId = 3
                 }
             );
         }
 
         public DbSet<Project> Projects { get; set; }
+        public DbSet<Workload> Workloads { get; set; }
     }
 }

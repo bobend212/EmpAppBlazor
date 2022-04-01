@@ -1,7 +1,10 @@
 global using EmpAppBlazor.Shared;
-using EmpAppBlazor.Server.Data;
-using EmpAppBlazor.Server.Services.ProjectService;
-using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore;
+global using EmpAppBlazor.Server.Services.ProjectService;
+global using EmpAppBlazor.Server.Services.WorkloadService;
+global using EmpAppBlazor.Server.Data;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,7 @@ builder.Services.AddSwaggerGen();
 
 //services
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IWorkloadService, WorkloadService>();
 
 
 var app = builder.Build();
