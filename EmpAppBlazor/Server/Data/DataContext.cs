@@ -50,5 +50,6 @@ namespace EmpAppBlazor.Server.Data
 
         public DbSet<Project> Projects { get; set; }
         public DbSet<Workload> Workloads { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }

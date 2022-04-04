@@ -3,8 +3,8 @@ global using Microsoft.EntityFrameworkCore;
 global using EmpAppBlazor.Server.Services.ProjectService;
 global using EmpAppBlazor.Server.Services.WorkloadService;
 global using EmpAppBlazor.Server.Data;
-
-
+global using EmpAppBlazor.Shared.Auth;
+global using EmpAppBlazor.Server.Services.AuthService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +23,7 @@ builder.Services.AddSwaggerGen();
 //services
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IWorkloadService, WorkloadService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 
 var app = builder.Build();

@@ -1,4 +1,6 @@
 ﻿@page "/register"
+@inject IAuthService AuthService
+@inject ISnackbar Snackbar
 
 <PageTitle>Registration</PageTitle>
 
@@ -23,14 +25,36 @@
         <InputText id="confirmPassword" @bind-Value="user.ConfirmPassword" class="form-control" />
         <ValidationMessage For="@(() => user.ConfirmPassword)" />
     </div>
+    
+
+    @if(isSucceedRegister == "success")
+    {
+        Snackbar.Add("Success", Severity.Normal);
+    }
+    else if (isSucceedRegister == "failure")
+    {
+        Snackbar.Add("Failure", Severity.Normal);
+    }
+
     <button type="submit" class="btn btn-primary">Register</button>
 </EditForm>
 
 @code {
     UserRegister user = new UserRegister();
 
-    void HandleRegistration()
+    string isSucceedRegister = string.Empty;
+
+    async Task HandleRegistration()
     {
-        Console.WriteLine($"Register user with email {user.Email} and pass {user.Password}");
+        var result = await AuthService.Register(user);
+
+        if(result.Success)
+        {
+            isSucceedRegister = "success";
+        }
+        else
+        {
+            isSucceedRegister = "failure";
+        }
     }
 }
