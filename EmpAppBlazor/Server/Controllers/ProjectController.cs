@@ -30,5 +30,12 @@ namespace EmpAppBlazor.Server.Controllers
             var result = await _projectService.GetProjectAsync(projectId);
             return Ok(result);
         }
+
+        [HttpGet("workload/{workloadStage}")]
+        public async Task<ActionResult<ServiceResponse<Project>>> GetProjectsByWorkloadStage(string workloadStage)
+        {
+            var result = await _projectService.GetProjectsByWorkloadStage(workloadStage);
+            return Ok(result);
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace EmpAppBlazor.Shared
@@ -15,6 +16,7 @@ namespace EmpAppBlazor.Shared
         public string Site { get; set; } = string.Empty;
         public DateTime DeliveryDate { get; set; }
 
+        [JsonIgnore]
         public Workload? Workload { get; set; }
         public int WorkloadId { get; set; }
     }

@@ -38,5 +38,14 @@ namespace EmpAppBlazor.Server.Services.ProjectService
             };
             return response;    
         }
+
+        public async Task<ServiceResponse<List<Project>>> GetProjectsByWorkloadStage(string stageWorkload)
+        {
+            var response = new ServiceResponse<List<Project>>()
+            {
+                Data = await _context.Projects.Where(x => x.Workload.Stage.ToLower().Equals(stageWorkload.ToLower())).ToListAsync()
+            };
+            return response;
+        }
     }
 }
