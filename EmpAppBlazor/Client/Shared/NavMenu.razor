@@ -11,24 +11,48 @@
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+                <span class="oi oi-home" ></span> Home
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
+                <span class="oi oi-plus" ></span> Counter
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
+                <span class="oi oi-list-rich" ></span> Fetch data
             </NavLink>
         </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" @onclick="() => expandSubMenu = !expandSubMenu" style="cursor:pointer">
+                <span class="oi oi-spreadsheet" ></span> Timesheets >>
+            </NavLink>
+            @if(expandSubMenu)
+            {
+                <ul class="nav flex-column">
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="fetchdata">
+                            <span class="oi oi-droplet"></span> Current Timesheet
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="counter">
+                            <span class="oi oi-droplet"></span> History
+                        </NavLink>
+                    </div>
+                </ul>
+            }
+        </div>
+
+
     </nav>
 </div>
 
 @code {
     private bool collapseNavMenu = true;
+    private bool expandSubMenu;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
