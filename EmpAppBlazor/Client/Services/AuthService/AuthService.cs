@@ -14,6 +14,20 @@ namespace EmpAppBlazor.Client.Services.AuthService
             _snackBar = snackBar;
         }
 
+        public async Task<ServiceResponse<bool>> ChangePassword(UserChangePassword request)
+        {
+            var result = await _http.PostAsJsonAsync("api/auth/change-password", request.Password);
+            if (result.IsSuccessStatusCode)
+            {
+                _snackBar.Add("Password has been changed.", Severity.Success);
+            }
+            else
+            {
+                _snackBar.Add("Password change failure", Severity.Error);
+            }
+            return await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
+        }
+
         public async Task<ServiceResponse<string>> Login(UserLogin request)
         {
             var result = await _http.PostAsJsonAsync("api/auth/login", request);
@@ -31,9 +45,9 @@ namespace EmpAppBlazor.Client.Services.AuthService
         public async Task<ServiceResponse<int>> Register(UserRegister request)
         {
             var result = await _http.PostAsJsonAsync("api/auth/register", request);
-            if(result.IsSuccessStatusCode)
+            if (result.IsSuccessStatusCode)
             {
-                _snackBar.Add("New User Registered", Severity.Success); 
+                _snackBar.Add("New User Registered", Severity.Success);
             }
             else
             {
