@@ -1,7 +1,4 @@
-﻿using EmpAppBlazor.Server.Data;
-using Microsoft.EntityFrameworkCore;
-
-namespace EmpAppBlazor.Server.Services.ProjectService
+﻿namespace EmpAppBlazor.Server.Services.ProjectService
 {
     public class ProjectService : IProjectService
     {
@@ -36,7 +33,7 @@ namespace EmpAppBlazor.Server.Services.ProjectService
             {
                 Data = await _context.Projects.ToListAsync()
             };
-            return response;    
+            return response;
         }
 
         public async Task<ServiceResponse<List<Project>>> GetProjectsByWorkloadStage(string stageWorkload)

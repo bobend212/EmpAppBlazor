@@ -1,10 +1,10 @@
-global using EmpAppBlazor.Shared;
-global using Microsoft.EntityFrameworkCore;
+global using EmpAppBlazor.Server.Data;
+global using EmpAppBlazor.Server.Services.AuthService;
 global using EmpAppBlazor.Server.Services.ProjectService;
 global using EmpAppBlazor.Server.Services.WorkloadService;
-global using EmpAppBlazor.Server.Data;
+global using EmpAppBlazor.Shared;
 global using EmpAppBlazor.Shared.Auth;
-global using EmpAppBlazor.Server.Services.AuthService;
+global using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +24,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IWorkloadService, WorkloadService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-
 
 var app = builder.Build();
 
@@ -49,7 +48,6 @@ app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 
 app.MapRazorPages();
 app.MapControllers();

@@ -1,8 +1,4 @@
-﻿using EmpAppBlazor.Server.Data;
-using EmpAppBlazor.Server.Services.ProjectService;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace EmpAppBlazor.Server.Controllers
 {

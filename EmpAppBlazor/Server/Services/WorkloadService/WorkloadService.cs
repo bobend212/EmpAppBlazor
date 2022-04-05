@@ -8,6 +8,7 @@
         {
             _context = context;
         }
+
         public async Task<ServiceResponse<List<Workload>>> GetWorkloads()
         {
             var workloads = await _context.Workloads.ToListAsync();

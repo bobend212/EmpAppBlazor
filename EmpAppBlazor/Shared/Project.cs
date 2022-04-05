@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace EmpAppBlazor.Shared
 {
@@ -18,6 +13,7 @@ namespace EmpAppBlazor.Shared
 
         [JsonIgnore]
         public Workload? Workload { get; set; }
+
         public int WorkloadId { get; set; }
     }
 }

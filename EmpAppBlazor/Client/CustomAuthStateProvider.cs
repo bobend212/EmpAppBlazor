@@ -1,5 +1,4 @@
 ﻿using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components.Authorization;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Json;
@@ -16,6 +15,7 @@ namespace EmpAppBlazor.Client
             _localStorage = localStorage;
             _http = http;
         }
+
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             string authToken = await _localStorage.GetItemAsStringAsync("authToken");

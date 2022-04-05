@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace EmpAppBlazor.Server.Controllers
 {
@@ -13,17 +12,16 @@ namespace EmpAppBlazor.Server.Controllers
         {
             _authService = authService;
         }
-
         [HttpPost("register")]
         public async Task<ActionResult<ServiceResponse<int>>> Register(UserRegister request)
         {
-            var response = await _authService.Register(new User 
-            { 
-                Email = request.Email 
-            }, 
+            var response = await _authService.Register(new User
+            {
+                Email = request.Email
+            },
             request.Password);
 
-            if(!response.Success)
+            if (!response.Success)
             {
                 return BadRequest(response);
             }

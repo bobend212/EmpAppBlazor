@@ -72,7 +72,7 @@ namespace EmpAppBlazor.Server.Services.AuthService
 
         public async Task<ServiceResponse<int>> Register(User user, string password)
         {
-            if(await UserExist(user.Email))
+            if (await UserExist(user.Email))
             {
                 return new ServiceResponse<int> { Success = false, Message = "User already exists." };
             }
@@ -90,7 +90,7 @@ namespace EmpAppBlazor.Server.Services.AuthService
 
         public async Task<bool> UserExist(string email)
         {
-            if(await _context.Users.AnyAsync(user => user.Email.ToLower().Equals(email.ToLower())))
+            if (await _context.Users.AnyAsync(user => user.Email.ToLower().Equals(email.ToLower())))
             {
                 return true;
             }
@@ -99,7 +99,7 @@ namespace EmpAppBlazor.Server.Services.AuthService
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
-            using(var hmac = new HMACSHA512())
+            using (var hmac = new HMACSHA512())
             {
                 passwordSalt = hmac.Key;
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
