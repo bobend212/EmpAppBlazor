@@ -1,4 +1,7 @@
 ﻿@inherits LayoutComponentBase
+@inject ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <div class="page">
     <div class="sidebar">
@@ -7,8 +10,16 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="register"><span class="oi oi-plus"></span> Register</a>
-            <a href="login"><span class="oi oi-account-login"></span> Login</a>
+            <AuthorizeView>
+                <Authorized>
+                    <button @onclick="Logout"><span class="oi oi-account-logout"></span> Logout</button>
+                </Authorized>
+                <NotAuthorized>
+                    <a href="register"><span class="oi oi-plus"></span> Register</a>
+                    <a href="login"><span class="oi oi-account-login"></span> Login</a>
+                </NotAuthorized>
+            </AuthorizeView>
+
         </div>
 
         <article class="content px-4">
@@ -21,3 +32,12 @@
 <MudThemeProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
+
+@code {
+    private async Task Logout()
+    {
+        await LocalStorage.RemoveItemAsync("authToken");
+        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        NavigationManager.NavigateTo("");
+    }
+}

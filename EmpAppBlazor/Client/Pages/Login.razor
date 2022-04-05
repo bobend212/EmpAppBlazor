@@ -1,4 +1,8 @@
 ﻿@page "/login"
+@inject IAuthService AuthService
+@inject ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <h3>Login</h3>
 
@@ -24,6 +28,12 @@
 
     private async Task HandleLogin()
     {
-        Console.WriteLine("log me in");
+        var result = await AuthService.Login(user);
+        if(result.Success)
+        {
+            await LocalStorage.SetItemAsync("authToken", result.Data);
+            await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            NavigationManager.NavigateTo("");
+        }
     }
 }
