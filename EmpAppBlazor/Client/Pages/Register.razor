@@ -25,16 +25,6 @@
         <InputText id="confirmPassword" @bind-Value="user.ConfirmPassword" class="form-control" />
         <ValidationMessage For="@(() => user.ConfirmPassword)" />
     </div>
-    
-
-    @if(isSucceedRegister == "success")
-    {
-        Snackbar.Add("Success", Severity.Normal);
-    }
-    else if (isSucceedRegister == "failure")
-    {
-        Snackbar.Add("Failure", Severity.Normal);
-    }
 
     <button type="submit" class="btn btn-primary">Register</button>
 </EditForm>
@@ -47,14 +37,5 @@
     async Task HandleRegistration()
     {
         var result = await AuthService.Register(user);
-
-        if(result.Success)
-        {
-            isSucceedRegister = "success";
-        }
-        else
-        {
-            isSucceedRegister = "failure";
-        }
     }
 }
