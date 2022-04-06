@@ -4,31 +4,23 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <div class="page">
-    <div class="sidebar">
+    
         <NavMenu />
-    </div>
 
     <main>
-        <div class="top-row px-4">
-            <AuthorizeView>
-                <Authorized>
-                    <div>
-                        <a href="profile" class="mr-2"><span class="oi oi-plus"></span> Profile</a>
-                        <button @onclick="Logout"><span class="oi oi-account-logout"></span> Logout</button>
-                    </div>
-                </Authorized>
-                <NotAuthorized>
-                    <a href="register"><span class="oi oi-plus"></span> Register</a>
-                    <a href="login"><span class="oi oi-account-login"></span> Login</a>
-                </NotAuthorized>
-            </AuthorizeView>
+        <TopBar />
 
-        </div>
+        <AuthorizeView>
+            <Authorized>
+                <article class="content px-4">
+                    @Body
+                </article>
+            </Authorized>
+            <NotAuthorized>
+                <LoginStart />
+            </NotAuthorized>
+        </AuthorizeView>
 
-        <article class="content px-4">
-            @Body
-            
-        </article>
     </main>
 </div>
 

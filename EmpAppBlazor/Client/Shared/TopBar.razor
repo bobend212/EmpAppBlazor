@@ -1,0 +1,26 @@
+﻿@inject ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+    <AuthorizeView>
+        <Authorized>
+            <div class="top-row px-4">
+            <div>
+                <a href="profile" class="mr-2"><span class="oi oi-plus"></span> Profile</a>
+                <button @onclick="Logout"><span class="oi oi-account-logout"></span> Logout</button>
+            </div>
+            </div>
+        </Authorized>
+    </AuthorizeView>
+
+
+
+@code {
+        private async Task Logout()
+    {
+        await LocalStorage.RemoveItemAsync("authToken");
+        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        NavigationManager.NavigateTo("");
+    }
+}

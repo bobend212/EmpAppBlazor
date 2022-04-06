@@ -1,4 +1,7 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿<AuthorizeView>
+<Authorized>
+    <div class="sidebar">
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Employee App</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -49,7 +52,9 @@
 
     </nav>
 </div>
-
+</div>
+</Authorized>
+</AuthorizeView>
 @code {
     private bool collapseNavMenu = true;
     private bool expandSubMenu;

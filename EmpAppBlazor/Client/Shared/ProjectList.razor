@@ -1,4 +1,5 @@
-﻿@inject IProjectService ProjectService
+﻿@page "/projects"
+@inject IProjectService ProjectService
 @inject NavigationManager UriHelper
 
 @if (ProjectService.Projects == null || ProjectService.Projects.Count == 0)

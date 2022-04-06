@@ -1,0 +1,39 @@
+﻿.cont {
+    position: fixed;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    height: 50%;
+}
+
+.row {
+    display: flex;
+}
+
+.col {
+    column-width: 450px;
+    align-self: center;
+}
+
+.box {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    padding: 1rem;
+    margin: 0 auto;
+    align-items: center;
+    text-align: center;
+    width: 1000px;
+    height: 100%;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.login-header {
+    text-align: center;
+}
+
+.login-btn {
+    min-width: 100%;
+}
+
