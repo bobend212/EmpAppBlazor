@@ -8,36 +8,40 @@
 }
 else
 {
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Number</th>
-            <th scope="col">Name</th>
-            <th scope="col">Site</th>
-            <th scope="col">Description</th>
-            <th scope="col">Delivery Date</th>
-            <th scope="col">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var project in ProjectService.Projects)
-        {
-            <tr>
-                <td>@project.Id</td>
-                <td>@project.Number</td>
-                <td>@project.Name</td>
-                <td>@project.Site</td>
-                <td>@project.Description</td>
-                <td>@project.DeliveryDate.ToString("dd-MMMMMMM yyyy")</td>
-                <td><a href="/project/@project.Id">Show</a></td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <MudTable Items="@ProjectService.Projects" Dense="true" Filter="new Func<Project,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">All Projects</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString1" Placeholder="Search by number, name, site" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Id</MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Project, object>(x=>x.Number)">Number</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Project, object>(x=>x.Name)">Name</MudTableSortLabel></MudTh>
+            <MudTh>Site</MudTh>
+            <MudTh>Description</MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Project, object>(x=>x.DeliveryDate)">Delivery Date</MudTableSortLabel></MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="Number">@context.Number</MudTd>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Site">@context.Site</MudTd>
+            <MudTd DataLabel="Description">@context.Description</MudTd>
+            <MudTd DataLabel="Delivery date">@context.DeliveryDate.ToString("dd-MMM-yyyy")</MudTd>
+            <MudTd DataLabel="Actions"><a href="/project/@context.Id">Show</a></MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
 }
 
 @code {
+
+    private Project selectedItem1 = null;
+    private string searchString1 = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -47,5 +51,20 @@ else
     void NavigateToDetailPage(int projectId)
     {
         UriHelper.NavigateTo($"/project/{projectId}");
+    }
+
+    private bool FilterFunc1(Project element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(Project element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Number.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{element.Number} {element.Name} {element.Site}".Contains(searchString))
+            return true;
+        return false;
     }
 }
