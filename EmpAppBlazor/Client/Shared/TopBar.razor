@@ -2,25 +2,43 @@
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-
+<MudAppBar Elevation="2" Style="height: 50px;">
+    <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+    <MudSpacer />
     <AuthorizeView>
-        <Authorized>
-            <div class="top-row px-4">
-            <div>
-                <a href="profile" class="mr-2"><span class="oi oi-plus"></span> Profile</a>
-                <button @onclick="Logout"><span class="oi oi-account-logout"></span> Logout</button>
-            </div>
-            </div>
-        </Authorized>
+        <div class="mr-3">
+            <MudText Align="Align.Center" Typo="Typo.subtitle2">Hello <i>@context.User.Identity.Name</i> </MudText>
+            <MudText Align="Align.Center" Typo="Typo.subtitle2">Today is @DateTime.Now.ToString("dddd dd/MM/yy") </MudText>
+        </div>
+            <MudSpacer />
     </AuthorizeView>
+    <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="GoToProfilePage" StartIcon="@Icons.Filled.Settings" Size="Size.Small" Class="mr-2">Profile</MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Logout" StartIcon="@Icons.Filled.Login" Size="Size.Small">Logout</MudButton>
+</MudAppBar>
+<MudDrawer @bind-Open="_drawerOpen" Elevation="2">
+    <NavMenu />
+</MudDrawer>
 
 
 
 @code {
-        private async Task Logout()
+    private async Task Logout()
     {
         await LocalStorage.RemoveItemAsync("authToken");
         await AuthenticationStateProvider.GetAuthenticationStateAsync();
         NavigationManager.NavigateTo("");
     }
+
+    private void GoToProfilePage()
+    {
+        NavigationManager.NavigateTo("profile");
+    }
+
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
 }

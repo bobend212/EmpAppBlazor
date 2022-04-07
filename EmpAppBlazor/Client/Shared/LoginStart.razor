@@ -3,42 +3,40 @@
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-
 <div class="cont">
     <div class="box">
 
-    
-    <EditForm Model="user" OnValidSubmit="HandleLogin">
-        <DataAnnotationsValidator />
-        <div class="row">
+        <EditForm Model="user" OnValidSubmit="HandleLogin">
+            <DataAnnotationsValidator />
+            <div class="row">
 
-        <div class="col">
-            <p>/logo/</p>
-            </div>
-            
-        <div class="col">
-            
-  <h3 class="login-header">Employee App Login</h3>
-  <div class="mb-3">
-            <label for="email">Email</label>
-            <InputText id="email" @bind-Value="user.Email" class="form-control" />
-            <ValidationMessage For="@(() => user.Email)" />
-       </div>
-  
-            <div class="mb-3">
-            <label for="password">Password</label>
-            <InputText id="password" @bind-Value="user.Password" class="form-control" />
-            <ValidationMessage For="@(() => user.Password)" />
+                <div class="col">
+                    <p>/logo/</p>
                 </div>
-            
-              <button type="submit" class="btn btn-primary login-btn">Login</button>
 
-          </div>
+                <div class="col">
 
-        </div>
-        
+                    <h3 class="login-header">Employee App Login</h3>
+                    <div class="mb-3">
+                        <label for="email">Email</label>
+                        <InputText id="email" @bind-Value="user.Email" class="form-control" />
+                        <ValidationMessage For="@(() => user.Email)" />
+                    </div>
 
-    </EditForm>
+                    <div class="mb-3">
+                        <label for="password">Password</label>
+                        <InputText id="password" @bind-Value="user.Password" class="form-control" />
+                        <ValidationMessage For="@(() => user.Password)" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary login-btn">Login</button>
+
+                </div>
+
+            </div>
+
+
+        </EditForm>
     </div>
 </div>
 @code {
@@ -47,7 +45,7 @@
     private async Task HandleLogin()
     {
         var result = await AuthService.Login(user);
-        if(result.Success)
+        if (result.Success)
         {
             await LocalStorage.SetItemAsync("authToken", result.Data);
             await AuthenticationStateProvider.GetAuthenticationStateAsync();

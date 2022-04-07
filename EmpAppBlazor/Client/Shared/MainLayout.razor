@@ -1,38 +1,29 @@
 ﻿@inherits LayoutComponentBase
-@inject ILocalStorageService LocalStorage
-@inject NavigationManager NavigationManager
-@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<div class="page">
-    
-        <NavMenu />
+<MudLayout>
+    <AuthorizeView>
 
-    <main>
-        <TopBar />
+        <Authorized>
+            <TopBar />
 
-        <AuthorizeView>
-            <Authorized>
-                <article class="content px-4">
+            <MudMainContent>
+                <MudContainer Class="px-2" MaxWidth="MaxWidth.False">
                     @Body
-                </article>
-            </Authorized>
-            <NotAuthorized>
-                <LoginStart />
-            </NotAuthorized>
-        </AuthorizeView>
+                </MudContainer>
+            </MudMainContent>
+        </Authorized>
 
-    </main>
-</div>
+        <NotAuthorized>
+            <LoginStart />
+        </NotAuthorized>
 
-<MudThemeProvider/>
-<MudDialogProvider/>
-<MudSnackbarProvider/>
+    </AuthorizeView>
+</MudLayout>
 
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 @code {
-    private async Task Logout()
-    {
-        await LocalStorage.RemoveItemAsync("authToken");
-        await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        NavigationManager.NavigateTo("");
-    }
+
 }

@@ -1,68 +1,44 @@
 ﻿<AuthorizeView>
-<Authorized>
-    <div class="sidebar">
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Employee App</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
+    <Authorized>
+        <MudPaper Elevation="0">
+            <MudNavMenu>
+                <MudText Typo="Typo.h6" Class="px-2">Employee App</MudText>
+                <MudText Typo="Typo.body2" Class="px-2 mud-text-secondary">version 0.0.5</MudText>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" ></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" ></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" ></span> Fetch data
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" @onclick="() => expandSubMenu = !expandSubMenu" style="cursor:pointer">
-                <span class="oi oi-spreadsheet" ></span> Timesheets >>
-            </NavLink>
-            @if(expandSubMenu)
-            {
-                <ul class="nav flex-column">
-                    <div class="nav-item px-3">
-                        <NavLink class="nav-link" href="fetchdata">
-                            <span class="oi oi-droplet"></span> Current Timesheet
-                        </NavLink>
-                    </div>
-                    <div class="nav-item px-3">
-                        <NavLink class="nav-link" href="counter">
-                            <span class="oi oi-droplet"></span> History
-                        </NavLink>
-                    </div>
-                </ul>
-            }
-        </div>
-
-
-    </nav>
-</div>
-</div>
-</Authorized>
+                <MudNavLink Href="/">Dashboard</MudNavLink>
+                <MudNavGroup Title="Projects" Expanded="true">
+                    <MudNavLink Href="/projects-database">Database</MudNavLink>
+                    <MudNavLink Href="/projects-workload">Workload</MudNavLink>
+                    <MudNavLink Href="/projects-teams">Teams</MudNavLink>
+                    <MudNavLink Href="/projects-tasks">Tasks</MudNavLink>
+                    <MudNavLink Href="/projects-estimating">Estimating</MudNavLink>
+                    <MudNavLink Href="/projects-lessons">Lessons Learnt</MudNavLink>
+                </MudNavGroup>
+                <MudNavGroup Title="Timesheets" Expanded="true">
+                    <MudNavLink Href="/timesheet-cards">Cards</MudNavLink>
+                    <MudNavLink Href="/timesheet-archive">Archive</MudNavLink>
+                </MudNavGroup>
+                <MudNavLink Href="/holidays">Holidays</MudNavLink>
+                <MudNavLink Href="/attendance">Attendance List</MudNavLink>
+                <MudNavLink Href="/about">About</MudNavLink>
+                <MudNavGroup Title="Useful Links" Expanded="false">
+                    <MudNavLink Href="/tsl">Timber Stock List</MudNavLink>
+                    <MudNavLink Href="/s1">Something1</MudNavLink>
+                    <MudNavLink Href="/s2">Something2</MudNavLink>
+                    <MudNavLink Href="/s3">Something3</MudNavLink>
+                </MudNavGroup>
+                <MudDivider />
+                <MudNavGroup Title="Admin Panel" Expanded="true">
+                    <MudNavLink Href="/admin/timesheets">Timesheets</MudNavLink>
+                    <MudNavLink Href="/register">Register New User</MudNavLink>
+                    <MudNavLink Href="/admin/users">User List</MudNavLink>
+                    <MudNavLink Href="/resources">Resources Management</MudNavLink>
+                </MudNavGroup>
+            </MudNavMenu>
+        </MudPaper>
+    </Authorized>
 </AuthorizeView>
+
 @code {
-    private bool collapseNavMenu = true;
-    private bool expandSubMenu;
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
 }
