@@ -19,8 +19,8 @@ else
             <MudTh><MudTableSortLabel SortBy="new Func<Project, object>(x=>x.Number)">Number</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Project, object>(x=>x.Name)">Name</MudTableSortLabel></MudTh>
             <MudTh>Site</MudTh>
-            <MudTh>Description</MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Project, object>(x=>x.Site)">Delivery Date</MudTableSortLabel></MudTh>
+            <MudTh>Status</MudTh>
+            <MudTh>Delivery Date</MudTh>
             <MudTh>Actions</MudTh>
         </HeaderContent>
         <RowTemplate>
@@ -28,14 +28,15 @@ else
             <MudTd DataLabel="Number">@context.Number</MudTd>
             <MudTd DataLabel="Name">@context.Name</MudTd>
             <MudTd DataLabel="Site">@context.Site</MudTd>
-            <MudTd DataLabel="Description">@context.Site</MudTd>
-            <MudTd DataLabel="Delivery date">@context.Site</MudTd>
-            <MudTd DataLabel="Actions"><a href="/project/@context.Id">Show</a></MudTd>
-        </RowTemplate>
-        <PagerContent>
-            <MudTablePager />
-        </PagerContent>
-    </MudTable>
+            <MudTd DataLabel="Description">@context.Status</MudTd>
+            <MudTd DataLabel="Delivery Date">@(context.Workload != null ? @context.Workload.DeliveryDate : "empty")</MudTd>
+
+        <MudTd DataLabel="Actions"><a href="/project/@context.Id">Show</a></MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
 }
 
 @code {

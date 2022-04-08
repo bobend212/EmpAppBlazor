@@ -5,6 +5,7 @@ global using EmpAppBlazor.Server.Services.WorkloadService;
 global using EmpAppBlazor.Shared;
 global using EmpAppBlazor.Shared.Auth;
 global using Microsoft.EntityFrameworkCore;
+using EmpAppBlazor.Server;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -41,6 +42,8 @@ builder.Services.AddControllersWithViews()
     .AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
 var app = builder.Build();
 

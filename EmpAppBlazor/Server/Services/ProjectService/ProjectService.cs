@@ -1,12 +1,18 @@
-﻿namespace EmpAppBlazor.Server.Services.ProjectService
+﻿using AutoMapper;
+using EmpAppBlazor.Shared.DTOs;
+using System.Collections;
+
+namespace EmpAppBlazor.Server.Services.ProjectService
 {
     public class ProjectService : IProjectService
     {
         private readonly DataContext _context;
+        private readonly IMapper _mapper;
 
-        public ProjectService(DataContext context)
+        public ProjectService(DataContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<ServiceResponse<Project>> GetProjectAsync(int projectId)
@@ -27,16 +33,14 @@
             return response;
         }
 
-        public async Task<ServiceResponse<List<Project>>> GetProjectsAsync()
+        public async Task<ServiceResponse<List<ProjectDTO>>> GetProjectsAsync()
         {
+            var projects = await _context.Projects.Include(w => w.Workload).Include(x => x.Designers).ToListAsync();
+            var projectsDto = _mapper.Map<List<ProjectDTO>>(projects);
 
-            var response = new ServiceResponse<List<Project>>()
+            var response = new ServiceResponse<List<ProjectDTO>>()
             {
-                Data = await _context.Projects.Include(w => w.Workload).Include(x => x.Designers.Select(x => new UserDTO
-                {
-                    Id = x.Id,
-                    Email = x.Email
-                }).ToArray()).ToListAsync()
+                Data = projectsDto
             };
             return response;
         }

@@ -1,8 +1,10 @@
-﻿namespace EmpAppBlazor.Server.Services.ProjectService
+﻿using EmpAppBlazor.Shared.DTOs;
+
+namespace EmpAppBlazor.Server.Services.ProjectService
 {
     public interface IProjectService
     {
-        Task<ServiceResponse<List<Project>>> GetProjectsAsync();
+        Task<ServiceResponse<List<ProjectDTO>>> GetProjectsAsync();
 
         Task<ServiceResponse<Project>> GetProjectAsync(int projectId);
 
