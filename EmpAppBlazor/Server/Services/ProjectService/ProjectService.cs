@@ -12,7 +12,7 @@
         public async Task<ServiceResponse<Project>> GetProjectAsync(int projectId)
         {
             var response = new ServiceResponse<Project>();
-            var project = await _context.Projects.FindAsync(projectId);
+            var project = await _context.Projects.Include(w => w.Workload).FirstOrDefaultAsync(x => x.Id == projectId);
 
             if (project == null)
             {
@@ -29,9 +29,14 @@
 
         public async Task<ServiceResponse<List<Project>>> GetProjectsAsync()
         {
+
             var response = new ServiceResponse<List<Project>>()
             {
-                Data = await _context.Projects.ToListAsync()
+                Data = await _context.Projects.Include(w => w.Workload).Include(x => x.Designers.Select(x => new UserDTO
+                {
+                    Id = x.Id,
+                    Email = x.Email
+                }).ToArray()).ToListAsync()
             };
             return response;
         }
@@ -40,7 +45,7 @@
         {
             var response = new ServiceResponse<List<Project>>()
             {
-                Data = await _context.Projects.Where(x => x.Workload.Stage.ToLower().Equals(stageWorkload.ToLower())).ToListAsync()
+                Data = await _context.Projects.Where(x => x.Workload.ProductionStage.ToLower().Equals(stageWorkload.ToLower())).ToListAsync()
             };
             return response;
         }

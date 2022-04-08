@@ -4,6 +4,7 @@ using EmpAppBlazor.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmpAppBlazor.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220407124916_RelationsUpdate")]
+    partial class RelationsUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -116,25 +118,15 @@ namespace EmpAppBlazor.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Comments")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeliveryDate")
+                    b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("OrderPlaced")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ProductionStage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("RequiredDate")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Stage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -147,32 +139,23 @@ namespace EmpAppBlazor.Server.Migrations
                         new
                         {
                             Id = 1,
-                            Comments = "",
-                            DeliveryDate = new DateTime(2022, 4, 20, 9, 32, 21, 265, DateTimeKind.Local).AddTicks(2083),
-                            OrderPlaced = new DateTime(2022, 4, 12, 9, 32, 21, 265, DateTimeKind.Local).AddTicks(2126),
-                            ProductionStage = "not started",
+                            DueDate = new DateTime(2022, 7, 16, 14, 49, 16, 225, DateTimeKind.Local).AddTicks(3676),
                             ProjectId = 1,
-                            RequiredDate = new DateTime(2022, 5, 23, 9, 32, 21, 265, DateTimeKind.Local).AddTicks(2124)
+                            Stage = "active"
                         },
                         new
                         {
                             Id = 2,
-                            Comments = "",
-                            DeliveryDate = new DateTime(2022, 6, 1, 9, 32, 21, 265, DateTimeKind.Local).AddTicks(2129),
-                            OrderPlaced = new DateTime(2022, 6, 9, 9, 32, 21, 265, DateTimeKind.Local).AddTicks(2133),
-                            ProductionStage = "not started",
+                            DueDate = new DateTime(2022, 9, 4, 14, 49, 16, 225, DateTimeKind.Local).AddTicks(3712),
                             ProjectId = 2,
-                            RequiredDate = new DateTime(2022, 5, 3, 9, 32, 21, 265, DateTimeKind.Local).AddTicks(2131)
+                            Stage = "hold"
                         },
                         new
                         {
                             Id = 3,
-                            Comments = "",
-                            DeliveryDate = new DateTime(2022, 6, 19, 9, 32, 21, 265, DateTimeKind.Local).AddTicks(2135),
-                            OrderPlaced = new DateTime(2022, 4, 14, 9, 32, 21, 265, DateTimeKind.Local).AddTicks(2139),
-                            ProductionStage = "not started",
+                            DueDate = new DateTime(2022, 10, 24, 14, 49, 16, 225, DateTimeKind.Local).AddTicks(3715),
                             ProjectId = 3,
-                            RequiredDate = new DateTime(2022, 6, 2, 9, 32, 21, 265, DateTimeKind.Local).AddTicks(2137)
+                            Stage = "done"
                         });
                 });
 

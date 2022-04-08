@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using EmpAppBlazor.Shared.Auth;
+using System.Text.Json.Serialization;
 
 namespace EmpAppBlazor.Shared
 {
@@ -7,13 +8,11 @@ namespace EmpAppBlazor.Shared
         public int Id { get; set; }
         public int Number { get; set; }
         public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
         public string Site { get; set; } = string.Empty;
-        public DateTime DeliveryDate { get; set; }
+        public string Status { get; set; } = "unknown";
 
-        [JsonIgnore]
-        public Workload? Workload { get; set; }
+        public List<User> Designers { get; set; }
 
-        public int WorkloadId { get; set; }
+        public Workload Workload { get; set; }
     }
 }

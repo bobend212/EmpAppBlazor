@@ -4,6 +4,7 @@ using EmpAppBlazor.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmpAppBlazor.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220407124330_UserProjectRelationAdded")]
+    partial class UserProjectRelationAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,7 +79,12 @@ namespace EmpAppBlazor.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("WorkloadId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("WorkloadId");
 
                     b.ToTable("Projects");
 
@@ -88,7 +95,8 @@ namespace EmpAppBlazor.Server.Migrations
                             Name = "Tomason",
                             Number = 17156,
                             Site = "Self-Build",
-                            Status = ""
+                            Status = "",
+                            WorkloadId = 1
                         },
                         new
                         {
@@ -96,7 +104,8 @@ namespace EmpAppBlazor.Server.Migrations
                             Name = "Ellesar",
                             Number = 14104,
                             Site = "Self-Build",
-                            Status = ""
+                            Status = "",
+                            WorkloadId = 2
                         },
                         new
                         {
@@ -104,7 +113,8 @@ namespace EmpAppBlazor.Server.Migrations
                             Name = "Clark",
                             Number = 21201,
                             Site = "KTS",
-                            Status = ""
+                            Status = "",
+                            WorkloadId = 3
                         });
                 });
 
@@ -116,30 +126,14 @@ namespace EmpAppBlazor.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Comments")
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Stage")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeliveryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("OrderPlaced")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ProductionStage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("RequiredDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProjectId")
-                        .IsUnique();
 
                     b.ToTable("Workloads");
 
@@ -147,32 +141,20 @@ namespace EmpAppBlazor.Server.Migrations
                         new
                         {
                             Id = 1,
-                            Comments = "",
-                            DeliveryDate = new DateTime(2022, 4, 20, 9, 32, 21, 265, DateTimeKind.Local).AddTicks(2083),
-                            OrderPlaced = new DateTime(2022, 4, 12, 9, 32, 21, 265, DateTimeKind.Local).AddTicks(2126),
-                            ProductionStage = "not started",
-                            ProjectId = 1,
-                            RequiredDate = new DateTime(2022, 5, 23, 9, 32, 21, 265, DateTimeKind.Local).AddTicks(2124)
+                            DueDate = new DateTime(2022, 7, 16, 14, 43, 30, 169, DateTimeKind.Local).AddTicks(9690),
+                            Stage = "active"
                         },
                         new
                         {
                             Id = 2,
-                            Comments = "",
-                            DeliveryDate = new DateTime(2022, 6, 1, 9, 32, 21, 265, DateTimeKind.Local).AddTicks(2129),
-                            OrderPlaced = new DateTime(2022, 6, 9, 9, 32, 21, 265, DateTimeKind.Local).AddTicks(2133),
-                            ProductionStage = "not started",
-                            ProjectId = 2,
-                            RequiredDate = new DateTime(2022, 5, 3, 9, 32, 21, 265, DateTimeKind.Local).AddTicks(2131)
+                            DueDate = new DateTime(2022, 9, 4, 14, 43, 30, 169, DateTimeKind.Local).AddTicks(9725),
+                            Stage = "hold"
                         },
                         new
                         {
                             Id = 3,
-                            Comments = "",
-                            DeliveryDate = new DateTime(2022, 6, 19, 9, 32, 21, 265, DateTimeKind.Local).AddTicks(2135),
-                            OrderPlaced = new DateTime(2022, 4, 14, 9, 32, 21, 265, DateTimeKind.Local).AddTicks(2139),
-                            ProductionStage = "not started",
-                            ProjectId = 3,
-                            RequiredDate = new DateTime(2022, 6, 2, 9, 32, 21, 265, DateTimeKind.Local).AddTicks(2137)
+                            DueDate = new DateTime(2022, 10, 24, 14, 43, 30, 169, DateTimeKind.Local).AddTicks(9727),
+                            Stage = "done"
                         });
                 });
 
@@ -191,15 +173,15 @@ namespace EmpAppBlazor.Server.Migrations
                     b.ToTable("ProjectUser");
                 });
 
-            modelBuilder.Entity("EmpAppBlazor.Shared.Workload", b =>
+            modelBuilder.Entity("EmpAppBlazor.Shared.Project", b =>
                 {
-                    b.HasOne("EmpAppBlazor.Shared.Project", "Project")
-                        .WithOne("Workload")
-                        .HasForeignKey("EmpAppBlazor.Shared.Workload", "ProjectId")
+                    b.HasOne("EmpAppBlazor.Shared.Workload", "Workload")
+                        .WithMany()
+                        .HasForeignKey("WorkloadId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Project");
+                    b.Navigation("Workload");
                 });
 
             modelBuilder.Entity("ProjectUser", b =>
@@ -214,12 +196,6 @@ namespace EmpAppBlazor.Server.Migrations
                         .WithMany()
                         .HasForeignKey("ProjectsId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("EmpAppBlazor.Shared.Project", b =>
-                {
-                    b.Navigation("Workload")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

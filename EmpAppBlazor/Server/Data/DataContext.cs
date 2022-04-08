@@ -9,9 +9,30 @@
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Workload>().HasData(
-                new Workload() { Id = 1, DueDate = DateTime.Now.AddDays(100), Stage = "active" },
-                new Workload() { Id = 2, DueDate = DateTime.Now.AddDays(150), Stage = "hold" },
-                new Workload() { Id = 3, DueDate = DateTime.Now.AddDays(200), Stage = "done" }
+                new Workload()
+                {
+                    Id = 1,
+                    DeliveryDate = DateTime.Now.AddDays(12),
+                    RequiredDate = DateTime.Now.AddDays(45),
+                    OrderPlaced = DateTime.Now.AddDays(4),
+                    ProjectId = 1
+                },
+                new Workload()
+                {
+                    Id = 2,
+                    DeliveryDate = DateTime.Now.AddDays(54),
+                    RequiredDate = DateTime.Now.AddDays(25),
+                    OrderPlaced = DateTime.Now.AddDays(62),
+                    ProjectId = 2
+                },
+                new Workload()
+                {
+                    Id = 3,
+                    DeliveryDate = DateTime.Now.AddDays(72),
+                    RequiredDate = DateTime.Now.AddDays(55),
+                    OrderPlaced = DateTime.Now.AddDays(6),
+                    ProjectId = 3
+                }
                 );
 
             modelBuilder.Entity<Project>().HasData(
@@ -21,9 +42,7 @@
                     Number = 17156,
                     Name = "Tomason",
                     Site = "Self-Build",
-                    Description = "",
-                    DeliveryDate = DateTime.Now.AddDays(5),
-                    WorkloadId = 1
+                    Status = ""
                 },
                 new Project
                 {
@@ -31,9 +50,7 @@
                     Number = 14104,
                     Name = "Ellesar",
                     Site = "Self-Build",
-                    Description = "",
-                    DeliveryDate = DateTime.Now.AddDays(35),
-                    WorkloadId = 2
+                    Status = ""
                 },
                 new Project
                 {
@@ -41,11 +58,14 @@
                     Number = 21201,
                     Name = "Clark",
                     Site = "KTS",
-                    Description = "This project is on hold now.",
-                    DeliveryDate = DateTime.Now.AddDays(4),
-                    WorkloadId = 3
+                    Status = ""
                 }
             );
+
+            modelBuilder.Entity<Project>()
+                .HasOne(a => a.Workload)
+                .WithOne(b => b.Project)
+                .HasForeignKey<Workload>(b => b.ProjectId);
         }
 
         public DbSet<Project> Projects { get; set; }

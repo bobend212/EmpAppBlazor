@@ -20,7 +20,7 @@ else
             <MudTh><MudTableSortLabel SortBy="new Func<Project, object>(x=>x.Name)">Name</MudTableSortLabel></MudTh>
             <MudTh>Site</MudTh>
             <MudTh>Description</MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Project, object>(x=>x.DeliveryDate)">Delivery Date</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Project, object>(x=>x.Site)">Delivery Date</MudTableSortLabel></MudTh>
             <MudTh>Actions</MudTh>
         </HeaderContent>
         <RowTemplate>
@@ -28,8 +28,8 @@ else
             <MudTd DataLabel="Number">@context.Number</MudTd>
             <MudTd DataLabel="Name">@context.Name</MudTd>
             <MudTd DataLabel="Site">@context.Site</MudTd>
-            <MudTd DataLabel="Description">@context.Description</MudTd>
-            <MudTd DataLabel="Delivery date">@context.DeliveryDate.ToString("dd-MMM-yyyy")</MudTd>
+            <MudTd DataLabel="Description">@context.Site</MudTd>
+            <MudTd DataLabel="Delivery date">@context.Site</MudTd>
             <MudTd DataLabel="Actions"><a href="/project/@context.Id">Show</a></MudTd>
         </RowTemplate>
         <PagerContent>
