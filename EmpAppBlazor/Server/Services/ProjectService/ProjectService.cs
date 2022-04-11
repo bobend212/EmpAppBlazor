@@ -16,7 +16,7 @@ namespace EmpAppBlazor.Server.Services.ProjectService
         public async Task<ServiceResponse<Project>> GetProjectAsync(int projectId)
         {
             var response = new ServiceResponse<Project>();
-            var project = await _context.Projects.Include(w => w.Workload).FirstOrDefaultAsync(x => x.Id == projectId);
+            var project = await _context.Projects.Include(w => w.Workload).Include(x => x.Designers).FirstOrDefaultAsync(x => x.Id == projectId);
 
             if (project == null)
             {

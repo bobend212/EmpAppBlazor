@@ -1,0 +1,127 @@
+﻿@page "/project/addoredit"
+@page "/project/addoredit/{id:int}"
+@using System.ComponentModel.DataAnnotations
+@using System.Globalization
+@inject IProjectService ProjectService
+@inject NavigationManager NavigationManager
+
+@if (loading)
+{
+    <span>@msg</span>
+}
+else
+{
+    @if (Id != 0)
+    {
+        <h3>Edit "@project.Number"</h3>
+    }
+    else
+    {
+        <h3>Create new project</h3>
+    }
+    <MudGrid>
+        <MudItem xs="12" sm="4">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.subtitle2">Project Details</MudText>
+                <MudForm @ref="form" @bind-IsValid="@success">
+                    <MudTextField T="int" Label="Project number" Required="true" RequiredError="Project number is required!" @bind-Value="project.Number" />
+                    <MudTextField T="string" Label="Project name" Required="true" RequiredError="Project name is required!" @bind-Value="project.Name" />
+                    <MudTextField T="string" Label="Site" Required="true" RequiredError="Site is required!" @bind-Value="project.Site" />
+                    <MudSelect @bind-Value="@project.Status" Label="Status">
+                        <MudSelectItem Value="@("Not Started")"><MudIcon Icon="@Icons.Filled.StopCircle" Color="Color.Default" /> Not Started </MudSelectItem>
+                        <MudSelectItem Value="@("Active")"><MudIcon Icon="@Icons.Filled.Work" Color="Color.Success" /> Active </MudSelectItem>
+                        <MudSelectItem Value="@("Done")"><MudIcon Icon="@Icons.Filled.Done" Color="Color.Info" /> Done </MudSelectItem>
+                        <MudSelectItem Value="@("Cancelled")"><MudIcon Icon="@Icons.Filled.Cancel" Color="Color.Error" /> Cancelled </MudSelectItem>
+                    </MudSelect>
+                </MudForm>
+            </MudPaper>
+            <MudPaper Class="pa-4 mt-4">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="false" OnClick="AddOrUpdateProject" Disabled="@(!success)">@btnText</MudButton>
+            </MudPaper>
+        </MudItem>
+        @if (project.Workload != null)
+        {
+            <MudItem xs="12" sm="5">
+                <MudPaper Class="pa-4">
+                    <MudText Typo="Typo.subtitle2">Workload Information</MudText>
+                    <MudForm>
+                        <MudTextField T="string" Label="Production Stage" Required="true" RequiredError="Production Stage is required!" @bind-Value="project.Workload.ProductionStage" />
+                        <div class="d-flex align-center justify-space-between mt-6 mb-6">
+                            <MudDatePicker class="mr-5" Label="Delivery Date" DateFormat="dd/MMMM/yyyy" Culture="@CultureInfo.GetCultureInfo("pl-pl")" @bind-Date="project.Workload.DeliveryDate" />
+                            <MudDatePicker class="mr-5" Label="Required Date" DateFormat="dd/MMMM/yyyy" Culture="@CultureInfo.GetCultureInfo("pl-pl")" Required="true" @bind-Date="project.Workload.RequiredDate" />
+                            <MudDatePicker Label="Order Date" DateFormat="dd/MMMM/yyyy" Culture="@CultureInfo.GetCultureInfo("pl-pl")" @bind-Date="project.Workload.OrderPlaced" />
+                        </div>
+                        <MudTextField T="string" Label="Comments/description/notes" Variant="Variant.Outlined" Lines="5" @bind-Value="project.Workload.Comments" />
+                    </MudForm>
+                </MudPaper>
+                <MudPaper Class="pa-4 mt-4">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="false">Update Workload</MudButton>
+                </MudPaper>
+            </MudItem>
+        }
+        <MudItem xs="12" sm="3">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.subtitle2">Design Team</MudText>
+                <MudList>
+                    @foreach (var user in project.Designers)
+                    {
+                        <MudListItem Text="user.Email" Icon="@Icons.Filled.PersonPin" />
+                        <MudDivider />
+                    }
+                </MudList>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    MudForm form;
+    bool success;
+    Project project = new Project();
+    bool loading = true;
+    string btnText = "";
+    string msg = "Loading...";
+    string country = "Austria";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id == 0)
+        {
+            project = new Project();
+            btnText = "Create Project";
+        }
+        else
+        {
+            Project dbProject = (await ProjectService.GetProject(Id)).Data;
+            if (dbProject == null)
+            {
+                msg = $"Project id: {Id} does not exist!";
+                return;
+            }
+            project = dbProject;
+            btnText = "Update Project";
+        }
+        loading = false;
+    }
+
+    async Task AddOrUpdateProject()
+    {
+        if (Id == 0)
+        {
+            var result = await ProjectService.CreateProject(project);
+            NavigationManager.NavigateTo("/projects-database");
+        }
+        else
+        {
+            project = await ProjectService.UpdateProject(project);
+            NavigationManager.NavigateTo("/projects-database");
+
+        }
+    }
+
+
+}

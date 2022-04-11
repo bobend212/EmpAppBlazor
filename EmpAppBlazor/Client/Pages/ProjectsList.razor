@@ -4,13 +4,13 @@
 
 @if (ProjectService.Projects == null || ProjectService.Projects.Count == 0)
 {
-    <span>Loading...</span>
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
 }
 else
 {
     <MudTable Items="@ProjectService.Projects" Dense="true" Filter="new Func<Project,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
         <ToolBarContent>
-            <MudButton Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Filled.CreateNewFolder" Size="Size.Small">New Project</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Filled.CreateNewFolder" Size="Size.Small" OnClick="NavigateToNewProjectPage">New Project</MudButton>
             <MudSpacer />
             <MudText Typo="Typo.h6">All Projects</MudText>
             <MudSpacer />
@@ -34,7 +34,7 @@ else
             <MudTd DataLabel="Description">@context.Status</MudTd>
             <MudTd DataLabel="Delivery Date">@(context.Workload != null ? @context.Workload.DeliveryDate : "empty")</MudTd>
 
-            <MudTd DataLabel="Actions"><a href="/project/@context.Id">Show</a></MudTd>
+            <MudTd DataLabel="Actions"><a href="/project/addoredit/@context.Id">Show</a></MudTd>
         </RowTemplate>
         <PagerContent>
             <MudTablePager />
@@ -55,6 +55,11 @@ else
     void NavigateToDetailPage(int projectId)
     {
         UriHelper.NavigateTo($"/project/{projectId}");
+    }
+
+    void NavigateToNewProjectPage()
+    {
+        UriHelper.NavigateTo("/project/addoredit");
     }
 
     private bool FilterFunc1(Project element) => FilterFunc(element, searchString1);

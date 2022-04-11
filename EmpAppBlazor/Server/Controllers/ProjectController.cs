@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EmpAppBlazor.Server.Controllers
 {
@@ -34,7 +35,7 @@ namespace EmpAppBlazor.Server.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Admin")]
         public async Task<ActionResult<ServiceResponse<Project>>> CreateProject(Project project)
         {
             var result = await _projectService.CreateProject(project);
@@ -48,7 +49,7 @@ namespace EmpAppBlazor.Server.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("{projectId}")]
+        [HttpDelete("{projectId}"), Authorize(Roles = "Admin")]
         public async Task<ActionResult<ServiceResponse<bool>>> DeleteProject(int projectId)
         {
             var result = await _projectService.DeleteProject(projectId);
