@@ -35,7 +35,7 @@ namespace EmpAppBlazor.Server.Controllers
             return Ok(result);
         }
 
-        [HttpPost, Authorize(Roles = "Admin")]
+        [HttpPost]
         public async Task<ActionResult<ServiceResponse<Project>>> CreateProject(Project project)
         {
             var result = await _projectService.CreateProject(project);
@@ -49,7 +49,7 @@ namespace EmpAppBlazor.Server.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("{projectId}"), Authorize(Roles = "Admin")]
+        [HttpDelete("{projectId}")]
         public async Task<ActionResult<ServiceResponse<bool>>> DeleteProject(int projectId)
         {
             var result = await _projectService.DeleteProject(projectId);

@@ -4,6 +4,7 @@
 @using System.Globalization
 @inject IProjectService ProjectService
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 @if (loading)
 {
@@ -13,15 +14,15 @@ else
 {
     @if (Id != 0)
     {
-        <h3>Edit "@project.Number"</h3>
+        <h3 style="text-align: center;">@project.Number "@project.Name"</h3>
     }
     else
     {
-        <h3>Create new project</h3>
+        <h3 style="text-align: center;">Create new project</h3>
     }
     <MudGrid>
         <MudItem xs="12" sm="4">
-            <MudPaper Class="pa-4">
+            <MudPaper Class="pa-4" Elevation="9">
                 <MudText Typo="Typo.subtitle2">Project Details</MudText>
                 <MudForm @ref="form" @bind-IsValid="@success">
                     <MudTextField T="int" Label="Project number" Required="true" RequiredError="Project number is required!" @bind-Value="project.Number" />
@@ -35,14 +36,20 @@ else
                     </MudSelect>
                 </MudForm>
             </MudPaper>
-            <MudPaper Class="pa-4 mt-4">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="false" OnClick="AddOrUpdateProject" Disabled="@(!success)">@btnText</MudButton>
+            <MudPaper Class="pa-4 mt-4" Elevation="9">
+                <div class="action-buttons-centered">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="false" OnClick="AddOrUpdateProject" Disabled="@(!success)">@btnText</MudButton>
+                    @if (btnText != "Create Project")
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="delete" OnClick=DeleteProject></MudIconButton>
+                    }
+                </div>
             </MudPaper>
         </MudItem>
         @if (project.Workload != null)
         {
             <MudItem xs="12" sm="5">
-                <MudPaper Class="pa-4">
+                <MudPaper Class="pa-4" Elevation="9">
                     <MudText Typo="Typo.subtitle2">Workload Information</MudText>
                     <MudForm>
                         <MudTextField T="string" Label="Production Stage" Required="true" RequiredError="Production Stage is required!" @bind-Value="project.Workload.ProductionStage" />
@@ -54,23 +61,35 @@ else
                         <MudTextField T="string" Label="Comments/description/notes" Variant="Variant.Outlined" Lines="5" @bind-Value="project.Workload.Comments" />
                     </MudForm>
                 </MudPaper>
-                <MudPaper Class="pa-4 mt-4">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="false">Update Workload</MudButton>
+                <MudPaper Class="pa-4 mt-4" Elevation="9">
+                    <div class="action-buttons-centered">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="false">Update Workload</MudButton>
+                    </div>
                 </MudPaper>
             </MudItem>
         }
-        <MudItem xs="12" sm="3">
-            <MudPaper Class="pa-4">
-                <MudText Typo="Typo.subtitle2">Design Team</MudText>
-                <MudList>
-                    @foreach (var user in project.Designers)
+        @if (btnText != "Create Project")
+        {
+            <MudItem xs="12" sm="3">
+                <MudPaper Class="pa-4" Elevation="9">
+                    <MudText Typo="Typo.subtitle2">Design Team</MudText>
+                    @if (project.Designers.Count > 0)
                     {
-                        <MudListItem Text="user.Email" Icon="@Icons.Filled.PersonPin" />
-                        <MudDivider />
+                        <MudList>
+                            @foreach (var user in project.Designers)
+                            {
+                                <MudListItem Text="@user.Email" Icon="@Icons.Filled.PersonPin" />
+                                <MudDivider />
+                            }
+                        </MudList>
                     }
-                </MudList>
-            </MudPaper>
-        </MudItem>
+                    else
+                    {
+                        <MudText Typo="Typo.caption">none assigned</MudText>
+                    }
+                </MudPaper>
+            </MudItem>
+        }
     </MudGrid>
 
 }
@@ -85,7 +104,6 @@ else
     bool loading = true;
     string btnText = "";
     string msg = "Loading...";
-    string country = "Austria";
 
     protected override async Task OnParametersSetAsync()
     {
@@ -120,6 +138,17 @@ else
             project = await ProjectService.UpdateProject(project);
             NavigationManager.NavigateTo("/projects-database");
 
+        }
+    }
+
+    async Task DeleteProject()
+    {
+        bool confirmDelete = await JSRuntime.InvokeAsync<bool>("confirm",
+            $"Do you really want to delete '{project.Number} {project.Name}'?");
+        if (confirmDelete)
+        {
+            await ProjectService.DeleteProject(project.Id);
+            NavigationManager.NavigateTo("/projects-database");
         }
     }
 

@@ -1,2 +1,5 @@
-﻿body {
+﻿.action-buttons-centered {
+    text-align: center;
+    display: flex;
+    justify-content: space-around;
 }
