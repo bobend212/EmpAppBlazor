@@ -11,8 +11,8 @@ namespace EmpAppBlazor.Shared
         public string Site { get; set; } = string.Empty;
         public string Status { get; set; } = "unknown";
 
-        public List<User> Designers { get; set; }
+        public List<User>? Designers { get; set; }
 
-        public Workload Workload { get; set; }
+        public Workload? Workload { get; set; }
     }
 }

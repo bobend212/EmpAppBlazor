@@ -2,15 +2,15 @@
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<MudAppBar Elevation="2" Style="height: 50px;">
+<MudAppBar Elevation="2" Style="height: 50px; background-color:mediumblue">
     <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
     <MudSpacer />
     <AuthorizeView>
         <div class="mr-3">
-            <MudText Align="Align.Center" Typo="Typo.subtitle2">Hello <i>@context.User.Identity.Name</i> </MudText>
-            <MudText Align="Align.Center" Typo="Typo.subtitle2">Today is @DateTime.Now.ToString("dddd dd/MM/yy") </MudText>
+            <MudText Align="Align.Right" Typo="Typo.subtitle2">Hello, <strong>@context.User.Identity.Name</strong> </MudText>
+            <MudText Align="Align.Right" Typo="Typo.subtitle2">Today is @DateTime.Now.ToString("dddd dd/MM/yy") </MudText>
         </div>
-            <MudSpacer />
+            @*<MudSpacer />*@
     </AuthorizeView>
     <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="GoToProfilePage" StartIcon="@Icons.Filled.Settings" Size="Size.Small" Class="mr-2">Profile</MudButton>
     <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Logout" StartIcon="@Icons.Filled.Login" Size="Size.Small">Logout</MudButton>

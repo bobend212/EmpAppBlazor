@@ -33,5 +33,26 @@ namespace EmpAppBlazor.Server.Controllers
             var result = await _projectService.GetProjectsByWorkloadStage(workloadStage);
             return Ok(result);
         }
+
+        [HttpPost]
+        public async Task<ActionResult<ServiceResponse<Project>>> CreateProject(Project project)
+        {
+            var result = await _projectService.CreateProject(project);
+            return Ok(result);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<ServiceResponse<Project>>> UpdateProject(Project project)
+        {
+            var result = await _projectService.UpdateProject(project);
+            return Ok(result);
+        }
+
+        [HttpDelete("{projectId}")]
+        public async Task<ActionResult<ServiceResponse<bool>>> DeleteProject(int projectId)
+        {
+            var result = await _projectService.DeleteProject(projectId);
+            return Ok(result);
+        }
     }
 }
