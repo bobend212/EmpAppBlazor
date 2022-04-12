@@ -1,4 +1,5 @@
-﻿@inject ILocalStorageService LocalStorage
+﻿@using System.Security.Claims
+@inject ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
@@ -7,10 +8,9 @@
     <MudSpacer />
     <AuthorizeView>
         <div class="mr-3">
-            <MudText Align="Align.Right" Typo="Typo.subtitle2">Hello, <strong>@context.User.Identity.Name</strong> </MudText>
+            <MudText Align="Align.Right" Typo="Typo.subtitle2">Hello @context.User.Identity.Name - ID:@context.User.FindFirst(ClaimTypes.NameIdentifier).Value </MudText>
             <MudText Align="Align.Right" Typo="Typo.subtitle2">Today is @DateTime.Now.ToString("dddd dd/MM/yy") </MudText>
         </div>
-            @*<MudSpacer />*@
     </AuthorizeView>
     <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="GoToProfilePage" StartIcon="@Icons.Filled.Settings" Size="Size.Small" Class="mr-2">Profile</MudButton>
     <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Logout" StartIcon="@Icons.Filled.Login" Size="Size.Small">Logout</MudButton>

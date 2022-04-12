@@ -167,12 +167,12 @@ else
         if (Id == 0)
         {
             var result = await ProjectService.CreateProject(project);
-            NavigationManager.NavigateTo("/projects-database");
+            NavigationManager.NavigateTo("/project/list");
         }
         else
         {
             project = await ProjectService.UpdateProject(project);
-            NavigationManager.NavigateTo("/projects-database");
+            NavigationManager.NavigateTo("/project/list");
 
         }
     }
@@ -184,7 +184,7 @@ else
         if (confirmDelete)
         {
             await ProjectService.DeleteProject(project.Id);
-            NavigationManager.NavigateTo("/projects-database");
+            NavigationManager.NavigateTo("/project/list");
         }
     }
 
@@ -197,7 +197,7 @@ else
         else
         {
             workload = await WorkloadService.UpdateWorkload(workload);
-            NavigationManager.NavigateTo("/projects-database");
+            NavigationManager.NavigateTo("/project/list");
 
         }
     }
