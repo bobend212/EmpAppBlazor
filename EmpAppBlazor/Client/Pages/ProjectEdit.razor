@@ -20,7 +20,9 @@ else
     {
         <h3 style="text-align: center;">Create new project</h3>
     }
-    <MudGrid>
+
+    <MudGrid Justify="Justify.Center">
+
         <MudItem xs="12" sm="4">
             <MudPaper Class="pa-4" Elevation="9">
                 <MudText Typo="Typo.subtitle2">Project Details</MudText>
@@ -39,6 +41,13 @@ else
             <MudPaper Class="pa-4 mt-4" Elevation="9">
                 <div class="action-buttons-centered">
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="false" OnClick="AddOrUpdateProject" Disabled="@(!success)">@btnText</MudButton>
+                    @if (Id != 0)
+                    {
+                        @if (project.Workload == null)
+                        {
+                            <MudButton Variant="Variant.Filled" Color="Color.Info" DisableElevation="false">Create Workload</MudButton>
+                        }
+                    }
                     @if (btnText != "Create Project")
                     {
                         <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="delete" OnClick=DeleteProject></MudIconButton>
@@ -78,8 +87,16 @@ else
                         <MudList>
                             @foreach (var user in project.Designers)
                             {
-                                <MudListItem Text="@user.Email" Icon="@Icons.Filled.PersonPin" />
-                                <MudDivider />
+                                @*                                <div style="display: flex; justify-content: space-evenly;">
+                                    <MudListItem Text="@user.Email" Icon="@Icons.Filled.PersonPin" />
+                                    <p>a</p>
+                                    </div>*@
+                                <MudStack Row="true">
+                                    <MudListItem Text="@user.Email" Icon="@Icons.Filled.PersonPin" />
+                                    <MudIconButton Icon="@Icons.Filled.PersonRemoveAlt1" Color="Color.Error" Size="Size.Small"></MudIconButton>
+                                </MudStack>
+
+
                             }
                         </MudList>
                     }
@@ -88,9 +105,16 @@ else
                         <MudText Typo="Typo.caption">none assigned</MudText>
                     }
                 </MudPaper>
+                <MudPaper Class="pa-4 mt-4" Elevation="9">
+                    <div class="action-buttons-centered">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="false">Assign</MudButton>
+                    </div>
+                </MudPaper>
             </MudItem>
         }
+
     </MudGrid>
+
 
 }
 
