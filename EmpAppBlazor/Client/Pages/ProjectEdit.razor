@@ -3,6 +3,7 @@
 @using System.ComponentModel.DataAnnotations
 @using System.Globalization
 @inject IProjectService ProjectService
+@inject IWorkloadService WorkloadService
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
@@ -61,18 +62,23 @@ else
                 <MudPaper Class="pa-4" Elevation="9">
                     <MudText Typo="Typo.subtitle2">Workload Information</MudText>
                     <MudForm>
-                        <MudTextField T="string" Label="Production Stage" Required="true" RequiredError="Production Stage is required!" @bind-Value="project.Workload.ProductionStage" />
+                        @*<MudTextField T="string" Label="Production Stage" Required="true" RequiredError="Production Stage is required!" @bind-Value="workload.ProductionStage" />*@
+                        <MudSelect @bind-Value="@workload.ProductionStage" Label="Production Stage">
+                            <MudSelectItem Value="@("Not Started")"><MudIcon Icon="@Icons.Filled.StopCircle" Color="Color.Default" /> Not Started </MudSelectItem>
+                            <MudSelectItem Value="@("In Progress")"><MudIcon Icon="@Icons.Filled.Work" Color="Color.Success" /> In Progress </MudSelectItem>
+                            <MudSelectItem Value="@("Done")"><MudIcon Icon="@Icons.Filled.Done" Color="Color.Info" /> Done </MudSelectItem>
+                        </MudSelect>
                         <div class="d-flex align-center justify-space-between mt-6 mb-6">
-                            <MudDatePicker class="mr-5" Label="Delivery Date" DateFormat="dd/MMMM/yyyy" Culture="@CultureInfo.GetCultureInfo("pl-pl")" @bind-Date="project.Workload.DeliveryDate" />
-                            <MudDatePicker class="mr-5" Label="Required Date" DateFormat="dd/MMMM/yyyy" Culture="@CultureInfo.GetCultureInfo("pl-pl")" Required="true" @bind-Date="project.Workload.RequiredDate" />
-                            <MudDatePicker Label="Order Date" DateFormat="dd/MMMM/yyyy" Culture="@CultureInfo.GetCultureInfo("pl-pl")" @bind-Date="project.Workload.OrderPlaced" />
+                            <MudDatePicker class="mr-5" Label="Delivery Date" DateFormat="dd/MMMM/yyyy" Culture="@CultureInfo.GetCultureInfo("pl-pl")" @bind-Date="workload.DeliveryDate" />
+                            <MudDatePicker class="mr-5" Label="Required Date" DateFormat="dd/MMMM/yyyy" Culture="@CultureInfo.GetCultureInfo("pl-pl")" Required="true" @bind-Date="workload.RequiredDate" />
+                            <MudDatePicker Label="Order Date" DateFormat="dd/MMMM/yyyy" Culture="@CultureInfo.GetCultureInfo("pl-pl")" @bind-Date="workload.OrderPlaced" />
                         </div>
-                        <MudTextField T="string" Label="Comments/description/notes" Variant="Variant.Outlined" Lines="5" @bind-Value="project.Workload.Comments" />
+                        <MudTextField T="string" Label="Comments/description/notes" Variant="Variant.Outlined" Lines="5" @bind-Value="workload.Comments" />
                     </MudForm>
                 </MudPaper>
                 <MudPaper Class="pa-4 mt-4" Elevation="9">
                     <div class="action-buttons-centered">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="false">Update Workload</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="false" OnClick="UpdateWorkload">Update Workload</MudButton>
                     </div>
                 </MudPaper>
             </MudItem>
@@ -87,10 +93,6 @@ else
                         <MudList>
                             @foreach (var user in project.Designers)
                             {
-                                @*                                <div style="display: flex; justify-content: space-evenly;">
-                                    <MudListItem Text="@user.Email" Icon="@Icons.Filled.PersonPin" />
-                                    <p>a</p>
-                                    </div>*@
                                 <MudStack Row="true">
                                     <MudListItem Text="@user.Email" Icon="@Icons.Filled.PersonPin" />
                                     <MudIconButton Icon="@Icons.Filled.PersonRemoveAlt1" Color="Color.Error" Size="Size.Small"></MudIconButton>
@@ -125,6 +127,7 @@ else
     MudForm form;
     bool success;
     Project project = new Project();
+    Workload workload = new Workload();
     bool loading = true;
     string btnText = "";
     string msg = "Loading...";
@@ -134,6 +137,7 @@ else
         if (Id == 0)
         {
             project = new Project();
+            workload = new Workload();
             btnText = "Create Project";
         }
         else
@@ -146,6 +150,14 @@ else
             }
             project = dbProject;
             btnText = "Update Project";
+
+            if (workload != null)
+            {
+                Workload dbWorkload = (await WorkloadService.GetWorkloadByProjectId(Id)).Data;
+                workload.ProjectId = Id;
+                workload = dbWorkload;
+            }
+
         }
         loading = false;
     }
@@ -173,6 +185,20 @@ else
         {
             await ProjectService.DeleteProject(project.Id);
             NavigationManager.NavigateTo("/projects-database");
+        }
+    }
+
+    async Task UpdateWorkload()
+    {
+        if (project.Workload == null)
+        {
+            var result = await WorkloadService.CreateWorkload(workload);
+        }
+        else
+        {
+            workload = await WorkloadService.UpdateWorkload(workload);
+            NavigationManager.NavigateTo("/projects-database");
+
         }
     }
 
