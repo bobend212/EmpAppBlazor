@@ -1,36 +1,47 @@
 ﻿@page "/task/list"
+@inject ITaskItemServiceClient TaskItemService
+@using System.Security.Claims
+@inject ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<MudDropContainer T="DropItem" Items="_items" ItemsSelector="@((item,dropzone) => item.Identifier == dropzone)" ItemDropped="ItemUpdated" Class="d-flex flex-wrap flex-grow-1">
+<MudDropContainer T="TaskItem" Items="TaskItemService.TaskItems" ItemsSelector="@((item,dropzone) => item.TaskStatus == dropzone)" ItemDropped="ItemUpdated" Class="d-flex flex-wrap flex-grow-1">
     <ChildContent>
-        <MudDropZone T="DropItem" Identifier="Drop Zone 1" Class="rounded mud-background-gray pa-6 ma-8 flex-grow-1">
-            <MudText Typo="Typo.h6" Class="mb-4">Drop Zone 1</MudText>
-         </MudDropZone>
-        <MudDropZone T="DropItem" Identifier="Drop Zone 2" Class="rounded mud-background-gray pa-6 ma-8 flex-grow-1">
-            <MudText Typo="Typo.h6" Class="mb-4">Drop Zone 2</MudText>
+        <MudDropZone T="TaskItem" Identifier="not started" Class="rounded mud-background-gray pa-6 ma-8 flex-grow-1">
+            <MudText Typo="Typo.h6" Class="mb-4">not started</MudText>
+        </MudDropZone>
+        <MudDropZone T="TaskItem" Identifier="active" Class="rounded mud-background-gray pa-6 ma-8 flex-grow-1">
+            <MudText Typo="Typo.h6" Class="mb-4">active</MudText>
+        </MudDropZone>
+        <MudDropZone T="TaskItem" Identifier="done" Class="rounded mud-background-gray pa-6 ma-8 flex-grow-1">
+            <MudText Typo="Typo.h6" Class="mb-4">done</MudText>
         </MudDropZone>
     </ChildContent>
     <ItemRenderer>
-        <MudPaper Elevation="25" Class="pa-4 my-4">@context.Name</MudPaper>
+        <MudPaper Elevation="25" Class="pa-4 my-4">@context.TaskItemId - @context.Title</MudPaper>
     </ItemRenderer>
 </MudDropContainer>
 
 @code {
-    private void ItemUpdated(MudItemDropInfo<DropItem> dropItem)
+    TaskItem taskItem = new TaskItem();
+
+    protected override async Task OnInitializedAsync()
     {
-        dropItem.Item.Identifier = dropItem.DropzoneIdentifier;
+        //var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        //var loggedUserId = Convert.ToInt32(authstate.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+        //await TaskItemService.GetAllTaskItemsByUserId(loggedUserId);
+
+        await TaskItemService.GetAllTaskItems();
+
     }
-    
-    private List<DropItem> _items = new()
+
+    private async Task ItemUpdated(MudItemDropInfo<TaskItem> dropItem)
     {
-        new DropItem(){ Name = "Drag me!", Identifier = "Drop Zone 1" },
-        new DropItem(){ Name = "Or me!", Identifier = "Drop Zone 2" },
-        new DropItem(){ Name = "Just Mud", Identifier = "Drop Zone 1" },
-    };
-    
-    public class DropItem
-    {
-        public string Name { get; init; }
-        public string Identifier { get; set; }
+        dropItem.Item.TaskStatus = dropItem.DropzoneIdentifier;
+
+        taskItem.TaskItemId = dropItem.Item.TaskItemId;
+        taskItem.TaskStatus = dropItem.DropzoneIdentifier;
+        taskItem = await TaskItemService.UpdateTaskItemStatus(taskItem);
     }
 }
 

@@ -6,6 +6,7 @@ global using Microsoft.AspNetCore.Components.Authorization;
 global using System.Net.Http.Json;
 using Blazored.LocalStorage;
 using EmpAppBlazor.Client;
+using EmpAppBlazor.Client.Services.TaskItemService;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor;
@@ -21,6 +22,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IWorkloadService, WorkloadService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITaskItemServiceClient, TaskItemServiceClient>();
 builder.Services.AddMudServices(config =>
 {
     config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;

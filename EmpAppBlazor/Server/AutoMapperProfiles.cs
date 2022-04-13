@@ -11,6 +11,7 @@ namespace EmpAppBlazor.Server
                 .ForMember(dto => dto.Designers, c => c.MapFrom(c => c.Designers));
             CreateMap<User, UserDTO>();
             CreateMap<Workload, WorkloadDTO>();
+            CreateMap<TaskItemToEditStatusDTO, TaskItem>();
         }
     }
 }

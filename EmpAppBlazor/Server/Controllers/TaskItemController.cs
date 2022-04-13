@@ -1,4 +1,5 @@
 ﻿using EmpAppBlazor.Server.Services.TaskItemService;
+using EmpAppBlazor.Shared.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +22,7 @@ namespace EmpAppBlazor.Server.Controllers
             return Ok(await _taskItemService.GetAllTasks());
         }
 
-        [HttpGet("/user/{userId}")]
+        [HttpGet("/api/user/{userId}")]
         public async Task<ActionResult<ServiceResponse<List<TaskItem>>>> GetAllTasksByUserId(int userId)
         {
             var result = await _taskItemService.GetAllTasksByUserId(userId);
@@ -46,6 +47,13 @@ namespace EmpAppBlazor.Server.Controllers
         public async Task<ActionResult<ServiceResponse<TaskItem>>> UpdateTaskItem(TaskItem taskItem)
         {
             var result = await _taskItemService.UpdateTaskItem(taskItem);
+            return Ok(result);
+        }
+
+        [HttpPut("/api/status")]
+        public async Task<ActionResult<ServiceResponse<TaskItem>>> UpdateTaskItemStatusOnly([FromBody] TaskItemToEditStatusDTO taskItem)
+        {
+            var result = await _taskItemService.UpdateTaskItemStatusOnly(taskItem);
             return Ok(result);
         }
 

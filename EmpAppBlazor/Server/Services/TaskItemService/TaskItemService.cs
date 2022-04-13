@@ -1,14 +1,17 @@
-﻿using EmpAppBlazor.Shared;
+﻿using AutoMapper;
+using EmpAppBlazor.Shared.DTOs;
 
 namespace EmpAppBlazor.Server.Services.TaskItemService
 {
     public class TaskItemService : ITaskItemService
     {
         private readonly DataContext _context;
+        private readonly IMapper _mapper;
 
-        public TaskItemService(DataContext context)
+        public TaskItemService(DataContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<ServiceResponse<List<TaskItem>>> GetAllTasks()
@@ -101,6 +104,29 @@ namespace EmpAppBlazor.Server.Services.TaskItemService
             await _context.SaveChangesAsync();
 
             return new ServiceResponse<TaskItem> { Data = taskItem };
+        }
+
+        public async Task<ServiceResponse<TaskItem>> UpdateTaskItemStatusOnly(TaskItemToEditStatusDTO taskItemDto)
+        {
+            var findTask = await _context.TaskItems.FindAsync(taskItemDto.TaskItemId);
+            if (findTask == null)
+            {
+                return new ServiceResponse<TaskItem>()
+                {
+                    Success = false,
+                    Message = "TaskItem not found."
+                };
+            }
+
+            findTask.DateEdited = DateTime.Now;
+
+            var mappedTaskItem = _mapper.Map(taskItemDto, findTask);
+            _context.Entry(findTask).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+
+            return new ServiceResponse<TaskItem> { Data = mappedTaskItem };
+
         }
 
         public async Task<ServiceResponse<bool>> DeleteTaskItem(int taskItemId)

@@ -1,4 +1,6 @@
-﻿namespace EmpAppBlazor.Server.Services.TaskItemService
+﻿using EmpAppBlazor.Shared.DTOs;
+
+namespace EmpAppBlazor.Server.Services.TaskItemService
 {
     public interface ITaskItemService
     {
@@ -11,6 +13,8 @@
         Task<ServiceResponse<TaskItem>> PostTaskItem(TaskItem taskItem);
 
         Task<ServiceResponse<TaskItem>> UpdateTaskItem(TaskItem taskItem);
+
+        Task<ServiceResponse<TaskItem>> UpdateTaskItemStatusOnly(TaskItemToEditStatusDTO taskItemDto);
 
         Task<ServiceResponse<bool>> DeleteTaskItem(int taskItemId);
     }
