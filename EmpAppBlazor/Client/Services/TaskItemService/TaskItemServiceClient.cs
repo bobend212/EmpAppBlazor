@@ -1,12 +1,16 @@
-﻿namespace EmpAppBlazor.Client.Services.TaskItemService
+﻿using MudBlazor;
+
+namespace EmpAppBlazor.Client.Services.TaskItemService
 {
     public class TaskItemServiceClient : ITaskItemServiceClient
     {
         private readonly HttpClient _http;
+        private readonly ISnackbar _snackBar;
 
-        public TaskItemServiceClient(HttpClient http)
+        public TaskItemServiceClient(HttpClient http, ISnackbar snackBar)
         {
             _http = http;
+            _snackBar = snackBar;
         }
 
         public List<TaskItem> TaskItems { get; set; } = new List<TaskItem>();
@@ -30,9 +34,11 @@
             throw new NotImplementedException();
         }
 
-        public Task<TaskItem> CreateTaskITem(TaskItem taskItem)
+        public async Task<TaskItem> CreateTaskItem(TaskItem taskItem)
         {
-            throw new NotImplementedException();
+            var result = await _http.PostAsJsonAsync("/api/taskItem", taskItem);
+            var newTask = (await result.Content.ReadFromJsonAsync<ServiceResponse<TaskItem>>()).Data;
+            return newTask;
         }
 
         public Task<TaskItem> UpdateTaskItem(TaskItem taskItem)
@@ -44,6 +50,7 @@
         {
             var result = await _http.PutAsJsonAsync("api/status", taskItem);
             var newTaskItemStatus = (await result.Content.ReadFromJsonAsync<ServiceResponse<TaskItem>>()).Data;
+            _snackBar.Add("Task status updated", Severity.Success);
             return newTaskItemStatus;
         }
 

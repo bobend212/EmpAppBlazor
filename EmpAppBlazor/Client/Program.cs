@@ -26,6 +26,7 @@ builder.Services.AddScoped<ITaskItemServiceClient, TaskItemServiceClient>();
 builder.Services.AddMudServices(config =>
 {
     config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
+    config.SnackbarConfiguration.VisibleStateDuration = 500;
 });
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddOptions();

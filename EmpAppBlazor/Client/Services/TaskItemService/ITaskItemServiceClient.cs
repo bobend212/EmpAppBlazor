@@ -10,7 +10,7 @@
 
         Task<ServiceResponse<TaskItem>> GetSingleTaskItem(int taskItemId);
 
-        Task<TaskItem> CreateTaskITem(TaskItem taskItem);
+        Task<TaskItem> CreateTaskItem(TaskItem taskItem);
 
         Task<TaskItem> UpdateTaskItem(TaskItem taskItem);
 

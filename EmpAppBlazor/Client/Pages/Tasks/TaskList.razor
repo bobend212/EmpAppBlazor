@@ -1,19 +1,65 @@
 ﻿@page "/task/list"
 @inject ITaskItemServiceClient TaskItemService
 @using System.Security.Claims
-@inject ILocalStorageService LocalStorage
-@inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IProjectService ProjectService
+
+<div class="mx-4">
+    <MudExpansionPanels Elevation="4">
+        <MudExpansionPanel Text="New Task" MaxHeight="200">
+
+            <MudPaper Elevation="0" Class="pa-1 rounded-lg">
+                <MudForm>
+                    <div class="d-flex align-center justify-space-between mx-auto">
+                        <div>
+                            <MudTextField class="mr-5 mb-1" Margin="Margin.Dense" T="string" Label="Title" Variant="Variant.Outlined" @bind-Value="@newTask.Title"></MudTextField>
+                            <MudDatePicker class="mr-5" Label="Due Date" Variant="Variant.Outlined" @bind-Date="@newTask.DueDate" />
+                        </div>
+                        <MudTextField class="mr-5" Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense" Lines="5" @bind-Value="@newTask.Description"></MudTextField>
+                        <div>
+                            <MudSelect class="mr-5 mb-3" Margin="Margin.Dense" Label="Assign To" Variant="Variant.Outlined" @bind-Value="@newTask.AssignedToId">
+                                <MudSelectItem Value="@(13)" />
+                                <MudSelectItem Value="@(14)" />
+                                <MudSelectItem Value="@(15)" />
+                            </MudSelect>
+                            <MudSelect class="mr-5" Margin="Margin.Dense" Label="Project" Variant="Variant.Outlined" T="int">
+                                @foreach (var project in ProjectService.Projects)
+                                {
+                                    <MudSelectItem Value="@project.Id">@(project.Number) @(project.Name)</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </div>
+                        <div>
+                            <MudSelect class="mr-5 mb-3" Margin="Margin.Dense" Label="Status" Variant="Variant.Outlined" @bind-Value="@newTask.TaskStatus">
+                                <MudSelectItem Value="@("not started")"><MudIcon Icon="@Icons.Filled.StopCircle" Color="Color.Default" /> Not started </MudSelectItem>
+                                <MudSelectItem Value="@("active")"><MudIcon Icon="@Icons.Filled.Work" Color="Color.Success" /> active </MudSelectItem>
+                                <MudSelectItem Value="@("done")"><MudIcon Icon="@Icons.Filled.Done" Color="Color.Info" /> done </MudSelectItem>
+                            </MudSelect>
+                            <MudSelect class="mr-5" Margin="Margin.Dense" Label="Importance level" Variant="Variant.Outlined" @bind-Value="@newTask.Importance">
+                                <MudSelectItem Value="@("low")" />
+                                <MudSelectItem Value="@("normal")" />
+                                <MudSelectItem Value="@("high")" />
+                            </MudSelect>
+                        </div>
+                    </div>
+                    <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation="false" OnClick="AddNewTask">Add task</MudButton>
+                </MudForm>
+            </MudPaper>
+
+        </MudExpansionPanel>
+    </MudExpansionPanels>
+</div>
+
 
 <MudDropContainer T="TaskItem" Items="TaskItemService.TaskItems" ItemsSelector="@((item,dropzone) => item.TaskStatus == dropzone)" ItemDropped="ItemUpdated" Class="d-flex flex-wrap flex-grow-1">
     <ChildContent>
-        <MudDropZone T="TaskItem" Identifier="not started" Class="rounded mud-background-gray pa-6 ma-8 flex-grow-1">
+        <MudDropZone T="TaskItem" Identifier="not started" Class="rounded-lg mud-alert-text-warning pa-4 ma-4 flex-grow-1">
             <MudText Typo="Typo.h6" Class="mb-4">not started</MudText>
         </MudDropZone>
-        <MudDropZone T="TaskItem" Identifier="active" Class="rounded mud-background-gray pa-6 ma-8 flex-grow-1">
+        <MudDropZone T="TaskItem" Identifier="active" Class="rounded-lg mud-alert-text-success pa-4 ma-4 flex-grow-1">
             <MudText Typo="Typo.h6" Class="mb-4">active</MudText>
         </MudDropZone>
-        <MudDropZone T="TaskItem" Identifier="done" Class="rounded mud-background-gray pa-6 ma-8 flex-grow-1">
+        <MudDropZone T="TaskItem" Identifier="done" Class="rounded-lg mud-alert-text-info pa-4 ma-4 flex-grow-1">
             <MudText Typo="Typo.h6" Class="mb-4">done</MudText>
         </MudDropZone>
     </ChildContent>
@@ -24,16 +70,30 @@
 
 @code {
     TaskItem taskItem = new TaskItem();
+    TaskItem newTask = new TaskItem();
 
     protected override async Task OnInitializedAsync()
     {
-        //var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        //var loggedUserId = Convert.ToInt32(authstate.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-        //await TaskItemService.GetAllTaskItemsByUserId(loggedUserId);
+        await ProjectService.GetProjects();
 
-        await TaskItemService.GetAllTaskItems();
+        var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var loggedUserId = Convert.ToInt32(authstate.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        if (authstate.User.FindFirst(ClaimTypes.Role).Value == "Admin")
+        {
+            await TaskItemService.GetAllTaskItems();
+        }
+        else
+        {
+            await TaskItemService.GetAllTaskItemsByUserId(loggedUserId);
+        }
 
     }
+
+    //protected override async Task OnParametersSetAsync()
+    //{
+    //    newTask = new TaskItem();
+    //}
 
     private async Task ItemUpdated(MudItemDropInfo<TaskItem> dropItem)
     {
@@ -42,6 +102,11 @@
         taskItem.TaskItemId = dropItem.Item.TaskItemId;
         taskItem.TaskStatus = dropItem.DropzoneIdentifier;
         taskItem = await TaskItemService.UpdateTaskItemStatus(taskItem);
+    }
+
+    async Task AddNewTask()
+    {
+        var result = await TaskItemService.CreateTaskItem(newTask);
     }
 }
 
