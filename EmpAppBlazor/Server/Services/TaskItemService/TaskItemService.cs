@@ -16,7 +16,7 @@ namespace EmpAppBlazor.Server.Services.TaskItemService
 
         public async Task<ServiceResponse<List<TaskItem>>> GetAllTasks()
         {
-            var tasks = await _context.TaskItems.ToListAsync();
+            var tasks = await _context.TaskItems.Include(x => x.Project).Include(x => x.AssignedTo).ToListAsync();
             var response = new ServiceResponse<List<TaskItem>>
             {
                 Data = tasks
@@ -26,7 +26,7 @@ namespace EmpAppBlazor.Server.Services.TaskItemService
 
         public async Task<ServiceResponse<List<TaskItem>>> GetAllTasksByUserId(int userId)
         {
-            var tasks = await _context.TaskItems.Where(x => x.AssignedToId == userId).ToListAsync();
+            var tasks = await _context.TaskItems.Include(x => x.Project).Include(x => x.AssignedTo).Where(x => x.AssignedToId == userId).ToListAsync();
             var response = new ServiceResponse<List<TaskItem>>
             {
                 Data = tasks

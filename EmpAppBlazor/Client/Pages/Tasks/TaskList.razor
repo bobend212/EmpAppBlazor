@@ -66,18 +66,36 @@
 
 <MudDropContainer T="TaskItem" Items="TaskItemService.TaskItems" ItemsSelector="@((item,dropzone) => item.TaskStatus == dropzone)" ItemDropped="ItemUpdated" Class="d-flex flex-wrap flex-grow-1">
     <ChildContent>
-        <MudDropZone T="TaskItem" Identifier="not started" Class="rounded-lg mud-alert-text-warning pa-4 ma-4 flex-grow-1">
+        <MudDropZone T="TaskItem" Identifier="not started" Class="rounded-lg mud-alert-text-warning pa-4 ma-4 flex-1">
             <MudText Typo="Typo.h6" Class="mb-4">not started (@TaskItemService.TaskItems.Where(x => x.TaskStatus == "not started").Count())</MudText>
         </MudDropZone>
-        <MudDropZone T="TaskItem" Identifier="active" Class="rounded-lg mud-alert-text-success pa-4 ma-4 flex-grow-1">
+        <MudDropZone T="TaskItem" Identifier="active" Class="rounded-lg mud-alert-text-success pa-4 ma-4 flex-1">
             <MudText Typo="Typo.h6" Class="mb-4">active (@TaskItemService.TaskItems.Where(x => x.TaskStatus == "active").Count())</MudText>
         </MudDropZone>
-        <MudDropZone T="TaskItem" Identifier="done" Class="rounded-lg mud-alert-text-info pa-4 ma-4 flex-grow-1">
+        <MudDropZone T="TaskItem" Identifier="done" Class="rounded-lg mud-alert-text-info pa-4 ma-4 flex-1">
             <MudText Typo="Typo.h6" Class="mb-4">done (@TaskItemService.TaskItems.Where(x => x.TaskStatus == "done").Count())</MudText>
         </MudDropZone>
     </ChildContent>
     <ItemRenderer>
-        <MudPaper Elevation="25" Class="pa-4 my-4">@context.TaskItemId - @context.Title</MudPaper>
+        <MudCard Class="ma-2">
+            <MudCardContent Class="pa-3">
+                <div>
+                    <div class="item-card">
+                        <MudText Typo="Typo.subtitle1">@context.Project?.Number</MudText>
+                        <MudText Typo="Typo.body2">@context.DueDate?.ToString("dd/MMM/yyyy")</MudText>
+                    </div>
+                    <div class="item-card">
+                        <MudText Typo="Typo.subtitle2">@context.Title</MudText>
+                        <MudText Typo="Typo.caption">Priority: @context.Importance</MudText>
+                    </div>
+                    <div class="item-card">
+                        <MudText Typo="Typo.caption">@context.Description</MudText>
+                        <MudIconButton Icon="@Icons.Filled.ModeEdit" Variant="Variant.Text" Color="Color.Primary" Size="Size.Small" />
+                    </div>
+                    <MudText Typo="Typo.caption"><i>@context.AssignedTo?.Email</i></MudText>
+                </div>
+            </MudCardContent>
+        </MudCard>
     </ItemRenderer>
 </MudDropContainer>
 
