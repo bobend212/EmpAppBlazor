@@ -3,49 +3,62 @@
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IProjectService ProjectService
+@inject ISnackbar _snackBar
 
 <div class="mx-4">
     <MudExpansionPanels Elevation="4">
-        <MudExpansionPanel Text="New Task" MaxHeight="200">
 
-            <MudPaper Elevation="0" Class="pa-1 rounded-lg">
-                <MudForm>
-                    <div class="d-flex align-center justify-space-between mx-auto">
-                        <div>
-                            <MudTextField class="mr-5 mb-1" Margin="Margin.Dense" T="string" Label="Title" Variant="Variant.Outlined" @bind-Value="@newTask.Title"></MudTextField>
-                            <MudDatePicker class="mr-5" Label="Due Date" Variant="Variant.Outlined" @bind-Date="@newTask.DueDate" />
-                        </div>
-                        <MudTextField class="mr-5" Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense" Lines="5" @bind-Value="@newTask.Description"></MudTextField>
-                        <div>
-                            <MudSelect class="mr-5 mb-3" Margin="Margin.Dense" Label="Assign To" Variant="Variant.Outlined" @bind-Value="@newTask.AssignedToId">
-                                <MudSelectItem Value="@(13)" />
-                                <MudSelectItem Value="@(14)" />
-                                <MudSelectItem Value="@(15)" />
-                            </MudSelect>
-                            <MudSelect class="mr-5" Margin="Margin.Dense" Label="Project" Variant="Variant.Outlined" T="int">
-                                @foreach (var project in ProjectService.Projects)
+        <MudExpansionPanel MaxHeight="200">
+            <TitleContent>
+                <div class="d-flex">
+                    <MudIcon Icon="@Icons.Filled.BookmarkAdd" class="mr-3"></MudIcon>
+                    <MudText><strong>New Task</strong></MudText>
+                </div>
+            </TitleContent>
+            <ChildContent>
+                <MudPaper Elevation="0" Class="pa-1 rounded-lg">
+                    <MudForm @ref="form">
+                        <div class="d-flex align-center justify-space-between mx-auto">
+                            <div>
+                                <MudTextField class="mr-5 mb-1" Margin="Margin.Dense" T="string" Label="Title" Variant="Variant.Outlined" @bind-Value="@newTask.Title"></MudTextField>
+                                <MudDatePicker class="mr-5" Label="Due Date" Variant="Variant.Outlined" @bind-Date="@newTask.DueDate" />
+                            </div>
+                            <MudTextField class="mr-5" Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense" Lines="5" @bind-Value="@newTask.Description"></MudTextField>
+                            <div>
+                                @if (loggedUserRole == "Admin")
                                 {
-                                    <MudSelectItem Value="@project.Id">@(project.Number) @(project.Name)</MudSelectItem>
-                                }
-                            </MudSelect>
-                        </div>
-                        <div>
-                            <MudSelect class="mr-5 mb-3" Margin="Margin.Dense" Label="Status" Variant="Variant.Outlined" @bind-Value="@newTask.TaskStatus">
-                                <MudSelectItem Value="@("not started")"><MudIcon Icon="@Icons.Filled.StopCircle" Color="Color.Default" /> Not started </MudSelectItem>
-                                <MudSelectItem Value="@("active")"><MudIcon Icon="@Icons.Filled.Work" Color="Color.Success" /> active </MudSelectItem>
-                                <MudSelectItem Value="@("done")"><MudIcon Icon="@Icons.Filled.Done" Color="Color.Info" /> done </MudSelectItem>
-                            </MudSelect>
-                            <MudSelect class="mr-5" Margin="Margin.Dense" Label="Importance level" Variant="Variant.Outlined" @bind-Value="@newTask.Importance">
-                                <MudSelectItem Value="@("low")" />
-                                <MudSelectItem Value="@("normal")" />
-                                <MudSelectItem Value="@("high")" />
-                            </MudSelect>
-                        </div>
-                    </div>
-                    <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation="false" OnClick="AddNewTask">Add task</MudButton>
-                </MudForm>
-            </MudPaper>
+                                    <MudSelect class="mr-5 mb-3" Margin="Margin.Dense" Label="Assign To" Variant="Variant.Outlined" @bind-Value="@newTask.AssignedToId">
+                                        <MudSelectItem Value="@(13)" />
+                                        <MudSelectItem Value="@(14)" />
+                                        <MudSelectItem Value="@(15)" />
+                                    </MudSelect>
 
+                                }
+                                <MudSelect class="mr-5" Margin="Margin.Dense" Label="Project" Variant="Variant.Outlined" @bind-Value="@newTask.ProjectId">
+                                    @foreach (var project in ProjectService.Projects)
+                                    {
+                                        <MudSelectItem T=int? Value="@project.Id">@(project.Number) @(project.Name)</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </div>
+                            <div>
+                                <MudSelect class="mr-5 mb-3" Margin="Margin.Dense" Label="Status" Variant="Variant.Outlined" @bind-Value="@newTask.TaskStatus">
+                                    <MudSelectItem Value="@("not started")"><MudIcon Icon="@Icons.Filled.StopCircle" Color="Color.Default" /> Not started </MudSelectItem>
+                                    <MudSelectItem Value="@("active")"><MudIcon Icon="@Icons.Filled.Work" Color="Color.Success" /> active </MudSelectItem>
+                                    <MudSelectItem Value="@("done")"><MudIcon Icon="@Icons.Filled.Done" Color="Color.Info" /> done </MudSelectItem>
+                                </MudSelect>
+                                <MudSelect class="mr-5" Margin="Margin.Dense" Label="Importance level" Variant="Variant.Outlined" @bind-Value="@newTask.Importance">
+                                    <MudSelectItem Value="@("low")" />
+                                    <MudSelectItem Value="@("normal")" />
+                                    <MudSelectItem Value="@("high")" />
+                                </MudSelect>
+                            </div>
+                        </div>
+                        <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation="false" OnClick="AddNewTask">Add task</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" DisableElevation="true" OnClick="@(()=>form.Reset())" Class="mx-2">Reset</MudButton>
+                    </MudForm>
+                </MudPaper>
+            </ChildContent>
         </MudExpansionPanel>
     </MudExpansionPanels>
 </div>
@@ -54,13 +67,13 @@
 <MudDropContainer T="TaskItem" Items="TaskItemService.TaskItems" ItemsSelector="@((item,dropzone) => item.TaskStatus == dropzone)" ItemDropped="ItemUpdated" Class="d-flex flex-wrap flex-grow-1">
     <ChildContent>
         <MudDropZone T="TaskItem" Identifier="not started" Class="rounded-lg mud-alert-text-warning pa-4 ma-4 flex-grow-1">
-            <MudText Typo="Typo.h6" Class="mb-4">not started</MudText>
+            <MudText Typo="Typo.h6" Class="mb-4">not started (@TaskItemService.TaskItems.Where(x => x.TaskStatus == "not started").Count())</MudText>
         </MudDropZone>
         <MudDropZone T="TaskItem" Identifier="active" Class="rounded-lg mud-alert-text-success pa-4 ma-4 flex-grow-1">
-            <MudText Typo="Typo.h6" Class="mb-4">active</MudText>
+            <MudText Typo="Typo.h6" Class="mb-4">active (@TaskItemService.TaskItems.Where(x => x.TaskStatus == "active").Count())</MudText>
         </MudDropZone>
         <MudDropZone T="TaskItem" Identifier="done" Class="rounded-lg mud-alert-text-info pa-4 ma-4 flex-grow-1">
-            <MudText Typo="Typo.h6" Class="mb-4">done</MudText>
+            <MudText Typo="Typo.h6" Class="mb-4">done (@TaskItemService.TaskItems.Where(x => x.TaskStatus == "done").Count())</MudText>
         </MudDropZone>
     </ChildContent>
     <ItemRenderer>
@@ -71,29 +84,20 @@
 @code {
     TaskItem taskItem = new TaskItem();
     TaskItem newTask = new TaskItem();
+    int loggedUserId;
+    string loggedUserRole;
+    MudForm form;
 
     protected override async Task OnInitializedAsync()
     {
         await ProjectService.GetProjects();
 
         var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var loggedUserId = Convert.ToInt32(authstate.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+        loggedUserId = Convert.ToInt32(authstate.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+        loggedUserRole = authstate.User.FindFirst(ClaimTypes.Role).Value;
 
-        if (authstate.User.FindFirst(ClaimTypes.Role).Value == "Admin")
-        {
-            await TaskItemService.GetAllTaskItems();
-        }
-        else
-        {
-            await TaskItemService.GetAllTaskItemsByUserId(loggedUserId);
-        }
-
+        await PopulateTasks(loggedUserRole);
     }
-
-    //protected override async Task OnParametersSetAsync()
-    //{
-    //    newTask = new TaskItem();
-    //}
 
     private async Task ItemUpdated(MudItemDropInfo<TaskItem> dropItem)
     {
@@ -106,7 +110,27 @@
 
     async Task AddNewTask()
     {
+        newTask.AuthorId = loggedUserId;
+        if (loggedUserRole != "Admin")
+        {
+            newTask.AssignedToId = loggedUserId;
+        }
         var result = await TaskItemService.CreateTaskItem(newTask);
+        form.Reset();
+        await PopulateTasks(loggedUserRole);
+        _snackBar.Add("Task Created!", Severity.Success);
+    }
+
+    async Task PopulateTasks(string role)
+    {
+        if (role == "Admin")
+        {
+            await TaskItemService.GetAllTaskItems();
+        }
+        else
+        {
+            await TaskItemService.GetAllTaskItemsByUserId(loggedUserId);
+        }
     }
 }
 

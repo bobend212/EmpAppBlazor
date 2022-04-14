@@ -54,15 +54,17 @@ namespace EmpAppBlazor.Server.Services.TaskItemService
         public async Task<ServiceResponse<TaskItem>> PostTaskItem(TaskItem taskItem)
         {
             var response = new ServiceResponse<TaskItem>();
-            var findProject = await _context.Projects.FirstOrDefaultAsync(x => x.Id == taskItem.ProjectId);
+            //var findProject = await _context.Projects.FirstOrDefaultAsync(x => x.Id == taskItem.ProjectId);
             var findUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == taskItem.AssignedToId);
 
-            if (findProject == null)
-            {
-                response.Success = false;
-                response.Message = "Provided project does not exist.";
-            }
-            else if (findUser == null)
+            //if (findProject == null)
+            //{
+            //    response.Success = false;
+            //    response.Message = "Provided project does not exist.";
+            //}
+            //else 
+            
+            if (findUser == null)
             {
                 response.Success = false;
                 response.Message = "Provided User does not exist.";
