@@ -123,6 +123,7 @@
 
         taskItem.TaskItemId = dropItem.Item.TaskItemId;
         taskItem.TaskStatus = dropItem.DropzoneIdentifier;
+        taskItem.EditorId = loggedUserId;
         taskItem = await TaskItemService.UpdateTaskItemStatus(taskItem);
     }
 

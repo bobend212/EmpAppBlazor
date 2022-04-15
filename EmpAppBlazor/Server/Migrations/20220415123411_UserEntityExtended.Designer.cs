@@ -4,6 +4,7 @@ using EmpAppBlazor.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmpAppBlazor.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220415123411_UserEntityExtended")]
+    partial class UserEntityExtended
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,6 +31,9 @@ namespace EmpAppBlazor.Server.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime?>("CreateDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
@@ -220,31 +225,31 @@ namespace EmpAppBlazor.Server.Migrations
                         {
                             Id = 1,
                             Comments = "",
-                            DeliveryDate = new DateTime(2022, 4, 27, 14, 37, 54, 207, DateTimeKind.Local).AddTicks(1317),
-                            OrderPlaced = new DateTime(2022, 4, 19, 14, 37, 54, 207, DateTimeKind.Local).AddTicks(1363),
+                            DeliveryDate = new DateTime(2022, 4, 27, 14, 34, 11, 117, DateTimeKind.Local).AddTicks(703),
+                            OrderPlaced = new DateTime(2022, 4, 19, 14, 34, 11, 117, DateTimeKind.Local).AddTicks(748),
                             ProductionStage = "not started",
                             ProjectId = 1,
-                            RequiredDate = new DateTime(2022, 5, 30, 14, 37, 54, 207, DateTimeKind.Local).AddTicks(1359)
+                            RequiredDate = new DateTime(2022, 5, 30, 14, 34, 11, 117, DateTimeKind.Local).AddTicks(746)
                         },
                         new
                         {
                             Id = 2,
                             Comments = "",
-                            DeliveryDate = new DateTime(2022, 6, 8, 14, 37, 54, 207, DateTimeKind.Local).AddTicks(1368),
-                            OrderPlaced = new DateTime(2022, 6, 16, 14, 37, 54, 207, DateTimeKind.Local).AddTicks(1376),
+                            DeliveryDate = new DateTime(2022, 6, 8, 14, 34, 11, 117, DateTimeKind.Local).AddTicks(751),
+                            OrderPlaced = new DateTime(2022, 6, 16, 14, 34, 11, 117, DateTimeKind.Local).AddTicks(756),
                             ProductionStage = "not started",
                             ProjectId = 2,
-                            RequiredDate = new DateTime(2022, 5, 10, 14, 37, 54, 207, DateTimeKind.Local).AddTicks(1372)
+                            RequiredDate = new DateTime(2022, 5, 10, 14, 34, 11, 117, DateTimeKind.Local).AddTicks(754)
                         },
                         new
                         {
                             Id = 3,
                             Comments = "",
-                            DeliveryDate = new DateTime(2022, 6, 26, 14, 37, 54, 207, DateTimeKind.Local).AddTicks(1380),
-                            OrderPlaced = new DateTime(2022, 4, 21, 14, 37, 54, 207, DateTimeKind.Local).AddTicks(1388),
+                            DeliveryDate = new DateTime(2022, 6, 26, 14, 34, 11, 117, DateTimeKind.Local).AddTicks(759),
+                            OrderPlaced = new DateTime(2022, 4, 21, 14, 34, 11, 117, DateTimeKind.Local).AddTicks(763),
                             ProductionStage = "not started",
                             ProjectId = 3,
-                            RequiredDate = new DateTime(2022, 6, 9, 14, 37, 54, 207, DateTimeKind.Local).AddTicks(1384)
+                            RequiredDate = new DateTime(2022, 6, 9, 14, 34, 11, 117, DateTimeKind.Local).AddTicks(761)
                         });
                 });
 

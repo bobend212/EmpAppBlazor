@@ -24,7 +24,7 @@ namespace EmpAppBlazor.Client.Services.TaskItemService
 
         public async Task GetAllTaskItemsByUserId(int userId)
         {
-            var result = await _http.GetFromJsonAsync<ServiceResponse<List<TaskItem>>>($"/api/user/{userId}");
+            var result = await _http.GetFromJsonAsync<ServiceResponse<List<TaskItem>>>($"/api/TaskItem/user/{userId}");
             if (result != null && result.Data != null)
                 TaskItems = result.Data;
         }

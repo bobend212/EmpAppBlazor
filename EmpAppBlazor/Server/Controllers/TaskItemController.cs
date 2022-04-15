@@ -22,7 +22,7 @@ namespace EmpAppBlazor.Server.Controllers
             return Ok(await _taskItemService.GetAllTasks());
         }
 
-        [HttpGet("/api/user/{userId}")]
+        [HttpGet("/api/TaskItem/user/{userId}")]
         public async Task<ActionResult<ServiceResponse<List<TaskItem>>>> GetAllTasksByUserId(int userId)
         {
             var result = await _taskItemService.GetAllTasksByUserId(userId);

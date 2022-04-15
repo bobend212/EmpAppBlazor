@@ -1,10 +1,10 @@
 ﻿namespace EmpAppBlazor.Shared.Auth
 {
-    public class UserDTO
+    public class UserUpdateDTO
     {
         public int Id { get; set; }
         public string Email { get; set; } = string.Empty;
-        public DateTime? DateCreated { get; set; }
+        public string Role { get; set; } = "User";
         public string Name { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;
         public string Department { get; set; } = string.Empty;

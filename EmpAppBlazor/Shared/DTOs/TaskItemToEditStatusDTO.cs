@@ -4,5 +4,6 @@
     {
         public int TaskItemId { get; set; }
         public string TaskStatus { get; set; }
+        public int? EditorId { get; set; }
     }
 }
