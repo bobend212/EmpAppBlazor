@@ -3,7 +3,7 @@
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<MudAppBar Elevation="2" Style="height: 50px; background-color:mediumblue">
+<MudAppBar Elevation="2" Style="background-color:mediumblue" Dense="true">
     <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
     <MudSpacer />
     <AuthorizeView>
