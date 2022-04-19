@@ -77,15 +77,14 @@ else
                         <MudSelect class="mt-3" Margin="Margin.Dense" Label="Design Leader" Variant="Variant.Outlined" @bind-Value="@workload.DesignLeaderId">
                             @foreach (var user in UserService.Users)
                             {
-                        <MudSelectItem T=int? Value="@user.Id">@(user.Name) @(user.Surname)</MudSelectItem>
+                                <MudSelectItem T=int? Value="@user.Id">@(user.Name) @(user.Surname)</MudSelectItem>
                             }
-                </MudSelect>
+                        </MudSelect>
             </MudForm>
         </MudPaper>
         <MudPaper Class="pa-4 mt-4" Elevation="9">
             <div class="action-buttons-centered">
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="false" OnClick="UpdateWorkload">Update Workload</MudButton>
-                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="delete" OnClick=DeleteWorkload></MudIconButton>
             </div>
         </MudPaper>
     </MudItem>
@@ -208,17 +207,6 @@ else
             workload = await WorkloadService.UpdateWorkload(workload);
             NavigationManager.NavigateTo("/project/list");
 
-        }
-    }
-
-    async Task DeleteWorkload()
-    {
-        bool confirmDelete = await JSRuntime.InvokeAsync<bool>("confirm",
-            $"Do you really want to delete WORKLOAD for '{project.Number} {project.Name}'?");
-        if (confirmDelete)
-        {
-            await WorkloadService.DeleteWorkload(workload.Id);
-            NavigationManager.NavigateTo("/project/list");
         }
     }
 
