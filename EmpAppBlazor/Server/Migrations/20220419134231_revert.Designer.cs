@@ -4,6 +4,7 @@ using EmpAppBlazor.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmpAppBlazor.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220419134231_revert")]
+    partial class revert
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -225,31 +227,31 @@ namespace EmpAppBlazor.Server.Migrations
                         {
                             Id = 1,
                             Comments = "",
-                            DeliveryDate = new DateTime(2022, 5, 1, 15, 45, 59, 703, DateTimeKind.Local).AddTicks(9041),
-                            OrderPlaced = new DateTime(2022, 4, 23, 15, 45, 59, 703, DateTimeKind.Local).AddTicks(9081),
+                            DeliveryDate = new DateTime(2022, 5, 1, 15, 42, 31, 43, DateTimeKind.Local).AddTicks(9551),
+                            OrderPlaced = new DateTime(2022, 4, 23, 15, 42, 31, 43, DateTimeKind.Local).AddTicks(9599),
                             ProductionStage = "Not Started",
                             ProjectId = 1,
-                            RequiredDate = new DateTime(2022, 6, 3, 15, 45, 59, 703, DateTimeKind.Local).AddTicks(9079)
+                            RequiredDate = new DateTime(2022, 6, 3, 15, 42, 31, 43, DateTimeKind.Local).AddTicks(9597)
                         },
                         new
                         {
                             Id = 2,
                             Comments = "",
-                            DeliveryDate = new DateTime(2022, 6, 12, 15, 45, 59, 703, DateTimeKind.Local).AddTicks(9084),
-                            OrderPlaced = new DateTime(2022, 6, 20, 15, 45, 59, 703, DateTimeKind.Local).AddTicks(9089),
+                            DeliveryDate = new DateTime(2022, 6, 12, 15, 42, 31, 43, DateTimeKind.Local).AddTicks(9602),
+                            OrderPlaced = new DateTime(2022, 6, 20, 15, 42, 31, 43, DateTimeKind.Local).AddTicks(9606),
                             ProductionStage = "Not Started",
                             ProjectId = 2,
-                            RequiredDate = new DateTime(2022, 5, 14, 15, 45, 59, 703, DateTimeKind.Local).AddTicks(9087)
+                            RequiredDate = new DateTime(2022, 5, 14, 15, 42, 31, 43, DateTimeKind.Local).AddTicks(9604)
                         },
                         new
                         {
                             Id = 3,
                             Comments = "",
-                            DeliveryDate = new DateTime(2022, 6, 30, 15, 45, 59, 703, DateTimeKind.Local).AddTicks(9091),
-                            OrderPlaced = new DateTime(2022, 4, 25, 15, 45, 59, 703, DateTimeKind.Local).AddTicks(9095),
+                            DeliveryDate = new DateTime(2022, 6, 30, 15, 42, 31, 43, DateTimeKind.Local).AddTicks(9608),
+                            OrderPlaced = new DateTime(2022, 4, 25, 15, 42, 31, 43, DateTimeKind.Local).AddTicks(9612),
                             ProductionStage = "Not Started",
                             ProjectId = 3,
-                            RequiredDate = new DateTime(2022, 6, 13, 15, 45, 59, 703, DateTimeKind.Local).AddTicks(9093)
+                            RequiredDate = new DateTime(2022, 6, 13, 15, 42, 31, 43, DateTimeKind.Local).AddTicks(9610)
                         });
                 });
 
