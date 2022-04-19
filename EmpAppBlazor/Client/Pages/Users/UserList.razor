@@ -1,9 +1,69 @@
 ﻿@page "/users"
+@inject IUserServiceClient UserService
 
-<h3>UserList</h3>
+<MudTable Hover="true" Breakpoint="Breakpoint.Sm" Height="500px" FixedHeader="true"
+          Items="@UserService.Users"
+          GroupBy="@_groupDefinition"
+          GroupHeaderStyle="background-color:var(--mud-palette-background-grey)"
+          GroupFooterClass="mb-4"
+          Dense="true"
+          Filter="new Func<User,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
 
-<p>Table with grouping, sorting, filtering will land here.</p>
+    <ToolBarContent>
+        <MudTextField @bind-Value="searchString1" Placeholder="Search by number, name, site" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Email</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Surname</MudTh>
+        <MudTh>Title</MudTh>
+    </HeaderContent>
+    <GroupHeaderTemplate>
+        <MudTh Class="mud-table-cell-custom-group" colspan="5">@($"{context.GroupName}: {context.Key}")</MudTh>
+    </GroupHeaderTemplate>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Id</MudTd>
+        <MudTd DataLabel="Sign">@context.Email</MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Position">@context.Surname</MudTd>
+        <MudTd>@context.Title</MudTd>
+    </RowTemplate>
+</MudTable>
 
 @code {
+    private TableGroupDefinition<User> _groupDefinition = new()
+        {
+            GroupName = "Group",
+            Indentation = false,
+            Expandable = true,
+            Selector = (e) => e.Department,
+            IsInitiallyExpanded = false
+        };
+
+    private User selectedItem1 = null;
+    private string searchString1 = "";
+
+    private bool FilterFunc1(User element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(User element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Name.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Surname.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{element.Name} {element.Surname} {element.Title}".Contains(searchString))
+            return true;
+        return false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UserService.GetAllUsers();
+
+
+    }
 
 }
