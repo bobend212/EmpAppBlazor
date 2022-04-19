@@ -1,27 +1,33 @@
-﻿namespace EmpAppBlazor.Server.Services.WorkloadService
+﻿using AutoMapper;
+using EmpAppBlazor.Shared.DTOs;
+
+namespace EmpAppBlazor.Server.Services.WorkloadService
 {
     public class WorkloadService : IWorkloadService
     {
         private readonly DataContext _context;
+        private readonly IMapper _mapper;
 
-        public WorkloadService(DataContext context)
+        public WorkloadService(DataContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<ServiceResponse<List<Workload>>> GetWorkloads()
+        public async Task<ServiceResponse<List<WorkloadDTO>>> GetWorkloads()
         {
-            var workloads = await _context.Workloads.ToListAsync();
-            return new ServiceResponse<List<Workload>>
+            var workloads = await _context.Workloads.Include(x => x.DesignLeader).ToListAsync();
+            var workloadsDto = _mapper.Map<List<WorkloadDTO>>(workloads);
+            return new ServiceResponse<List<WorkloadDTO>>
             {
-                Data = workloads
+                Data = workloadsDto
             };
         }
 
         public async Task<ServiceResponse<Workload>> GetWorkloadByProjectId(int projectId)
         {
             var response = new ServiceResponse<Workload>();
-            var workload = await _context.Workloads.Include(w => w.Project).FirstOrDefaultAsync(x => x.ProjectId == projectId);
+            var workload = await _context.Workloads.Include(w => w.Project).Include(x => x.DesignLeader).FirstOrDefaultAsync(x => x.ProjectId == projectId);
 
             if (workload == null)
             {
@@ -44,12 +50,12 @@
             return new ServiceResponse<Workload> { Data = workload };
         }
 
-        public async Task<ServiceResponse<Workload>> UpdateWorkload(Workload workload)
+        public async Task<ServiceResponse<WorkloadDTO>> UpdateWorkload(WorkloadDTO workload)
         {
             var findWorkload = await _context.Workloads.FindAsync(workload.Id);
             if (findWorkload == null)
             {
-                return new ServiceResponse<Workload>()
+                return new ServiceResponse<WorkloadDTO>()
                 {
                     Success = false,
                     Message = "Workload not found."
@@ -61,10 +67,11 @@
             findWorkload.RequiredDate = workload.RequiredDate;
             findWorkload.OrderPlaced = workload.OrderPlaced;
             findWorkload.Comments = workload.Comments;
+            findWorkload.DesignLeaderId = workload.DesignLeaderId;
 
             await _context.SaveChangesAsync();
 
-            return new ServiceResponse<Workload> { Data = workload };
+            return new ServiceResponse<WorkloadDTO> { Data = workload };
         }
 
         public async Task<ServiceResponse<bool>> DeleteWorkload(int workloadId)

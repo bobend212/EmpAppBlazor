@@ -1,11 +1,12 @@
-﻿using System.Text.Json.Serialization;
+﻿using EmpAppBlazor.Shared.Auth;
+using System.Text.Json.Serialization;
 
 namespace EmpAppBlazor.Shared
 {
     public class Workload
     {
         public int Id { get; set; }
-        public string ProductionStage { get; set; } = "not started";
+        public string ProductionStage { get; set; } = "Not Started";
         public DateTime? DeliveryDate { get; set; }
         public DateTime? RequiredDate { get; set; }
         public DateTime? OrderPlaced { get; set; }
@@ -14,5 +15,8 @@ namespace EmpAppBlazor.Shared
         [JsonIgnore]
         public virtual Project? Project { get; set; }
         public int ProjectId { get; set; }
+
+        public int? DesignLeaderId { get; set; }
+        public User? DesignLeader { get; set; }
     }
 }

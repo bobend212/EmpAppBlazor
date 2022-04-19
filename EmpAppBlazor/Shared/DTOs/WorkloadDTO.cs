@@ -1,4 +1,6 @@
-﻿namespace EmpAppBlazor.Shared.DTOs
+﻿using EmpAppBlazor.Shared.Auth;
+
+namespace EmpAppBlazor.Shared.DTOs
 {
     public class WorkloadDTO
     {
@@ -8,5 +10,7 @@
         public DateTime? RequiredDate { get; set; }
         public DateTime? OrderPlaced { get; set; }
         public string Comments { get; set; } = string.Empty;
+        public virtual UserDTO? DesignLeader { get; set; }
+        public int? DesignLeaderId { get; set; }
     }
 }

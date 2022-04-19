@@ -23,6 +23,7 @@ else
             <MudTh>Status</MudTh>
             <MudTh>Delivery Date [workload]</MudTh>
             <MudTh>Prod. Stage [workload]</MudTh>
+            <MudTh>Design Leader [workload]</MudTh>
             <MudTh>Actions</MudTh>
         </HeaderContent>
         <RowTemplate>
@@ -33,6 +34,7 @@ else
             <MudTd DataLabel="Description">@context.Status</MudTd>
             <MudTd DataLabel="Delivery Date">@(context.Workload != null ? @context.Workload.DeliveryDate?.ToString("dd/MMM/yyyy") : "---")</MudTd>
             <MudTd DataLabel="Production Stage">@(context.Workload != null ? @context.Workload.ProductionStage : "---")</MudTd>
+            <MudTd DataLabel="Design Leader">@(context.Workload?.DesignLeader != null ? $"{@context.Workload.DesignLeader.Name} {@context.Workload.DesignLeader.Surname}" : "---")</MudTd>
             <MudTd DataLabel="Actions"><a href="/project/addoredit/@context.Id">Show</a></MudTd>
         </RowTemplate>
         <PagerContent>

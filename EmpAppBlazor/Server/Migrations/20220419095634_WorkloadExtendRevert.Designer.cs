@@ -4,6 +4,7 @@ using EmpAppBlazor.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmpAppBlazor.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220419095634_WorkloadExtendRevert")]
+    partial class WorkloadExtendRevert
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,9 +197,6 @@ namespace EmpAppBlazor.Server.Migrations
                     b.Property<DateTime?>("DeliveryDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("DesignLeaderId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("OrderPlaced")
                         .HasColumnType("datetime2");
 
@@ -213,8 +212,6 @@ namespace EmpAppBlazor.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DesignLeaderId");
-
                     b.HasIndex("ProjectId")
                         .IsUnique();
 
@@ -225,31 +222,31 @@ namespace EmpAppBlazor.Server.Migrations
                         {
                             Id = 1,
                             Comments = "",
-                            DeliveryDate = new DateTime(2022, 5, 1, 12, 48, 37, 840, DateTimeKind.Local).AddTicks(4790),
-                            OrderPlaced = new DateTime(2022, 4, 23, 12, 48, 37, 840, DateTimeKind.Local).AddTicks(4829),
+                            DeliveryDate = new DateTime(2022, 5, 1, 11, 56, 34, 240, DateTimeKind.Local).AddTicks(5397),
+                            OrderPlaced = new DateTime(2022, 4, 23, 11, 56, 34, 240, DateTimeKind.Local).AddTicks(5440),
                             ProductionStage = "not started",
                             ProjectId = 1,
-                            RequiredDate = new DateTime(2022, 6, 3, 12, 48, 37, 840, DateTimeKind.Local).AddTicks(4827)
+                            RequiredDate = new DateTime(2022, 6, 3, 11, 56, 34, 240, DateTimeKind.Local).AddTicks(5437)
                         },
                         new
                         {
                             Id = 2,
                             Comments = "",
-                            DeliveryDate = new DateTime(2022, 6, 12, 12, 48, 37, 840, DateTimeKind.Local).AddTicks(4831),
-                            OrderPlaced = new DateTime(2022, 6, 20, 12, 48, 37, 840, DateTimeKind.Local).AddTicks(4835),
+                            DeliveryDate = new DateTime(2022, 6, 12, 11, 56, 34, 240, DateTimeKind.Local).AddTicks(5443),
+                            OrderPlaced = new DateTime(2022, 6, 20, 11, 56, 34, 240, DateTimeKind.Local).AddTicks(5447),
                             ProductionStage = "not started",
                             ProjectId = 2,
-                            RequiredDate = new DateTime(2022, 5, 14, 12, 48, 37, 840, DateTimeKind.Local).AddTicks(4833)
+                            RequiredDate = new DateTime(2022, 5, 14, 11, 56, 34, 240, DateTimeKind.Local).AddTicks(5445)
                         },
                         new
                         {
                             Id = 3,
                             Comments = "",
-                            DeliveryDate = new DateTime(2022, 6, 30, 12, 48, 37, 840, DateTimeKind.Local).AddTicks(4838),
-                            OrderPlaced = new DateTime(2022, 4, 25, 12, 48, 37, 840, DateTimeKind.Local).AddTicks(4841),
+                            DeliveryDate = new DateTime(2022, 6, 30, 11, 56, 34, 240, DateTimeKind.Local).AddTicks(5450),
+                            OrderPlaced = new DateTime(2022, 4, 25, 11, 56, 34, 240, DateTimeKind.Local).AddTicks(5453),
                             ProductionStage = "not started",
                             ProjectId = 3,
-                            RequiredDate = new DateTime(2022, 6, 13, 12, 48, 37, 840, DateTimeKind.Local).AddTicks(4840)
+                            RequiredDate = new DateTime(2022, 6, 13, 11, 56, 34, 240, DateTimeKind.Local).AddTicks(5451)
                         });
                 });
 
@@ -287,17 +284,11 @@ namespace EmpAppBlazor.Server.Migrations
 
             modelBuilder.Entity("EmpAppBlazor.Shared.Workload", b =>
                 {
-                    b.HasOne("EmpAppBlazor.Shared.Auth.User", "DesignLeader")
-                        .WithMany()
-                        .HasForeignKey("DesignLeaderId");
-
                     b.HasOne("EmpAppBlazor.Shared.Project", "Project")
                         .WithOne("Workload")
                         .HasForeignKey("EmpAppBlazor.Shared.Workload", "ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("DesignLeader");
 
                     b.Navigation("Project");
                 });

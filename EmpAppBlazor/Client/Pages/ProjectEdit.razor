@@ -5,6 +5,7 @@
 @inject IProjectService ProjectService
 @inject IWorkloadService WorkloadService
 @inject NavigationManager NavigationManager
+@inject IUserServiceClient UserService
 @inject IJSRuntime JSRuntime
 
 @if (loading)
@@ -46,7 +47,7 @@ else
                     {
                         @if (project.Workload == null)
                         {
-                            <MudButton Variant="Variant.Filled" Color="Color.Info" DisableElevation="false">Create Workload</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Info" DisableElevation="false" OnClick="() => NewWorkloadPage(Id)">Create Workload</MudButton>
                         }
                     }
                     @if (btnText != "Create Project")
@@ -62,7 +63,6 @@ else
                 <MudPaper Class="pa-4" Elevation="9">
                     <MudText Typo="Typo.subtitle2">Workload Information</MudText>
                     <MudForm>
-                        @*<MudTextField T="string" Label="Production Stage" Required="true" RequiredError="Production Stage is required!" @bind-Value="workload.ProductionStage" />*@
                         <MudSelect @bind-Value="@workload.ProductionStage" Label="Production Stage">
                             <MudSelectItem Value="@("Not Started")"><MudIcon Icon="@Icons.Filled.StopCircle" Color="Color.Default" /> Not Started </MudSelectItem>
                             <MudSelectItem Value="@("In Progress")"><MudIcon Icon="@Icons.Filled.Work" Color="Color.Success" /> In Progress </MudSelectItem>
@@ -74,14 +74,20 @@ else
                             <MudDatePicker Label="Order Date" DateFormat="dd/MMMM/yyyy" Culture="@CultureInfo.GetCultureInfo("pl-pl")" @bind-Date="workload.OrderPlaced" />
                         </div>
                         <MudTextField T="string" Label="Comments/description/notes" Variant="Variant.Outlined" Lines="5" @bind-Value="workload.Comments" />
-                    </MudForm>
-                </MudPaper>
-                <MudPaper Class="pa-4 mt-4" Elevation="9">
-                    <div class="action-buttons-centered">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="false" OnClick="UpdateWorkload">Update Workload</MudButton>
-                    </div>
-                </MudPaper>
-            </MudItem>
+                        <MudSelect class="mt-3" Margin="Margin.Dense" Label="Design Leader" Variant="Variant.Outlined" @bind-Value="@workload.DesignLeaderId">
+                            @foreach (var user in UserService.Users)
+                            {
+                                <MudSelectItem T=int? Value="@user.Id">@(user.Name) @(user.Surname)</MudSelectItem>
+                            }
+                        </MudSelect>
+            </MudForm>
+        </MudPaper>
+        <MudPaper Class="pa-4 mt-4" Elevation="9">
+            <div class="action-buttons-centered">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="false" OnClick="UpdateWorkload">Update Workload</MudButton>
+            </div>
+        </MudPaper>
+    </MudItem>
         }
         @if (btnText != "Create Project")
         {
@@ -134,6 +140,8 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
+        await UserService.GetAllUsers();
+
         if (Id == 0)
         {
             project = new Project();
@@ -200,6 +208,11 @@ else
             NavigationManager.NavigateTo("/project/list");
 
         }
+    }
+
+    void NewWorkloadPage(int id)
+    {
+        NavigationManager.NavigateTo($"/workload/add/{id}");
     }
 
 

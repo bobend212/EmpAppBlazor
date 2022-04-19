@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EmpAppBlazor.Shared.DTOs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EmpAppBlazor.Server.Controllers
 {
@@ -35,7 +36,7 @@ namespace EmpAppBlazor.Server.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<ServiceResponse<Workload>>> UpdateProject(Workload workload)
+        public async Task<ActionResult<ServiceResponse<WorkloadDTO>>> UpdateProject(WorkloadDTO workload)
         {
             var result = await _workloadService.UpdateWorkload(workload);
             return Ok(result);

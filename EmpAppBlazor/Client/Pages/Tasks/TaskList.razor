@@ -3,6 +3,7 @@
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IProjectService ProjectService
+@inject IUserServiceClient UserService
 @inject ISnackbar _snackBar
 
 <div class="mx-4">
@@ -28,10 +29,11 @@
                                 @if (loggedUserRole == "Admin")
                                 {
                                     <MudSelect class="mr-5 mb-3" Margin="Margin.Dense" Label="Assign To" Variant="Variant.Outlined" @bind-Value="@newTask.AssignedToId">
-                                        <MudSelectItem Value="@(13)" />
-                                        <MudSelectItem Value="@(14)" />
-                                        <MudSelectItem Value="@(15)" />
-                                    </MudSelect>
+                                        @foreach (var user in UserService.Users)
+                                        {
+                                        <MudSelectItem T=int Value="@user.Id">@(user.Name) @(user.Surname)</MudSelectItem>
+                                        }
+                                </MudSelect>
 
                                 }
                                 <MudSelect class="mr-5" Margin="Margin.Dense" Label="Project" Variant="Variant.Outlined" @bind-Value="@newTask.ProjectId">
@@ -92,7 +94,7 @@
                         <MudText Typo="Typo.caption">@context.Description</MudText>
                         <MudIconButton Icon="@Icons.Filled.ModeEdit" Variant="Variant.Text" Color="Color.Primary" Size="Size.Small" />
                     </div>
-                    <MudText Typo="Typo.caption"><i>@context.AssignedTo?.Email</i></MudText>
+                    <MudText Typo="Typo.caption"><i>@context.AssignedTo?.Name @context.AssignedTo?.Surname</i></MudText>
                 </div>
             </MudCardContent>
         </MudCard>
@@ -109,6 +111,7 @@
     protected override async Task OnInitializedAsync()
     {
         await ProjectService.GetProjects();
+        await UserService.GetAllUsers();
 
         var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         loggedUserId = Convert.ToInt32(authstate.User.FindFirst(ClaimTypes.NameIdentifier).Value);
