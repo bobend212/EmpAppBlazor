@@ -15,7 +15,7 @@ namespace EmpAppBlazor.Server.Services.ProjectService
         }
         public async Task<ServiceResponse<List<ProjectGetDTO>>> GetProjects()
         {
-            var projects = await _context.Projects.Include(w => w.Workload).ThenInclude(x => x.DesignLeader).Include(x => x.Designers).ToListAsync();
+            var projects = await _context.Projects.Include(w => w.Workload).ThenInclude(x => x.DesignLeader).Include(x => x.UserProjects).ThenInclude(x => x.User).ToListAsync();
             var projectsDto = _mapper.Map<List<ProjectGetDTO>>(projects);
 
             var response = new ServiceResponse<List<ProjectGetDTO>>()
@@ -27,7 +27,7 @@ namespace EmpAppBlazor.Server.Services.ProjectService
 
         public async Task<ServiceResponse<List<ProjectGetDTO>>> GetProjectsByWorkloadStage(string stageWorkload)
         {
-            var projects = await _context.Projects.Include(w => w.Workload).ThenInclude(x => x.DesignLeader).Include(x => x.Designers).Where(x => x.Workload.ProductionStage.ToLower().Equals(stageWorkload.ToLower())).ToListAsync();
+            var projects = await _context.Projects.Include(w => w.Workload).ThenInclude(x => x.DesignLeader).Include(x => x.UserProjects).ThenInclude(x => x.User).Where(x => x.Workload.ProductionStage.ToLower().Equals(stageWorkload.ToLower())).ToListAsync();
             var projectsDto = _mapper.Map<List<ProjectGetDTO>>(projects);
 
             var response = new ServiceResponse<List<ProjectGetDTO>>()
@@ -40,7 +40,7 @@ namespace EmpAppBlazor.Server.Services.ProjectService
         public async Task<ServiceResponse<ProjectGetDTO>> GetSingleProject(int projectId)
         {
             var response = new ServiceResponse<ProjectGetDTO>();
-            var project = await _context.Projects.Include(w => w.Workload).ThenInclude(x => x.DesignLeader).Include(x => x.Designers).FirstOrDefaultAsync(x => x.Id == projectId);
+            var project = await _context.Projects.Include(w => w.Workload).ThenInclude(x => x.DesignLeader).Include(x => x.UserProjects).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == projectId);
             var projectDto = _mapper.Map<ProjectGetDTO>(project);
 
             if (project == null)
@@ -62,7 +62,7 @@ namespace EmpAppBlazor.Server.Services.ProjectService
             _context.Projects.Add(_mapper.Map<Project>(projectDto));
             await _context.SaveChangesAsync();
 
-            return new ServiceResponse<bool> { Data = true };
+            return new ServiceResponse<bool> { Message = "Project Created", Data = true };
         }
 
         public async Task<ServiceResponse<bool>> UpdateProject(ProjectUpdateDTO project)
@@ -85,7 +85,7 @@ namespace EmpAppBlazor.Server.Services.ProjectService
 
             await _context.SaveChangesAsync();
 
-            return new ServiceResponse<bool> { Data = true };
+            return new ServiceResponse<bool> { Message = "Project Updated", Data = true };
         }
 
         public async Task<ServiceResponse<bool>> DeleteProject(int projectId)
@@ -104,7 +104,7 @@ namespace EmpAppBlazor.Server.Services.ProjectService
             _context.Projects.Remove(findProject);
             await _context.SaveChangesAsync();
 
-            return new ServiceResponse<bool> { Data = true };
+            return new ServiceResponse<bool> { Message = "Project Deleted", Data = true };
         }
     }
 }

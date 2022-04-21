@@ -7,10 +7,12 @@ global using EmpAppBlazor.Shared;
 global using EmpAppBlazor.Shared.Auth;
 global using Microsoft.EntityFrameworkCore;
 global using EmpAppBlazor.Shared.DTOs;
+global using EmpAppBlazor.Server.Services.UserProjectService;
 using EmpAppBlazor.Server;
 using EmpAppBlazor.Server.Services.TaskItemService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +34,7 @@ builder.Services.AddScoped<IWorkloadService, WorkloadService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITaskItemService, TaskItemService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserProjectService, UserProjectService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {

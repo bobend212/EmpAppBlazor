@@ -66,11 +66,15 @@
                 .HasOne(a => a.Workload)
                 .WithOne(b => b.Project)
                 .HasForeignKey<Workload>(b => b.ProjectId);
+
+            modelBuilder.Entity<UserProject>()
+                .HasKey(cs => new { cs.UserId, cs.ProjectId});
         }
 
         public DbSet<Project> Projects { get; set; }
         public DbSet<Workload> Workloads { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<TaskItem> TaskItems { get; set; }
+        public DbSet<UserProject> UserProjects { get; set; }
     }
 }
