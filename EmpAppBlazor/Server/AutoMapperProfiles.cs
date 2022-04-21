@@ -7,8 +7,13 @@ namespace EmpAppBlazor.Server
     {
         public AutoMapperProfiles()
         {
-            CreateMap<Project, ProjectDTO>()
+            CreateMap<Project, ProjectGetDTO>()
                 .ForMember(dto => dto.Designers, c => c.MapFrom(c => c.Designers));
+
+            CreateMap<ProjectAddDTO, Project>();
+            CreateMap<Project, ProjectUpdateDTO>();
+
+
             CreateMap<User, UserDTO>();
             CreateMap<UserUpdateDTO, User>();
             CreateMap<Workload, WorkloadDTO>();

@@ -1,19 +1,14 @@
 ﻿using EmpAppBlazor.Shared.Auth;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmpAppBlazor.Shared.DTOs
 {
-    public class ProjectDTO
+    public class ProjectGetDTO
     {
         public int Id { get; set; }
         public int Number { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Site { get; set; } = string.Empty;
-        public string Status { get; set; } = "unknown";
+        public string Status { get; set; } = "Not Started";
 
         public List<UserDTO> Designers { get; set; }
 

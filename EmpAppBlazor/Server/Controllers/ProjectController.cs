@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace EmpAppBlazor.Server.Controllers
 {
@@ -15,35 +14,35 @@ namespace EmpAppBlazor.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<List<Project>>>> GetProjects()
+        public async Task<ActionResult<ServiceResponse<List<ProjectGetDTO>>>> GetProjects()
         {
-            var result = await _projectService.GetProjectsAsync();
+            var result = await _projectService.GetProjects();
             return Ok(result);
         }
 
         [HttpGet("{projectId}")]
-        public async Task<ActionResult<ServiceResponse<Project>>> GetSingleProject(int projectId)
+        public async Task<ActionResult<ServiceResponse<ProjectGetDTO>>> GetSingleProject(int projectId)
         {
-            var result = await _projectService.GetProjectAsync(projectId);
+            var result = await _projectService.GetSingleProject(projectId);
             return Ok(result);
         }
 
         [HttpGet("workload/{workloadStage}")]
-        public async Task<ActionResult<ServiceResponse<Project>>> GetProjectsByWorkloadStage(string workloadStage)
+        public async Task<ActionResult<ServiceResponse<List<ProjectGetDTO>>>> GetProjectsByWorkloadStage(string workloadStage)
         {
             var result = await _projectService.GetProjectsByWorkloadStage(workloadStage);
             return Ok(result);
         }
 
         [HttpPost]
-        public async Task<ActionResult<ServiceResponse<Project>>> CreateProject(Project project)
+        public async Task<ActionResult<ServiceResponse<ProjectGetDTO>>> CreateProject(ProjectAddDTO project)
         {
             var result = await _projectService.CreateProject(project);
             return Ok(result);
         }
 
         [HttpPut]
-        public async Task<ActionResult<ServiceResponse<Project>>> UpdateProject(Project project)
+        public async Task<ActionResult<ServiceResponse<ProjectGetDTO>>> UpdateProject(ProjectUpdateDTO project)
         {
             var result = await _projectService.UpdateProject(project);
             return Ok(result);

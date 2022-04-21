@@ -13,10 +13,35 @@ namespace EmpAppBlazor.Server.Services.ProjectService
             _context = context;
             _mapper = mapper;
         }
-        public async Task<ServiceResponse<Project>> GetProjectAsync(int projectId)
+        public async Task<ServiceResponse<List<ProjectGetDTO>>> GetProjects()
         {
-            var response = new ServiceResponse<Project>();
+            var projects = await _context.Projects.Include(w => w.Workload).ThenInclude(x => x.DesignLeader).Include(x => x.Designers).ToListAsync();
+            var projectsDto = _mapper.Map<List<ProjectGetDTO>>(projects);
+
+            var response = new ServiceResponse<List<ProjectGetDTO>>()
+            {
+                Data = projectsDto
+            };
+            return response;
+        }
+
+        public async Task<ServiceResponse<List<ProjectGetDTO>>> GetProjectsByWorkloadStage(string stageWorkload)
+        {
+            var projects = await _context.Projects.Include(w => w.Workload).ThenInclude(x => x.DesignLeader).Include(x => x.Designers).Where(x => x.Workload.ProductionStage.ToLower().Equals(stageWorkload.ToLower())).ToListAsync();
+            var projectsDto = _mapper.Map<List<ProjectGetDTO>>(projects);
+
+            var response = new ServiceResponse<List<ProjectGetDTO>>()
+            {
+                Data = projectsDto
+            };
+            return response;
+        }
+
+        public async Task<ServiceResponse<ProjectGetDTO>> GetSingleProject(int projectId)
+        {
+            var response = new ServiceResponse<ProjectGetDTO>();
             var project = await _context.Projects.Include(w => w.Workload).ThenInclude(x => x.DesignLeader).Include(x => x.Designers).FirstOrDefaultAsync(x => x.Id == projectId);
+            var projectDto = _mapper.Map<ProjectGetDTO>(project);
 
             if (project == null)
             {
@@ -25,53 +50,31 @@ namespace EmpAppBlazor.Server.Services.ProjectService
             }
             else
             {
-                response.Data = project;
+                response.Data = projectDto;
             }
 
             return response;
         }
 
-        public async Task<ServiceResponse<List<ProjectDTO>>> GetProjectsAsync()
+        public async Task<ServiceResponse<bool>> CreateProject(ProjectAddDTO project)
         {
-            var projects = await _context.Projects.Include(w => w.Workload).ThenInclude(x => x.DesignLeader).Include(x => x.Designers).ToListAsync();
-            var projectsDto = _mapper.Map<List<ProjectDTO>>(projects);
-
-            var response = new ServiceResponse<List<ProjectDTO>>()
-            {
-                Data = projectsDto
-            };
-            return response;
-        }
-
-        public async Task<ServiceResponse<List<Project>>> GetProjectsByWorkloadStage(string stageWorkload)
-        {
-            var response = new ServiceResponse<List<Project>>()
-            {
-                Data = await _context.Projects.Where(x => x.Workload.ProductionStage.ToLower().Equals(stageWorkload.ToLower())).ToListAsync()
-            };
-            return response;
-        }
-
-        public async Task<ServiceResponse<Project>> CreateProject(Project project)
-        {
-            project.Designers = null;
-            project.Workload = null;
-
-            _context.Projects.Add(project);
+            var projectDto = _mapper.Map<Project>(project);
+            _context.Projects.Add(_mapper.Map<Project>(projectDto));
             await _context.SaveChangesAsync();
 
-            return new ServiceResponse<Project> { Data = project };
+            return new ServiceResponse<bool> { Data = true };
         }
 
-        public async Task<ServiceResponse<Project>> UpdateProject(Project project)
+        public async Task<ServiceResponse<bool>> UpdateProject(ProjectUpdateDTO project)
         {
             var findProject = await _context.Projects.FindAsync(project.Id);
             if (findProject == null)
             {
-                return new ServiceResponse<Project>()
+                return new ServiceResponse<bool>()
                 {
                     Success = false,
-                    Message = "Project not found."
+                    Message = "Project not found.",
+                    Data = false
                 };
             }
 
@@ -82,7 +85,7 @@ namespace EmpAppBlazor.Server.Services.ProjectService
 
             await _context.SaveChangesAsync();
 
-            return new ServiceResponse<Project> { Data = project };
+            return new ServiceResponse<bool> { Data = true };
         }
 
         public async Task<ServiceResponse<bool>> DeleteProject(int projectId)
