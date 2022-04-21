@@ -58,8 +58,7 @@ namespace EmpAppBlazor.Server.Services.ProjectService
 
         public async Task<ServiceResponse<bool>> CreateProject(ProjectAddDTO project)
         {
-            var projectDto = _mapper.Map<Project>(project);
-            _context.Projects.Add(_mapper.Map<Project>(projectDto));
+            _context.Projects.Add(_mapper.Map<Project>(project));
             await _context.SaveChangesAsync();
 
             return new ServiceResponse<bool> { Message = "Project Created", Data = true };

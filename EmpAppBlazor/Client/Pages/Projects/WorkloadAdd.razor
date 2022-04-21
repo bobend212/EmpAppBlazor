@@ -1,7 +1,7 @@
 ﻿@page "/workload/add"
 @page "/workload/add/{id:int}"
 @using System.Globalization
-@inject IProjectService ProjectService
+@inject IProjectServiceClient ProjectService
 @inject IWorkloadService WorkloadService
 @inject IUserServiceClient UserService
 @inject NavigationManager NavigationManager
@@ -58,8 +58,8 @@ else
     protected override async Task OnParametersSetAsync()
     {
         await UserService.GetAllUsers();
-        Project dbProject = (await ProjectService.GetProject(Id)).Data;
-        project = dbProject;
+        //Project dbProject = (await ProjectService.GetSingleProject(Id)).Data;
+        //project = dbProject;
     }
 
     async Task AddWorkload()

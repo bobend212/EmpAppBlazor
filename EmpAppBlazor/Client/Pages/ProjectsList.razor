@@ -1,5 +1,5 @@
 ﻿@page "/project/list"
-@inject IProjectService ProjectService
+@inject IProjectServiceClient ProjectService
 @inject NavigationManager UriHelper
 
 @if (ProjectService.Projects == null || ProjectService.Projects.Count == 0)
@@ -8,7 +8,7 @@
 }
 else
 {
-    <MudTable Items="@ProjectService.Projects" Dense="true" Filter="new Func<Project,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1" Elevation="9">
+    <MudTable Items="@ProjectService.Projects" Dense="true" Filter="new Func<ProjectGetDTO,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1" Elevation="9">
         <ToolBarContent>
             <MudButton Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Filled.CreateNewFolder" Size="Size.Small" OnClick="NavigateToNewProjectPage">New Project</MudButton>
             <MudSpacer />
@@ -17,13 +17,14 @@ else
         </ToolBarContent>
         <HeaderContent>
             <MudTh>Id</MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Project, object>(x=>x.Number)">Number</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Project, object>(x=>x.Name)">Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ProjectGetDTO, object>(x=>x.Number)">Number</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ProjectGetDTO, object>(x=>x.Name)">Name</MudTableSortLabel></MudTh>
             <MudTh>Site</MudTh>
             <MudTh>Status</MudTh>
             <MudTh>Delivery Date [workload]</MudTh>
             <MudTh>Prod. Stage [workload]</MudTh>
             <MudTh>Design Leader [workload]</MudTh>
+            <MudTh>Designers</MudTh>
             <MudTh>Actions</MudTh>
         </HeaderContent>
         <RowTemplate>
@@ -35,17 +36,24 @@ else
             <MudTd DataLabel="Delivery Date">@(context.Workload != null ? @context.Workload.DeliveryDate?.ToString("dd/MMM/yyyy") : "---")</MudTd>
             <MudTd DataLabel="Production Stage">@(context.Workload != null ? @context.Workload.ProductionStage : "---")</MudTd>
             <MudTd DataLabel="Design Leader">@(context.Workload?.DesignLeader != null ? $"{@context.Workload.DesignLeader.Name} {@context.Workload.DesignLeader.Surname}" : "---")</MudTd>
-            <MudTd DataLabel="Actions"><a href="/project/addoredit/@context.Id">Show</a></MudTd>
-        </RowTemplate>
-        <PagerContent>
-            <MudTablePager />
-        </PagerContent>
-    </MudTable>
+            <MudTd DataLabel="Designers">
+                @foreach (var item in @context.Designers)
+                {
+                    <div>@item.Name @item.Surname</div>
+                }
+        </MudTd>
+
+        <MudTd DataLabel="Actions"><a href="/project/addoredit/@context.Id">Show</a></MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[] { 20, 50}" />
+    </PagerContent>
+</MudTable>
 }
 
 @code {
 
-    private Project selectedItem1 = null;
+    private ProjectGetDTO selectedItem1 = null;
     private string searchString1 = "";
 
     protected override async Task OnInitializedAsync()
@@ -63,9 +71,9 @@ else
         UriHelper.NavigateTo("/project/addoredit");
     }
 
-    private bool FilterFunc1(Project element) => FilterFunc(element, searchString1);
+    private bool FilterFunc1(ProjectGetDTO element) => FilterFunc(element, searchString1);
 
-    private bool FilterFunc(Project element, string searchString)
+    private bool FilterFunc(ProjectGetDTO element, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;

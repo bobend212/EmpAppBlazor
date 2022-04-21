@@ -4,6 +4,7 @@ global using EmpAppBlazor.Client.Services.WorkloadService;
 global using EmpAppBlazor.Shared;
 global using Microsoft.AspNetCore.Components.Authorization;
 global using System.Net.Http.Json;
+global using EmpAppBlazor.Shared.DTOs;
 using Blazored.LocalStorage;
 using EmpAppBlazor.Client;
 using EmpAppBlazor.Client.Services.TaskItemService;
@@ -20,7 +21,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 //services
-builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IProjectServiceClient, ProjectServiceClient>();
 builder.Services.AddScoped<IWorkloadService, WorkloadService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITaskItemServiceClient, TaskItemServiceClient>();
