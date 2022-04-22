@@ -128,9 +128,8 @@ else
     [Parameter]
     public int Id { get; set; }
 
-    MudForm form;
+    MudForm? form;
     bool success;
-    Project project = new Project();
     ProjectGetDTO projectGet = new ProjectGetDTO();
     Workload workload = new Workload();
     bool loading = true;
@@ -143,7 +142,6 @@ else
 
         if (Id == 0)
         {
-            project = new Project();
             workload = new Workload();
             btnText = "Create Project";
         }
@@ -187,17 +185,17 @@ else
     async Task DeleteProject()
     {
         bool confirmDelete = await JSRuntime.InvokeAsync<bool>("confirm",
-            $"Do you really want to delete '{project.Number} {project.Name}'?");
+            $"Do you really want to delete '{projectGet.Number} {projectGet.Name}'?");
         if (confirmDelete)
         {
-            await ProjectService.DeleteProject(project.Id);
+            await ProjectService.DeleteProject(projectGet.Id);
             NavigationManager.NavigateTo("/project/list");
         }
     }
 
     async Task UpdateWorkload()
     {
-        if (project.Workload == null)
+        if (projectGet.Workload == null)
         {
             var result = await WorkloadService.CreateWorkload(workload);
         }
@@ -213,6 +211,5 @@ else
     {
         NavigationManager.NavigateTo($"/workload/add/{id}");
     }
-
 
 }

@@ -5,13 +5,14 @@ global using EmpAppBlazor.Shared;
 global using Microsoft.AspNetCore.Components.Authorization;
 global using System.Net.Http.Json;
 global using EmpAppBlazor.Shared.DTOs;
+global using MudBlazor;
 using Blazored.LocalStorage;
 using EmpAppBlazor.Client;
 using EmpAppBlazor.Client.Services.TaskItemService;
 using EmpAppBlazor.Client.Services.UserService;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using MudBlazor;
+
 using MudBlazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);

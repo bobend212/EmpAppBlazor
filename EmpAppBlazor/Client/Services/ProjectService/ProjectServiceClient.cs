@@ -3,10 +3,12 @@
     public class ProjectServiceClient : IProjectServiceClient
     {
         private readonly HttpClient _http;
+        private readonly ISnackbar _snackBar;
 
-        public ProjectServiceClient(HttpClient http)
+        public ProjectServiceClient(HttpClient http, ISnackbar snackBar)
         {
             _http = http;
+            _snackBar = snackBar;
         }
 
         public List<ProjectGetDTO> Projects { get; set; } = new List<ProjectGetDTO>();
@@ -27,16 +29,27 @@
         public async Task CreateProject(ProjectGetDTO project)
         {
             var result = await _http.PostAsJsonAsync("api/project", project);
+            DisplaySnackBarMessage(result, "Project", "Create");
         }
 
         public async Task UpdateProject(ProjectGetDTO project)
         {
             var result = await _http.PutAsJsonAsync("api/project", project);
+            DisplaySnackBarMessage(result, "Project", "Update");
         }
 
         public async Task DeleteProject(int projectId)
         {
             var result = await _http.DeleteAsync($"api/project/{projectId}");
+            DisplaySnackBarMessage(result, "Project", "Delete");
+        }
+
+        private void DisplaySnackBarMessage(HttpResponseMessage result, string entity, string operation)
+        {
+            if (result.IsSuccessStatusCode)
+                _snackBar.Add($"{entity} {operation} | Success", Severity.Success);
+            else
+                _snackBar.Add($"Something went wrong | [{entity} {operation}]", Severity.Error);
         }
     }
 }
