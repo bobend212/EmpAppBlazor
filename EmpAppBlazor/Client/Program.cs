@@ -23,7 +23,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 
 //services
 builder.Services.AddScoped<IProjectServiceClient, ProjectServiceClient>();
-builder.Services.AddScoped<IWorkloadService, WorkloadService>();
+builder.Services.AddScoped<IWorkloadServiceClient, WorkloadServiceClient>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITaskItemServiceClient, TaskItemServiceClient>();
 builder.Services.AddScoped<IUserServiceClient, UserServiceClient>();

@@ -3,7 +3,7 @@
 @using System.ComponentModel.DataAnnotations
 @using System.Globalization
 @inject IProjectServiceClient ProjectService
-@inject IWorkloadService WorkloadService
+@inject IWorkloadServiceClient WorkloadService
 @inject NavigationManager NavigationManager
 @inject IUserServiceClient UserService
 @inject IJSRuntime JSRuntime
@@ -85,6 +85,7 @@ else
         <MudPaper Class="pa-4 mt-4" Elevation="9">
             <div class="action-buttons-centered">
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="false" OnClick="UpdateWorkload">Update Workload</MudButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="delete" OnClick=DeleteWorkload></MudIconButton>
             </div>
         </MudPaper>
     </MudItem>
@@ -131,7 +132,7 @@ else
     MudForm? form;
     bool success;
     ProjectGetDTO projectGet = new ProjectGetDTO();
-    Workload workload = new Workload();
+    WorkloadGetDTO workload = new WorkloadGetDTO();
     bool loading = true;
     string btnText = "";
     string msg = "Loading...";
@@ -142,7 +143,7 @@ else
 
         if (Id == 0)
         {
-            workload = new Workload();
+            workload = new WorkloadGetDTO();
             btnText = "Create Project";
         }
         else
@@ -158,8 +159,8 @@ else
 
             if (workload != null)
             {
-                Workload dbWorkload = (await WorkloadService.GetWorkloadByProjectId(Id)).Data;
-                workload.ProjectId = Id;
+                WorkloadGetDTO dbWorkload = (await WorkloadService.GetSingleWorkloadByProjectId(Id)).Data;
+                workload.Project = projectGet;
                 workload = dbWorkload;
             }
 
@@ -193,15 +194,27 @@ else
         }
     }
 
+    async Task DeleteWorkload()
+    {
+        bool confirmDelete = await JSRuntime.InvokeAsync<bool>("confirm",
+            $"Do you really want to delete WORKLOAD for'{projectGet.Number} {projectGet.Name}'?");
+        if (confirmDelete)
+        {
+            await WorkloadService.DeleteWorkload(workload.Id);
+            NavigationManager.NavigateTo("/project/list");
+        }
+    }
+
     async Task UpdateWorkload()
     {
         if (projectGet.Workload == null)
         {
-            var result = await WorkloadService.CreateWorkload(workload);
+            await WorkloadService.CreateWorkload(workload);
+            NavigationManager.NavigateTo("/project/list");
         }
         else
         {
-            workload = await WorkloadService.UpdateWorkload(workload);
+            await WorkloadService.UpdateWorkload(workload);
             NavigationManager.NavigateTo("/project/list");
 
         }

@@ -2,7 +2,7 @@
 @page "/workload/add/{id:int}"
 @using System.Globalization
 @inject IProjectServiceClient ProjectService
-@inject IWorkloadService WorkloadService
+@inject IWorkloadServiceClient WorkloadService
 @inject IUserServiceClient UserService
 @inject NavigationManager NavigationManager
 
@@ -52,20 +52,19 @@ else
     [Parameter]
     public int Id { get; set; }
 
-    Project project = new Project();
-    Workload workload = new Workload();
+    ProjectGetDTO project = new ProjectGetDTO();
+    WorkloadGetDTO workload = new WorkloadGetDTO();
 
     protected override async Task OnParametersSetAsync()
     {
         await UserService.GetAllUsers();
-        //Project dbProject = (await ProjectService.GetSingleProject(Id)).Data;
-        //project = dbProject;
+        project = (await ProjectService.GetSingleProject(Id)).Data;
     }
 
     async Task AddWorkload()
     {
         workload.ProjectId = Id;
-        var result = await WorkloadService.CreateWorkload(workload);
+        await WorkloadService.CreateWorkload(workload);
         NavigationManager.NavigateTo("/project/list");
     }
 

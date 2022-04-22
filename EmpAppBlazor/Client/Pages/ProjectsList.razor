@@ -8,7 +8,7 @@
 }
 else
 {
-    <MudTable Items="@ProjectService.Projects" Dense="true" Filter="new Func<ProjectGetDTO,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1" Elevation="9">
+    <MudTable Items="@ProjectService.Projects" Dense="true" Bordered="true" Filter="new Func<ProjectGetDTO,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1" Elevation="9">
         <ToolBarContent>
             <MudButton Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Filled.CreateNewFolder" Size="Size.Small" OnClick="NavigateToNewProjectPage">New Project</MudButton>
             <MudSpacer />
