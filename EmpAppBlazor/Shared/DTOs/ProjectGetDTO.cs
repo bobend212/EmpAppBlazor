@@ -12,6 +12,6 @@ namespace EmpAppBlazor.Shared.DTOs
 
         public List<UserDTO> Designers { get; set; }
 
-        public WorkloadDTO Workload { get; set; }
+        public WorkloadGetDTO Workload { get; set; }
     }
 }

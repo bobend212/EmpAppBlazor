@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using EmpAppBlazor.Shared.DTOs;
-
-namespace EmpAppBlazor.Server.Services.ProjectService
+﻿namespace EmpAppBlazor.Server.Services.ProjectService
 {
     public class ProjectService : IProjectService
     {
@@ -13,6 +10,7 @@ namespace EmpAppBlazor.Server.Services.ProjectService
             _context = context;
             _mapper = mapper;
         }
+
         public async Task<ServiceResponse<List<ProjectGetDTO>>> GetProjects()
         {
             var projects = await _context.Projects.Include(w => w.Workload).ThenInclude(x => x.DesignLeader).Include(x => x.UserProjects).ThenInclude(x => x.User).ToListAsync();

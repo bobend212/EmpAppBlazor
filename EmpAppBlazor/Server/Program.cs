@@ -8,6 +8,7 @@ global using EmpAppBlazor.Shared.Auth;
 global using Microsoft.EntityFrameworkCore;
 global using EmpAppBlazor.Shared.DTOs;
 global using EmpAppBlazor.Server.Services.UserProjectService;
+global using AutoMapper;
 using EmpAppBlazor.Server;
 using EmpAppBlazor.Server.Services.TaskItemService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

@@ -1,5 +1,4 @@
-﻿using EmpAppBlazor.Shared.DTOs;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace EmpAppBlazor.Server.Controllers
 {
@@ -15,28 +14,28 @@ namespace EmpAppBlazor.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<List<Workload>>>> GetWorkloads()
+        public async Task<ActionResult<ServiceResponse<List<WorkloadGetDTO>>>> GetWorkloads()
         {
             var result = await _workloadService.GetWorkloads();
             return Ok(result);
         }
 
         [HttpGet("{projectId}")]
-        public async Task<ActionResult<ServiceResponse<Workload>>> GetSingleWorkload(int projectId)
+        public async Task<ActionResult<ServiceResponse<WorkloadGetDTO>>> GetSingleWorkloadByProjectId(int projectId)
         {
-            var result = await _workloadService.GetWorkloadByProjectId(projectId);
+            var result = await _workloadService.GetSingleWorkloadByProjectId(projectId);
             return Ok(result);
         }
 
         [HttpPost]
-        public async Task<ActionResult<ServiceResponse<Workload>>> CreateWorkload(Workload workload)
+        public async Task<ActionResult<ServiceResponse<WorkloadGetDTO>>> CreateWorkload(WorkloadAddDTO workload)
         {
             var result = await _workloadService.CreateWorkload(workload);
             return Ok(result);
         }
 
         [HttpPut]
-        public async Task<ActionResult<ServiceResponse<WorkloadDTO>>> UpdateProject(WorkloadDTO workload)
+        public async Task<ActionResult<ServiceResponse<WorkloadGetDTO>>> UpdateProject(WorkloadUpdateDTO workload)
         {
             var result = await _workloadService.UpdateWorkload(workload);
             return Ok(result);

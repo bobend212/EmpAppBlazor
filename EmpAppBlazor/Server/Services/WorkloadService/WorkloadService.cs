@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using EmpAppBlazor.Shared.DTOs;
-
-namespace EmpAppBlazor.Server.Services.WorkloadService
+﻿namespace EmpAppBlazor.Server.Services.WorkloadService
 {
     public class WorkloadService : IWorkloadService
     {
@@ -14,20 +11,22 @@ namespace EmpAppBlazor.Server.Services.WorkloadService
             _mapper = mapper;
         }
 
-        public async Task<ServiceResponse<List<WorkloadDTO>>> GetWorkloads()
+        public async Task<ServiceResponse<List<WorkloadGetDTO>>> GetWorkloads()
         {
-            var workloads = await _context.Workloads.Include(x => x.DesignLeader).ToListAsync();
-            var workloadsDto = _mapper.Map<List<WorkloadDTO>>(workloads);
-            return new ServiceResponse<List<WorkloadDTO>>
+            var workloads = await _context.Workloads.Include(x => x.DesignLeader).Include(x => x.Project).ThenInclude(x => x.UserProjects).ThenInclude(x => x.User).ToListAsync();
+            var workloadsDto = _mapper.Map<List<WorkloadGetDTO>>(workloads);
+            var response = new ServiceResponse<List<WorkloadGetDTO>>
             {
                 Data = workloadsDto
             };
+            return response;
         }
 
-        public async Task<ServiceResponse<Workload>> GetWorkloadByProjectId(int projectId)
+        public async Task<ServiceResponse<WorkloadGetDTO>> GetSingleWorkloadByProjectId(int projectId)
         {
-            var response = new ServiceResponse<Workload>();
-            var workload = await _context.Workloads.Include(w => w.Project).Include(x => x.DesignLeader).FirstOrDefaultAsync(x => x.ProjectId == projectId);
+            var response = new ServiceResponse<WorkloadGetDTO>();
+            var workload = await _context.Workloads.Include(w => w.DesignLeader).Include(x => x.Project).ThenInclude(x => x.UserProjects).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.ProjectId == projectId);
+            var workloadDto = _mapper.Map<WorkloadGetDTO>(workload);
 
             if (workload == null)
             {
@@ -36,29 +35,29 @@ namespace EmpAppBlazor.Server.Services.WorkloadService
             }
             else
             {
-                response.Data = workload;
+                response.Data = workloadDto;
             }
-
             return response;
         }
 
-        public async Task<ServiceResponse<Workload>> CreateWorkload(Workload workload)
+        public async Task<ServiceResponse<bool>> CreateWorkload(WorkloadAddDTO workload)
         {
-            _context.Workloads.Add(workload);
+            _context.Workloads.Add(_mapper.Map<Workload>(workload));
             await _context.SaveChangesAsync();
 
-            return new ServiceResponse<Workload> { Data = workload };
+            return new ServiceResponse<bool> { Message = "Workload Created", Data = true };
         }
 
-        public async Task<ServiceResponse<WorkloadDTO>> UpdateWorkload(WorkloadDTO workload)
+        public async Task<ServiceResponse<bool>> UpdateWorkload(WorkloadUpdateDTO workload)
         {
             var findWorkload = await _context.Workloads.FindAsync(workload.Id);
             if (findWorkload == null)
             {
-                return new ServiceResponse<WorkloadDTO>()
+                return new ServiceResponse<bool>()
                 {
                     Success = false,
-                    Message = "Workload not found."
+                    Message = "Workload not found.",
+                    Data = false
                 };
             }
 
@@ -71,7 +70,7 @@ namespace EmpAppBlazor.Server.Services.WorkloadService
 
             await _context.SaveChangesAsync();
 
-            return new ServiceResponse<WorkloadDTO> { Data = workload };
+            return new ServiceResponse<bool> { Message = "Workload Updated", Data = true };
         }
 
         public async Task<ServiceResponse<bool>> DeleteWorkload(int workloadId)
@@ -90,7 +89,7 @@ namespace EmpAppBlazor.Server.Services.WorkloadService
             _context.Workloads.Remove(findWorkload);
             await _context.SaveChangesAsync();
 
-            return new ServiceResponse<bool> { Data = true };
+            return new ServiceResponse<bool> { Message = "Workload Deleted", Data = true };
         }
     }
 }

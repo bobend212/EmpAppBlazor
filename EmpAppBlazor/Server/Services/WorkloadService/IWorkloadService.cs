@@ -4,13 +4,13 @@ namespace EmpAppBlazor.Server.Services.WorkloadService
 {
     public interface IWorkloadService
     {
-        Task<ServiceResponse<List<WorkloadDTO>>> GetWorkloads();
+        Task<ServiceResponse<List<WorkloadGetDTO>>> GetWorkloads();
 
-        Task<ServiceResponse<Workload>> GetWorkloadByProjectId(int projectId);
+        Task<ServiceResponse<WorkloadGetDTO>> GetSingleWorkloadByProjectId(int projectId);
 
-        Task<ServiceResponse<Workload>> CreateWorkload(Workload workload);
+        Task<ServiceResponse<bool>> CreateWorkload(WorkloadAddDTO workload);
 
-        Task<ServiceResponse<WorkloadDTO>> UpdateWorkload(WorkloadDTO workload);
+        Task<ServiceResponse<bool>> UpdateWorkload(WorkloadUpdateDTO workload);
 
         Task<ServiceResponse<bool>> DeleteWorkload(int workloadId);
     }
