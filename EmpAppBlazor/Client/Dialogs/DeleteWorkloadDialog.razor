@@ -1,0 +1,24 @@
+﻿@inject IWorkloadServiceClient WorkloadService
+
+<MudDialog>
+    <DialogContent>
+        <MudText>Do you really want to delete this workload?</MudText>
+        <MudText>This process cannot be undone.</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="DeleteWorkload">Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public WorkloadGetDTO workload { get; set; } = new WorkloadGetDTO();
+
+    
+    void Cancel() => MudDialog.Cancel();
+    async Task DeleteWorkload()
+    {
+         await WorkloadService.DeleteWorkload(workload.Id);
+         MudDialog.Close(DialogResult.Ok(workload));
+    }
+}

@@ -1,31 +1,19 @@
 ﻿@page "/workload/list"
+@using EmpAppBlazor.Client.Dialogs
 @inject IWorkloadServiceClient WorkloadService
+@inject IDialogService DialogService
 
-<MudDataGrid T="WorkloadGetDTO" Items="@WorkloadService.Workloads" EditMode="DataGridEditMode.Cell"
-    StartedEditingItem="@StartedEditingItem" CancelledEditingItem="@CancelledEditingItem" CommittedItemChanges="@CommittedItemChanges"
-    Bordered="true" Dense="true" EditTrigger="DataGridEditTrigger.OnRowClick">
-    <Columns>
-        <Column T="WorkloadGetDTO" Field="DeliveryDate" />
-        <Column T="WorkloadGetDTO" Field="ProductionStage" />
-        <Column T="WorkloadGetDTO" CellClass="d-flex justify-end">
-            <CellTemplate>
-                <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Edit" OnClick="@context.Actions.StartEditingItem" />
-            </CellTemplate>
-        </Column>
-    </Columns>
-</MudDataGrid>
-
-
-@*<MudTable Items="@WorkloadService.Workloads" Hover="true" Striped="true" Bordered="true" Dense="true"
+<MudTable Items="@WorkloadService.Workloads" Hover="true" Striped="true" Bordered="true" Dense="true"
           CustomHeader="true" CustomFooter="true" HeaderClass="table-head-bordered" FooterClass="table-foot-bordered">
     <HeaderContent>
         <MudTHeadRow Class="header-centered">
-            <MudTh colspan="10">Workloads</MudTh>
+            <MudTh colspan="11">Workload Planer Summary</MudTh>
         </MudTHeadRow>
         <MudTHeadRow Class="header-centered">
             <MudTh colspan="1"></MudTh>
             <MudTh colspan="2">Project</MudTh>
             <MudTh colspan="7">Info</MudTh>
+            <MudTh colspan="1"></MudTh>
         </MudTHeadRow>
         <MudTHeadRow>
             <MudTh>Id</MudTh>
@@ -38,21 +26,26 @@
             <MudTh>Design Leader</MudTh>
             <MudTh>Comments</MudTh>
             <MudTh>Actions</MudTh>
+            <MudTh>Last Update</MudTh>
         </MudTHeadRow>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.Id</MudTd>
-        <MudTd>@context.Project.Number</MudTd>
-        <MudTd>@context.Project.Name</MudTd>
+        <MudTd>@context.Project?.Number</MudTd>
+        <MudTd>@context.Project?.Name</MudTd>
         <MudTd>@context.ProductionStage</MudTd>
         <MudTd>@context.DeliveryDate?.ToString("dd/MMM/yyyy")</MudTd>
         <MudTd>@context.RequiredDate?.ToString("dd/MMM/yyyy")</MudTd>
         <MudTd>@context.OrderPlaced?.ToString("dd/MMM/yyyy")</MudTd>
-        <MudTd>@context.DesignLeader.Name @context.DesignLeader.Surname</MudTd>
+        <MudTd>@context.DesignLeader?.Name @context.DesignLeader?.Surname</MudTd>
         <MudTd>@context.Comments</MudTd>
-        <MudTd>--actions-btns--</MudTd>
+        <MudTd Class="d-flex justify-space-between">
+            <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Edit" OnClick="@((e) => OpenEditWorkloadDialog(@context))" />
+            <MudIconButton Size="@Size.Small" Color="Color.Error" Icon="@Icons.Outlined.Delete" OnClick="@((e) => OpenDeleteWorkloadDialog(@context))" />
+        </MudTd>
+        <MudTd>@(context.LastUpdate != null ? $"{@context.LastUpdate?.ToString("dd/MMM/yyyy hh:mm tt")} by {@context.Editor?.Name} {@context.Editor?.Surname}" : "")</MudTd>
     </RowTemplate>
-</MudTable>*@
+</MudTable>
 
 @code {
     protected override async Task OnInitializedAsync()
@@ -60,22 +53,33 @@
         await WorkloadService.GetWorkloads();
     }
 
-    private List<string> _events = new();
-    private bool _editTriggerRowClick;
-
-        // events
-    void StartedEditingItem(WorkloadGetDTO item)
+    async Task OpenEditWorkloadDialog(WorkloadGetDTO workload)
     {
-        _events.Insert(0, $"Event = StartedEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+        var parameters = new DialogParameters { ["workload"] = workload };
+        var options = new DialogOptions { FullWidth = true };
+
+        var dialog = DialogService.Show<EditWorkloadDialog>("Edit Workload", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            await WorkloadService.GetWorkloads();
+        }
     }
 
-    void CancelledEditingItem(WorkloadGetDTO item)
+    async Task OpenDeleteWorkloadDialog(WorkloadGetDTO workload)
     {
-        _events.Insert(0, $"Event = CancelledEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+        var parameters = new DialogParameters { ["workload"] = workload };
+        var options = new DialogOptions { FullWidth = true };
+
+        var dialog = DialogService.Show<DeleteWorkloadDialog>("Delete Workload", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            await WorkloadService.GetWorkloads();
+        }
     }
 
-    void CommittedItemChanges(WorkloadGetDTO item)
-    {
-        _events.Insert(0, $"Event = CommittedItemChanges, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
-    }
+
 }

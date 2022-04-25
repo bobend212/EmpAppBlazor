@@ -10,5 +10,7 @@
         public string Comments { get; set; } = string.Empty;
         public int ProjectId { get; set; }
         public int? DesignLeaderId { get; set; }
+        public int? EditorId { get; set; }
+        public DateTime? LastUpdate { get; set; }
     }
 }

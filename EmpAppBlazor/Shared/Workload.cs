@@ -11,6 +11,9 @@ namespace EmpAppBlazor.Shared
         public DateTime? RequiredDate { get; set; }
         public DateTime? OrderPlaced { get; set; }
         public string Comments{ get; set; } = string.Empty;
+        public DateTime? LastUpdate { get; set; }
+        public int? EditorId { get; set; }
+        public User? Editor { get; set; }
 
         [JsonIgnore]
         public virtual Project? Project { get; set; }

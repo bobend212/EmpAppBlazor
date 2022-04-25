@@ -13,7 +13,7 @@
 
         public async Task<ServiceResponse<List<WorkloadGetDTO>>> GetWorkloads()
         {
-            var workloads = await _context.Workloads.Include(x => x.DesignLeader).Include(x => x.Project).ThenInclude(x => x.UserProjects).ThenInclude(x => x.User).ToListAsync();
+            var workloads = await _context.Workloads.Include(x => x.DesignLeader).Include(x => x.Editor).Include(x => x.Project).ThenInclude(x => x.UserProjects).ThenInclude(x => x.User).ToListAsync();
             var workloadsDto = _mapper.Map<List<WorkloadGetDTO>>(workloads);
             var response = new ServiceResponse<List<WorkloadGetDTO>>
             {
@@ -25,7 +25,7 @@
         public async Task<ServiceResponse<WorkloadGetDTO>> GetSingleWorkloadByProjectId(int projectId)
         {
             var response = new ServiceResponse<WorkloadGetDTO>();
-            var workload = await _context.Workloads.Include(w => w.DesignLeader).Include(x => x.Project).ThenInclude(x => x.UserProjects).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.ProjectId == projectId);
+            var workload = await _context.Workloads.Include(w => w.DesignLeader).Include(x => x.Editor).Include(x => x.Project).ThenInclude(x => x.UserProjects).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.ProjectId == projectId);
             var workloadDto = _mapper.Map<WorkloadGetDTO>(workload);
 
             if (workload == null)
@@ -67,6 +67,9 @@
             findWorkload.OrderPlaced = workload.OrderPlaced;
             findWorkload.Comments = workload.Comments;
             findWorkload.DesignLeaderId = workload.DesignLeaderId;
+            findWorkload.ProjectId = workload.ProjectId;
+            findWorkload.EditorId = workload.EditorId;
+            findWorkload.LastUpdate = DateTime.Now;
 
             await _context.SaveChangesAsync();
 

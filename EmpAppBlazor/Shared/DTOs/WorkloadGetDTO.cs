@@ -14,5 +14,8 @@ namespace EmpAppBlazor.Shared.DTOs
         public int ProjectId { get; set; }
         public UserDTO? DesignLeader { get; set; }
         public int? DesignLeaderId { get; set; }
+        public UserDTO? Editor { get; set; }
+        public int? EditorId { get; set; }
+        public DateTime? LastUpdate { get; set; }
     }
 }
