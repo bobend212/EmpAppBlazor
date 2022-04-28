@@ -17,41 +17,41 @@ namespace EmpAppBlazor.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<List<TaskItem>>>> GetAllTasks()
+        public async Task<ActionResult<ServiceResponse<List<TaskItemGetDTO>>>> GetTasks()
         {
-            return Ok(await _taskItemService.GetAllTasks());
+            return Ok(await _taskItemService.GetTasks());
         }
 
         [HttpGet("/api/TaskItem/user/{userId}")]
-        public async Task<ActionResult<ServiceResponse<List<TaskItem>>>> GetAllTasksByUserId(int userId)
+        public async Task<ActionResult<ServiceResponse<List<TaskItemGetDTO>>>> GetTasksByUserId(int userId)
         {
-            var result = await _taskItemService.GetAllTasksByUserId(userId);
+            var result = await _taskItemService.GetTasksByUserId(userId);
             return Ok(result);
         }
 
         [HttpGet("{taskItemId}")]
-        public async Task<ActionResult<ServiceResponse<TaskItem>>> GetSingleTaskItem(int taskItemId)
+        public async Task<ActionResult<ServiceResponse<TaskItemGetDTO>>> GetSingleTaskItem(int taskItemId)
         {
-            var result = await _taskItemService.GetTaskItem(taskItemId);
+            var result = await _taskItemService.GetSingleTaskItem(taskItemId);
             return Ok(result);
         }
 
         [HttpPost]
-        public async Task<ActionResult<ServiceResponse<TaskItem>>> CreateTaskItem(TaskItem taskItem)
+        public async Task<ActionResult<ServiceResponse<TaskItemGetDTO>>> CreateTaskItem(TaskItemAddDTO taskItem)
         {
-            var result = await _taskItemService.PostTaskItem(taskItem);
+            var result = await _taskItemService.CreateTaskItem(taskItem);
             return Ok(result);
         }
 
         [HttpPut]
-        public async Task<ActionResult<ServiceResponse<TaskItem>>> UpdateTaskItem(TaskItem taskItem)
+        public async Task<ActionResult<ServiceResponse<TaskItemGetDTO>>> UpdateTaskItem(TaskItemUpdateDTO taskItem)
         {
             var result = await _taskItemService.UpdateTaskItem(taskItem);
             return Ok(result);
         }
 
-        [HttpPut("/api/status")]
-        public async Task<ActionResult<ServiceResponse<TaskItem>>> UpdateTaskItemStatusOnly([FromBody] TaskItemToEditStatusDTO taskItem)
+        [HttpPut("/api/TaskItem/status")]
+        public async Task<ActionResult<ServiceResponse<TaskItemGetDTO>>> UpdateTaskItemStatusOnly([FromBody] TaskItemToEditStatusDTO taskItem)
         {
             var result = await _taskItemService.UpdateTaskItemStatusOnly(taskItem);
             return Ok(result);

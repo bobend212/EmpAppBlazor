@@ -18,10 +18,16 @@ namespace EmpAppBlazor.Server
             CreateMap<WorkloadAddDTO, Workload>();
             CreateMap<Workload, WorkloadUpdateDTO>();
 
+            //TaskItem
+            CreateMap<TaskItemToEditStatusDTO, TaskItem>();
+            CreateMap<TaskItem, TaskItemGetDTO>();
+            CreateMap<TaskItemAddDTO, TaskItem>();
+            CreateMap<TaskItem, TaskItemUpdateDTO>();
+
+
 
             CreateMap<User, UserDTO>();
             CreateMap<UserUpdateDTO, User>();
-            CreateMap<TaskItemToEditStatusDTO, TaskItem>();
         }
     }
 }

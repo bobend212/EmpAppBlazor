@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using EmpAppBlazor.Shared.DTOs;
-
-namespace EmpAppBlazor.Server.Services.TaskItemService
+﻿namespace EmpAppBlazor.Server.Services.TaskItemService
 {
     public class TaskItemService : ITaskItemService
     {
@@ -14,30 +11,36 @@ namespace EmpAppBlazor.Server.Services.TaskItemService
             _mapper = mapper;
         }
 
-        public async Task<ServiceResponse<List<TaskItem>>> GetAllTasks()
+        public async Task<ServiceResponse<List<TaskItemGetDTO>>> GetTasks()
         {
-            var tasks = await _context.TaskItems.Include(x => x.Project).Include(x => x.AssignedTo).ToListAsync();
-            var response = new ServiceResponse<List<TaskItem>>
+            var tasks = await _context.TaskItems.Include(x => x.Project).Include(x => x.AssignedTo).Include(x => x.Author).Include(x => x.Editor).ToListAsync();
+            var tasksDto = _mapper.Map<List<TaskItemGetDTO>>(tasks);
+
+            var response = new ServiceResponse<List<TaskItemGetDTO>>
             {
-                Data = tasks
+                Data = tasksDto
             };
             return response;
         }
 
-        public async Task<ServiceResponse<List<TaskItem>>> GetAllTasksByUserId(int userId)
+        public async Task<ServiceResponse<List<TaskItemGetDTO>>> GetTasksByUserId(int userId)
         {
-            var tasks = await _context.TaskItems.Include(x => x.Project).Include(x => x.AssignedTo).Where(x => x.AssignedToId == userId).ToListAsync();
-            var response = new ServiceResponse<List<TaskItem>>
+            var tasks = await _context.TaskItems.Include(x => x.Project).Include(x => x.AssignedTo).Include(x => x.Author).Include(x => x.Editor).Where(x => x.AssignedToId == userId).ToListAsync();
+            var tasksDto = _mapper.Map<List<TaskItemGetDTO>>(tasks);
+
+            var response = new ServiceResponse<List<TaskItemGetDTO>>
             {
-                Data = tasks
+                Data = tasksDto
             };
             return response;
         }
 
-        public async Task<ServiceResponse<TaskItem>> GetTaskItem(int taskItemId)
+        public async Task<ServiceResponse<TaskItemGetDTO>> GetSingleTaskItem(int taskItemId)
         {
-            var response = new ServiceResponse<TaskItem>();
-            var task = await _context.TaskItems.FindAsync(taskItemId);
+            var response = new ServiceResponse<TaskItemGetDTO>();
+            var task = await _context.TaskItems.Include(x => x.Project).Include(x => x.AssignedTo).Include(x => x.Author).Include(x => x.Editor).FirstOrDefaultAsync(x => x.TaskItemId == taskItemId);
+            var tasktDto = _mapper.Map<TaskItemGetDTO>(task);
+
             if (task == null)
             {
                 response.Success = false;
@@ -45,50 +48,30 @@ namespace EmpAppBlazor.Server.Services.TaskItemService
             }
             else
             {
-                response.Data = task;
+                response.Data = tasktDto;
             }
 
             return response;
         }
 
-        public async Task<ServiceResponse<TaskItem>> PostTaskItem(TaskItem taskItem)
+        public async Task<ServiceResponse<bool>> CreateTaskItem(TaskItemAddDTO taskItem)
         {
-            var response = new ServiceResponse<TaskItem>();
-            //var findProject = await _context.Projects.FirstOrDefaultAsync(x => x.Id == taskItem.ProjectId);
-            var findUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == taskItem.AssignedToId);
+            taskItem.DateCreated = DateTime.Now;
+            _context.TaskItems.Add(_mapper.Map<TaskItem>(taskItem));
+            await _context.SaveChangesAsync();
 
-            //if (findProject == null)
-            //{
-            //    response.Success = false;
-            //    response.Message = "Provided project does not exist.";
-            //}
-            //else 
-            
-            if (findUser == null)
-            {
-                response.Success = false;
-                response.Message = "Provided User does not exist.";
-            }
-            else
-            {
-                taskItem.DateCreated = DateTime.Now;
-                response.Data = taskItem;
-                _context.TaskItems.Add(taskItem);
-                await _context.SaveChangesAsync();
-            }
-
-            return response;
+            return new ServiceResponse<bool> { Message = "Task Created", Data = true };
         }
 
-        public async Task<ServiceResponse<TaskItem>> UpdateTaskItem(TaskItem taskItem)
+        public async Task<ServiceResponse<bool>> UpdateTaskItem(TaskItemUpdateDTO taskItem)
         {
             var findTask = await _context.TaskItems.FindAsync(taskItem.TaskItemId);
             if (findTask == null)
             {
-                return new ServiceResponse<TaskItem>()
+                return new ServiceResponse<bool>()
                 {
                     Success = false,
-                    Message = "TaskItem not found."
+                    Message = "Task not found."
                 };
             }
 
@@ -105,15 +88,15 @@ namespace EmpAppBlazor.Server.Services.TaskItemService
 
             await _context.SaveChangesAsync();
 
-            return new ServiceResponse<TaskItem> { Data = taskItem };
+            return new ServiceResponse<bool> { Message = "Task Updated", Data = true };
         }
 
-        public async Task<ServiceResponse<TaskItem>> UpdateTaskItemStatusOnly(TaskItemToEditStatusDTO taskItemDto)
+        public async Task<ServiceResponse<bool>> UpdateTaskItemStatusOnly(TaskItemToEditStatusDTO taskItemDto)
         {
             var findTask = await _context.TaskItems.FindAsync(taskItemDto.TaskItemId);
             if (findTask == null)
             {
-                return new ServiceResponse<TaskItem>()
+                return new ServiceResponse<bool>()
                 {
                     Success = false,
                     Message = "TaskItem not found."
@@ -121,14 +104,14 @@ namespace EmpAppBlazor.Server.Services.TaskItemService
             }
 
             findTask.DateEdited = DateTime.Now;
+            findTask.TaskStatus = taskItemDto.TaskStatus;
+            findTask.EditorId = taskItemDto.EditorId;
 
-            var mappedTaskItem = _mapper.Map(taskItemDto, findTask);
             _context.Entry(findTask).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
 
-            return new ServiceResponse<TaskItem> { Data = mappedTaskItem };
-
+            return new ServiceResponse<bool> { Message = "Task Status Updated", Data = true };
         }
 
         public async Task<ServiceResponse<bool>> DeleteTaskItem(int taskItemId)
@@ -147,7 +130,7 @@ namespace EmpAppBlazor.Server.Services.TaskItemService
             _context.TaskItems.Remove(findTask);
             await _context.SaveChangesAsync();
 
-            return new ServiceResponse<bool> { Data = true };
+            return new ServiceResponse<bool> { Message = "Task Deleted", Data = true };
         }
     }
 }

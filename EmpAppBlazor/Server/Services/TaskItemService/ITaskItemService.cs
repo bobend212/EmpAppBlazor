@@ -4,17 +4,17 @@ namespace EmpAppBlazor.Server.Services.TaskItemService
 {
     public interface ITaskItemService
     {
-        Task<ServiceResponse<List<TaskItem>>> GetAllTasks();
+        Task<ServiceResponse<List<TaskItemGetDTO>>> GetTasks();
 
-        Task<ServiceResponse<List<TaskItem>>> GetAllTasksByUserId(int userId);
+        Task<ServiceResponse<List<TaskItemGetDTO>>> GetTasksByUserId(int userId);
 
-        Task<ServiceResponse<TaskItem>> GetTaskItem(int taskItemId);
+        Task<ServiceResponse<TaskItemGetDTO>> GetSingleTaskItem(int taskItemId);
 
-        Task<ServiceResponse<TaskItem>> PostTaskItem(TaskItem taskItem);
+        Task<ServiceResponse<bool>> CreateTaskItem(TaskItemAddDTO taskItem);
 
-        Task<ServiceResponse<TaskItem>> UpdateTaskItem(TaskItem taskItem);
+        Task<ServiceResponse<bool>> UpdateTaskItem(TaskItemUpdateDTO taskItem);
 
-        Task<ServiceResponse<TaskItem>> UpdateTaskItemStatusOnly(TaskItemToEditStatusDTO taskItemDto);
+        Task<ServiceResponse<bool>> UpdateTaskItemStatusOnly(TaskItemToEditStatusDTO taskItemDto);
 
         Task<ServiceResponse<bool>> DeleteTaskItem(int taskItemId);
     }
