@@ -1,4 +1,17 @@
 ﻿.item-card {
     display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.item-card-bottom {
+    display: flex;
+    justify-content: space-between;
+}
+
+.task-header {
+    background-color: whitesmoke;
+    padding: 3px;
+    display: flex;
     justify-content: space-between;
 }

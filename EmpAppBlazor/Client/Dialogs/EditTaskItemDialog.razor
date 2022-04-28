@@ -1,0 +1,93 @@
+﻿@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ITaskItemServiceClient TaskItemService
+@inject IUserServiceClient UserService
+@inject IProjectServiceClient ProjectService
+@inject IJSRuntime JSRuntime
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3 mb-n1" /> Edit Task ID: @taskItem.TaskItemId
+        </MudText>
+        <MudIconButton Icon="@Icons.Filled.Delete" Variant="Variant.Text" Color="Color.Error" Size="Size.Medium" OnClick="DeleteTaskItem" />
+    </TitleContent>
+    <DialogContent>
+        <MudGrid>
+
+            <MudItem xs="12">
+                <MudTextField T="string" Label="Title" Variant="Variant.Outlined" @bind-Value="taskItem.Title" />
+                <MudTextField T="string" class="mt-3" Label="Description" Variant="Variant.Outlined" Lines="3" @bind-Value="taskItem.Description" />
+                <MudSelect class="mt-3" Margin="Margin.Dense" Label="Assigned To" Variant="Variant.Outlined" @bind-Value="@taskItem.AssignedToId" Clearable=true>
+                    @foreach (var user in UserService.Users)
+                    {
+                        <MudSelectItem T=int? Value="@user.Id">@(user.Name) @(user.Surname)</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudSelect class="mt-3" Margin="Margin.Dense" Label="Project" Variant="Variant.Outlined" @bind-Value="@taskItem.ProjectId" Clearable=true>
+                    @foreach (var project in ProjectService.Projects)
+                    {
+                        <MudSelectItem T=int? Value="@project.Id">@(project.Number) @(project.Name)</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudDatePicker class="mt-3" Label="Due Date" Variant="Variant.Outlined" @bind-Date="@taskItem.DueDate" />
+                <MudSelect class="mt-3" Margin="Margin.Dense" Label="Importance level" Variant="Variant.Outlined" @bind-Value="@taskItem.Importance">
+                    <MudSelectItem Value="@("low")" />
+                    <MudSelectItem Value="@("normal")" />
+                    <MudSelectItem Value="@("high")" />
+                </MudSelect>
+                <MudSelect class="mt-3" Margin="Margin.Dense" Label="Status" Variant="Variant.Outlined" @bind-Value="@taskItem.TaskStatus" Clearable=true>
+                    <MudSelectItem Value="@("not started")"><MudIcon Icon="@Icons.Filled.StopCircle" Color="Color.Default" /> Not started </MudSelectItem>
+                    <MudSelectItem Value="@("active")"><MudIcon Icon="@Icons.Filled.Work" Color="Color.Success" /> active </MudSelectItem>
+                    <MudSelectItem Value="@("done")"><MudIcon Icon="@Icons.Filled.Done" Color="Color.Info" /> done </MudSelectItem>
+                </MudSelect>
+            </MudItem>
+
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Info" OnClick="UpdateTaskItem">Submit</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public TaskItemGetDTO taskItem { get; set; } = new TaskItemGetDTO();
+
+    int loggedUserId;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await UserService.GetAllUsers();
+        await ProjectService.GetProjects();
+        var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        loggedUserId = Convert.ToInt32(authstate.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    async Task UpdateTaskItem()
+    {
+        if (taskItem.TaskStatus == null) taskItem.TaskStatus = "";
+        if (taskItem.AssignedToId == null) taskItem.AssignedToId = loggedUserId;
+        taskItem.EditorId = loggedUserId;
+        await TaskItemService.UpdateTaskItem(taskItem);
+        MudDialog.Close(DialogResult.Ok(taskItem));
+    }
+
+    async Task DeleteTaskItem()
+    {
+        bool confirmDelete = await JSRuntime.InvokeAsync<bool>("confirm", $"Do you really want to delete this Task?");
+        if (confirmDelete)
+        {
+            await TaskItemService.DeleteTaskItem(taskItem.TaskItemId);
+            MudDialog.Close(DialogResult.Ok(taskItem));
+        }
+    }
+
+}

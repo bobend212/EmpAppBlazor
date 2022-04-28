@@ -2,19 +2,19 @@
 {
     public interface ITaskItemServiceClient
     {
-        List<TaskItem> TaskItems { get; set; }
+        List<TaskItemGetDTO> TaskItems { get; set; }
 
-        Task GetAllTaskItems();
+        Task GetTasks();
 
-        Task GetAllTaskItemsByUserId(int userId);
+        Task GetTasksByUserId(int userId);
 
-        Task<ServiceResponse<TaskItem>> GetSingleTaskItem(int taskItemId);
+        Task<ServiceResponse<TaskItemGetDTO>> GetSingleTaskItem(int taskItemId);
 
-        Task<TaskItem> CreateTaskItem(TaskItem taskItem);
+        Task CreateTaskItem(TaskItemGetDTO taskItem);
 
-        Task<TaskItem> UpdateTaskItem(TaskItem taskItem);
+        Task UpdateTaskItem(TaskItemGetDTO taskItem);
 
-        Task<TaskItem> UpdateTaskItemStatus(TaskItem taskItem);
+        Task UpdateTaskItemStatus(TaskItemGetDTO taskItem);
 
         Task DeleteTaskItem(int taskItemId);
     }

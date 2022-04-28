@@ -1,6 +1,4 @@
-﻿using MudBlazor;
-
-namespace EmpAppBlazor.Client.Services.TaskItemService
+﻿namespace EmpAppBlazor.Client.Services.TaskItemService
 {
     public class TaskItemServiceClient : ITaskItemServiceClient
     {
@@ -13,50 +11,58 @@ namespace EmpAppBlazor.Client.Services.TaskItemService
             _snackBar = snackBar;
         }
 
-        public List<TaskItem> TaskItems { get; set; } = new List<TaskItem>();
+        public List<TaskItemGetDTO> TaskItems { get; set; } = new List<TaskItemGetDTO>();
 
-        public async Task GetAllTaskItems()
+        public async Task GetTasks()
         {
-            var result = await _http.GetFromJsonAsync<ServiceResponse<List<TaskItem>>>("/api/TaskItem");
+            var result = await _http.GetFromJsonAsync<ServiceResponse<List<TaskItemGetDTO>>>("/api/TaskItem");
             if (result != null && result.Data != null)
                 TaskItems = result.Data;
         }
 
-        public async Task GetAllTaskItemsByUserId(int userId)
+        public async Task GetTasksByUserId(int userId)
         {
-            var result = await _http.GetFromJsonAsync<ServiceResponse<List<TaskItem>>>($"/api/TaskItem/user/{userId}");
+            var result = await _http.GetFromJsonAsync<ServiceResponse<List<TaskItemGetDTO>>>($"/api/TaskItem/user/{userId}");
             if (result != null && result.Data != null)
                 TaskItems = result.Data;
         }
 
-        public Task<ServiceResponse<TaskItem>> GetSingleTaskItem(int taskItemId)
+        public async Task<ServiceResponse<TaskItemGetDTO>> GetSingleTaskItem(int taskItemId)
         {
-            throw new NotImplementedException();
+            var result = await _http.GetFromJsonAsync<ServiceResponse<TaskItemGetDTO>>($"/api/TaskItem/{taskItemId}");
+            return result;
         }
 
-        public async Task<TaskItem> CreateTaskItem(TaskItem taskItem)
+        public async Task CreateTaskItem(TaskItemGetDTO taskItem)
         {
-            var result = await _http.PostAsJsonAsync("/api/taskItem", taskItem);
-            var newTask = (await result.Content.ReadFromJsonAsync<ServiceResponse<TaskItem>>()).Data;
-            return newTask;
+            var result = await _http.PostAsJsonAsync("api/TaskItem", taskItem);
+            DisplaySnackBarMessage(result, "TaskItem", "Create");
         }
 
-        public Task<TaskItem> UpdateTaskItem(TaskItem taskItem)
+        public async Task UpdateTaskItem(TaskItemGetDTO taskItem)
         {
-            throw new NotImplementedException();
+            var result = await _http.PutAsJsonAsync("api/TaskItem", taskItem);
+            DisplaySnackBarMessage(result, "TaskItem", "Update");
         }
 
-        public async Task<TaskItem> UpdateTaskItemStatus(TaskItem taskItem)
+        public async Task UpdateTaskItemStatus(TaskItemGetDTO taskItem)
         {
-            var result = await _http.PutAsJsonAsync("api/status", taskItem);
-            var newTaskItemStatus = (await result.Content.ReadFromJsonAsync<ServiceResponse<TaskItem>>()).Data;
-            _snackBar.Add("Task status updated", Severity.Success);
-            return newTaskItemStatus;
+            var result = await _http.PutAsJsonAsync("api/TaskItem/status", taskItem);
+            DisplaySnackBarMessage(result, "TaskItem", "Update Status");
         }
 
-        public Task DeleteTaskItem(int taskItemId)
+        public async Task DeleteTaskItem(int taskItemId)
         {
-            throw new NotImplementedException();
+            var result = await _http.DeleteAsync($"api/TaskItem/{taskItemId}");
+            DisplaySnackBarMessage(result, "TaskItem", "Delete");
+        }
+
+        private void DisplaySnackBarMessage(HttpResponseMessage result, string entity, string operation)
+        {
+            if (result.IsSuccessStatusCode)
+                _snackBar.Add($"{entity} {operation} | Success", Severity.Success);
+            else
+                _snackBar.Add($"Something went wrong | [{entity} {operation}]", Severity.Error);
         }
     }
 }

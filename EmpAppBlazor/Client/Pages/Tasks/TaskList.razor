@@ -1,10 +1,11 @@
 ﻿@page "/task/list"
 @inject ITaskItemServiceClient TaskItemService
 @using System.Security.Claims
+@using EmpAppBlazor.Client.Dialogs
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IProjectServiceClient ProjectService
 @inject IUserServiceClient UserService
-@inject ISnackbar _snackBar
+@inject IDialogService DialogService
 
 <div class="mx-4">
     <MudExpansionPanels Elevation="4">
@@ -21,8 +22,8 @@
                     <MudForm @ref="form">
                         <div class="d-flex align-center justify-space-between mx-auto">
                             <div>
-                                <MudTextField class="mr-5 mb-1" Margin="Margin.Dense" T="string" Label="Title" Variant="Variant.Outlined" @bind-Value="@newTask.Title"></MudTextField>
-                                <MudDatePicker class="mr-5" Label="Due Date" Variant="Variant.Outlined" @bind-Date="@newTask.DueDate" />
+                                <MudTextField class="mr-5 mb-1" Margin="Margin.Dense" T="string" Label="Title" Variant="Variant.Outlined" @bind-Value="@newTask.Title" Required="true"></MudTextField>
+                                <MudDatePicker class="mr-5 mb-2" Label="Due Date" Variant="Variant.Outlined" @bind-Date="@newTask.DueDate" />
                             </div>
                             <MudTextField class="mr-5" Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense" Lines="5" @bind-Value="@newTask.Description"></MudTextField>
                             <div>
@@ -31,7 +32,7 @@
                                     <MudSelect class="mr-5 mb-3" Margin="Margin.Dense" Label="Assign To" Variant="Variant.Outlined" @bind-Value="@newTask.AssignedToId">
                                         @foreach (var user in UserService.Users)
                                         {
-                                        <MudSelectItem T=int Value="@user.Id">@(user.Name) @(user.Surname)</MudSelectItem>
+                                        <MudSelectItem T=int? Value="@user.Id">@(user.Name) @(user.Surname)</MudSelectItem>
                                         }
                                 </MudSelect>
 
@@ -66,35 +67,59 @@
 </div>
 
 
-<MudDropContainer T="TaskItem" Items="TaskItemService.TaskItems" ItemsSelector="@((item,dropzone) => item.TaskStatus == dropzone)" ItemDropped="ItemUpdated" Class="d-flex flex-wrap flex-grow-1">
+<MudDropContainer T="TaskItemGetDTO" Items="TaskItemService.TaskItems" ItemsSelector="@((item,dropzone) => item.TaskStatus == dropzone)" ItemDropped="ItemUpdated" Class="d-flex flex-wrap flex-grow-1">
     <ChildContent>
-        <MudDropZone T="TaskItem" Identifier="not started" Class="rounded-lg mud-alert-text-warning pa-4 ma-4 flex-1">
+        @if (@TaskItemService.TaskItems.Where(x => x.TaskStatus == "").Count() > 0)
+        {
+            <MudDropZone T="TaskItemGetDTO" Identifier="" Class="rounded-lg mud-alert-text-warning pa-4 ma-4 flex-1">
+                <MudText Typo="Typo.h6" Class="mb-4">no label (@TaskItemService.TaskItems.Where(x => x.TaskStatus == "").Count())</MudText>
+            </MudDropZone>
+        }
+        <MudDropZone T="TaskItemGetDTO" Identifier="not started" Class="rounded-lg mud-alert-text-warning pa-4 ma-4 flex-1">
             <MudText Typo="Typo.h6" Class="mb-4">not started (@TaskItemService.TaskItems.Where(x => x.TaskStatus == "not started").Count())</MudText>
         </MudDropZone>
-        <MudDropZone T="TaskItem" Identifier="active" Class="rounded-lg mud-alert-text-success pa-4 ma-4 flex-1">
+        <MudDropZone T="TaskItemGetDTO" Identifier="active" Class="rounded-lg mud-alert-text-success pa-4 ma-4 flex-1">
             <MudText Typo="Typo.h6" Class="mb-4">active (@TaskItemService.TaskItems.Where(x => x.TaskStatus == "active").Count())</MudText>
         </MudDropZone>
-        <MudDropZone T="TaskItem" Identifier="done" Class="rounded-lg mud-alert-text-info pa-4 ma-4 flex-1">
+        <MudDropZone T="TaskItemGetDTO" Identifier="done" Class="rounded-lg mud-alert-text-info pa-4 ma-4 flex-1">
             <MudText Typo="Typo.h6" Class="mb-4">done (@TaskItemService.TaskItems.Where(x => x.TaskStatus == "done").Count())</MudText>
         </MudDropZone>
     </ChildContent>
     <ItemRenderer>
         <MudCard Class="ma-2">
-            <MudCardContent Class="pa-3">
+
+            <div class="task-header">
+                <MudIconButton Icon="@Icons.Filled.Settings" Variant="Variant.Text" Color="Color.Primary" Size="Size.Small" OnClick="@((e) => OpenEditTaskItemDialog(@context))" />
+
+                @if (@context.Project != null)
+                {
+                    <MudText Typo="Typo.subtitle2">@context.Project?.Number @context.Project?.Name</MudText>
+                }
+                @if (@context.Importance == "high")
+                {
+                    <MudIcon Icon="@Icons.Filled.PriorityHigh" Size="Size.Small" Title="High Priority" Color="Color.Warning" />
+                }
+                @if (@context.Importance == "low")
+                {
+                    <MudIcon Icon="@Icons.Filled.VerticalAlignBottom" Size="Size.Small" Title="Low Priority" Color="Color.Info" />
+                }
+
+            </div>
+
+            <MudCardContent Class="pa-1">
                 <div>
                     <div class="item-card">
-                        <MudText Typo="Typo.subtitle1">@context.Project?.Number</MudText>
-                        <MudText Typo="Typo.body2">@context.DueDate?.ToString("dd/MMM/yyyy")</MudText>
+                        <MudText Typo="Typo.subtitle1">@context.Title</MudText>
                     </div>
                     <div class="item-card">
-                        <MudText Typo="Typo.subtitle2">@context.Title</MudText>
-                        <MudText Typo="Typo.caption">Priority: @context.Importance</MudText>
+                        <MudText Typo="Typo.caption">@context.DueDate?.ToString("dd/MMM/yyyy")</MudText>
                     </div>
                     <div class="item-card">
                         <MudText Typo="Typo.caption">@context.Description</MudText>
-                        <MudIconButton Icon="@Icons.Filled.ModeEdit" Variant="Variant.Text" Color="Color.Primary" Size="Size.Small" />
                     </div>
-                    <MudText Typo="Typo.caption"><i>@context.AssignedTo?.Name @context.AssignedTo?.Surname</i></MudText>
+                    <div class="item-card">
+                        <MudText Typo="Typo.caption"><i>@context.AssignedTo?.Name @context.AssignedTo?.Surname</i></MudText>
+                    </div>
                 </div>
             </MudCardContent>
         </MudCard>
@@ -102,8 +127,8 @@
 </MudDropContainer>
 
 @code {
-    TaskItem taskItem = new TaskItem();
-    TaskItem newTask = new TaskItem();
+    TaskItemGetDTO taskItem = new TaskItemGetDTO();
+    TaskItemGetDTO newTask = new TaskItemGetDTO();
     int loggedUserId;
     string loggedUserRole;
     MudForm form;
@@ -120,38 +145,54 @@
         await PopulateTasks(loggedUserRole);
     }
 
-    private async Task ItemUpdated(MudItemDropInfo<TaskItem> dropItem)
+    private async Task ItemUpdated(MudItemDropInfo<TaskItemGetDTO> dropItem)
     {
         dropItem.Item.TaskStatus = dropItem.DropzoneIdentifier;
 
         taskItem.TaskItemId = dropItem.Item.TaskItemId;
         taskItem.TaskStatus = dropItem.DropzoneIdentifier;
         taskItem.EditorId = loggedUserId;
-        taskItem = await TaskItemService.UpdateTaskItemStatus(taskItem);
+        await TaskItemService.UpdateTaskItemStatus(taskItem);
     }
 
     async Task AddNewTask()
     {
+        if (newTask.AssignedToId == null) newTask.AssignedToId = loggedUserId;
+        if (newTask.Importance == "" || newTask.Importance == null) newTask.Importance = "normal";
+        if (newTask.TaskStatus == "" || newTask.TaskStatus == null) newTask.TaskStatus = "";
         newTask.AuthorId = loggedUserId;
         if (loggedUserRole != "Admin")
         {
             newTask.AssignedToId = loggedUserId;
         }
-        var result = await TaskItemService.CreateTaskItem(newTask);
+        await TaskItemService.CreateTaskItem(newTask);
         form.Reset();
         await PopulateTasks(loggedUserRole);
-        _snackBar.Add("Task Created!", Severity.Success);
     }
 
     async Task PopulateTasks(string role)
     {
         if (role == "Admin")
         {
-            await TaskItemService.GetAllTaskItems();
+            await TaskItemService.GetTasks();
         }
         else
         {
-            await TaskItemService.GetAllTaskItemsByUserId(loggedUserId);
+            await TaskItemService.GetTasksByUserId(loggedUserId);
+        }
+    }
+
+    async Task OpenEditTaskItemDialog(TaskItemGetDTO taskItem)
+    {
+        var parameters = new DialogParameters { ["taskItem"] = taskItem };
+        var options = new DialogOptions { FullWidth = true };
+
+        var dialog = DialogService.Show<EditTaskItemDialog>("Edit Task", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            await PopulateTasks(loggedUserRole);
         }
     }
 }
