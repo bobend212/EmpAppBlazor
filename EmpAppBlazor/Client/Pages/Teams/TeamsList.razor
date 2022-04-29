@@ -1,0 +1,72 @@
+﻿@page "/project/teams"
+@inject IProjectServiceClient ProjectService
+
+<MudTable Items="@ProjectService.Projects" CustomHeader="true" Striped="true" Dense="true" Breakpoint="Breakpoint.Sm"
+          Filter="new Func<ProjectGetDTO,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1" RowsPerPage=10>
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Design Teams</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString" Placeholder="Search..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTHeadRow>
+            <MudTh colspan="2">Project</MudTh>
+            <MudTh colspan="1"></MudTh>
+            <MudTh colspan="2"></MudTh>
+        </MudTHeadRow>
+        <MudTHeadRow>
+            <MudTh style="width: 60px;"><MudTableSortLabel SortBy="new Func<ProjectGetDTO, object>(x=>x.Number)">Number</MudTableSortLabel></MudTh>
+            <MudTh style="width: 300px;"><MudTableSortLabel SortBy="new Func<ProjectGetDTO, object>(x=>x.Name)">Name</MudTableSortLabel></MudTh>
+            <MudTh style="width: 250px;"><MudTableSortLabel SortBy="new Func<ProjectGetDTO, object>(x=>x.Workload?.DesignLeader?.Surname)">Design Leader</MudTableSortLabel></MudTh>
+            <MudTh style="width: 250px;">Designers</MudTh>
+            <MudTh ></MudTh>
+        </MudTHeadRow>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Number</MudTd>
+        <MudTd>@context.Name</MudTd>
+        <MudTd>@context.Workload?.DesignLeader?.Name @context.Workload?.DesignLeader?.Surname</MudTd>
+        <MudTd >
+            @foreach (var designer in @context.Designers)
+            {   
+                <div>@designer.Name @designer.Surname</div>
+            }
+        </MudTd>
+        <MudTd>
+            <div style="display: flex; justify-content: flex-end;">
+                <MudIconButton Class="mr-3" Icon="@Icons.Filled.PersonAddAlt1" Variant="Variant.Outlined" Color="Color.Success" Size="Size.Small" />
+                <MudIconButton Icon="@Icons.Filled.PersonRemoveAlt1" Variant="Variant.Outlined" Color="Color.Warning" Size="Size.Small" />
+            </div>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[]{10, 20, 50, 100}" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private string searchString = "";
+    private ProjectGetDTO selectedItem1 = null;
+
+    private bool FilterFunc1(ProjectGetDTO element) => FilterFunc(element, searchString);
+
+    private bool FilterFunc(ProjectGetDTO element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Number.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{element.Number} {element.Name}".Contains(searchString))
+            return true;
+        if ($"{element.Workload?.DesignLeader?.Name} {element.Workload?.DesignLeader?.Surname}".Contains(searchString))
+            return true;
+        return false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ProjectService.GetProjects();
+    }
+}
