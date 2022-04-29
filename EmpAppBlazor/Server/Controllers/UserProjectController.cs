@@ -14,9 +14,15 @@ namespace EmpAppBlazor.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddUserProject(UserProjectAddDTO model)
+        public async Task<IActionResult> AddUserProject(UserProjectAddRemoveDTO model)
         {
             return Ok(await _userProjectService.AddUserProject(model));
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> RemoveUserProject(UserProjectAddRemoveDTO model)
+        {
+            return Ok(await _userProjectService.RemoveUserProject(model));
         }
     }
 }

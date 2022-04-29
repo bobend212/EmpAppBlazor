@@ -2,6 +2,7 @@
 {
     public interface IUserProjectService
     {
-        Task<ServiceResponse<ProjectGetDTO>> AddUserProject(UserProjectAddDTO model);
+        Task<ServiceResponse<bool>> AddUserProject(UserProjectAddRemoveDTO model);
+        Task<ServiceResponse<bool>> RemoveUserProject(UserProjectAddRemoveDTO model);
     }
 }
