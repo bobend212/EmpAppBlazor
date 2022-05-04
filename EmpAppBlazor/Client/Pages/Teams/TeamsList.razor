@@ -1,5 +1,7 @@
 ﻿@page "/project/teams"
+@using EmpAppBlazor.Client.Dialogs
 @inject IProjectServiceClient ProjectService
+@inject IDialogService DialogService
 
 <MudTable Items="@ProjectService.Projects" CustomHeader="true" Striped="true" Dense="true" Breakpoint="Breakpoint.Sm"
           Filter="new Func<ProjectGetDTO,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1" RowsPerPage=10>
@@ -19,22 +21,22 @@
             <MudTh style="width: 300px;"><MudTableSortLabel SortBy="new Func<ProjectGetDTO, object>(x=>x.Name)">Name</MudTableSortLabel></MudTh>
             <MudTh style="width: 250px;"><MudTableSortLabel SortBy="new Func<ProjectGetDTO, object>(x=>x.Workload?.DesignLeader?.Surname)">Design Leader</MudTableSortLabel></MudTh>
             <MudTh style="width: 250px;">Designers</MudTh>
-            <MudTh ></MudTh>
+            <MudTh></MudTh>
         </MudTHeadRow>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.Number</MudTd>
         <MudTd>@context.Name</MudTd>
         <MudTd>@context.Workload?.DesignLeader?.Name @context.Workload?.DesignLeader?.Surname</MudTd>
-        <MudTd >
+        <MudTd>
             @foreach (var designer in @context.Designers)
-            {   
+            {
                 <div>@designer.Name @designer.Surname</div>
             }
         </MudTd>
         <MudTd>
             <div style="display: flex; justify-content: flex-end;">
-                <MudIconButton Class="mr-3" Icon="@Icons.Filled.PersonAddAlt1" Variant="Variant.Outlined" Color="Color.Success" Size="Size.Small" />
+                <MudIconButton OnClick="@((e) => OpenAssignUserToProjectDialog(@context))" Class="mr-3" Icon="@Icons.Filled.PersonAddAlt1" Variant="Variant.Outlined" Color="Color.Success" Size="Size.Small" />
                 <MudIconButton Icon="@Icons.Filled.PersonRemoveAlt1" Variant="Variant.Outlined" Color="Color.Warning" Size="Size.Small" />
             </div>
         </MudTd>
@@ -68,5 +70,19 @@
     protected override async Task OnInitializedAsync()
     {
         await ProjectService.GetProjects();
+    }
+
+    async Task OpenAssignUserToProjectDialog(ProjectGetDTO project)
+    {
+        var parameters = new DialogParameters { ["project"] = project };
+        var options = new DialogOptions { FullWidth = true };
+
+        var dialog = DialogService.Show<AssignUserToProjectDialog>("Assign User to Project", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            await ProjectService.GetProjects();
+        }
     }
 }
