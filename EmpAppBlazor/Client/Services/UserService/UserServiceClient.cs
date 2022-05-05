@@ -8,6 +8,8 @@ namespace EmpAppBlazor.Client.Services.UserService
         private readonly ISnackbar _snackBar;
 
         public List<User> Users { get; set; } = new List<User>();
+        public List<User> UsersAssigned { get; set; } = new List<User>();
+        public List<User> UsersNotAssigned { get; set; } = new List<User>();
 
         public UserServiceClient(HttpClient http, ISnackbar snackBar)
         {
@@ -22,6 +24,20 @@ namespace EmpAppBlazor.Client.Services.UserService
                 Users = result.Data;
         }
 
+        public async Task GetAllUsersAssignedToProject(int projectId)
+        {
+            var result = await _http.GetFromJsonAsync<ServiceResponse<List<User>>>($"/api/User/{projectId}/users-assigned");
+            if (result != null && result.Data != null)
+                UsersAssigned = result.Data;
+        }
+
+        public async Task GetAllUsersNotAssignedToProject(int projectId)
+        {
+            var result = await _http.GetFromJsonAsync<ServiceResponse<List<User>>>($"/api/User/{projectId}/users-not-assigned");
+            if (result != null && result.Data != null)
+                UsersNotAssigned = result.Data;
+        }
+
         public async Task AssignUserToProject(UserProjectAddRemoveDTO model)
         {
             var result = await _http.PostAsJsonAsync("api/userproject", model);
@@ -34,12 +50,11 @@ namespace EmpAppBlazor.Client.Services.UserService
             {
                 DisplaySnackBarMessage(result, "User-Project", x.Message);
             }
-
         }
 
-        public Task RemoveUserFromProject(UserProjectAddRemoveDTO model)
+        public async Task RemoveUserFromProject(UserProjectAddRemoveDTO model)
         {
-            throw new NotImplementedException();
+            //to do
         }
 
         private void DisplaySnackBarMessage(HttpResponseMessage result, string entity, string operation)

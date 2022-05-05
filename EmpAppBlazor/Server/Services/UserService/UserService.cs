@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-
-namespace EmpAppBlazor.Server.Services.UserService
+﻿namespace EmpAppBlazor.Server.Services.UserService
 {
     public class UserService : IUserService
     {
@@ -21,6 +19,51 @@ namespace EmpAppBlazor.Server.Services.UserService
             {
                 Data = usersDto
             };
+            return response;
+        }
+
+        public async Task<ServiceResponse<List<UserDTO>>> GetAllUsersAssignedToProject(int projectId)
+        {
+            var response = new ServiceResponse<List<UserDTO>>();
+            var users =
+                from p in _context.Projects
+                where p.Id == projectId
+                from up in p.UserProjects
+                select new UserDTO
+                {
+                    Id = up.UserId,
+                    Name = up.User.Name,
+                    Surname = up.User.Surname,
+                    ProjectsCount = up.User.UserProjects.Count()
+                };
+
+            var usersDto = _mapper.Map<List<UserDTO>>(users);
+
+            response.Data = usersDto;
+
+            return response;
+        }
+
+        public async Task<ServiceResponse<List<UserDTO>>> GetAllUsersNotAssignedToProject(int projectId)
+        {
+            var response = new ServiceResponse<List<UserDTO>>();
+            var findProject = await _context.Projects.Include(x => x.UserProjects).ThenInclude(z => z.User).SingleOrDefaultAsync(x => x.Id == projectId);
+            var usersAssigned = findProject.UserProjects.Select(x => x.User).ToList();
+            var allUsers = await _context.Users.Include(x => x.UserProjects).ToListAsync();
+            var usersNotAssigned = allUsers.Where(p => !usersAssigned.Any(p2 => p2.Id == p.Id));
+
+            var users = usersNotAssigned.Select(x => new UserDTO
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Surname = x.Surname,
+                ProjectsCount = x.UserProjects.Count()
+            });
+
+            var usersDto = _mapper.Map<List<UserDTO>>(users);
+
+            response.Data = usersDto;
+
             return response;
         }
 
@@ -62,8 +105,8 @@ namespace EmpAppBlazor.Server.Services.UserService
             findUserDto.Role = user.Role;
             findUserDto.Name = user.Name;
             findUserDto.Surname = user.Surname;
-            findUserDto.Department = user.Department; 
-            findUserDto.Title = user.Title; 
+            findUserDto.Department = user.Department;
+            findUserDto.Title = user.Title;
             findUserDto.UpdateDate = DateTime.Now;
 
             await _context.SaveChangesAsync();

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace EmpAppBlazor.Server.Controllers
 {
@@ -18,6 +17,18 @@ namespace EmpAppBlazor.Server.Controllers
         public async Task<ActionResult<ServiceResponse<List<UserDTO>>>> GetAllUsers()
         {
             return await _userService.GetAllUsers();
+        }
+
+        [HttpGet("{projectId}/users-assigned")]
+        public async Task<ActionResult<ServiceResponse<List<UserDTO>>>> GetAllUsersAssignedToProject(int projectId)
+        {
+            return await _userService.GetAllUsersAssignedToProject(projectId);
+        }
+
+        [HttpGet("{projectId}/users-not-assigned")]
+        public async Task<ActionResult<ServiceResponse<List<UserDTO>>>> GetAllUsersNotAssignedToProject(int projectId)
+        {
+            return await _userService.GetAllUsersNotAssignedToProject(projectId);
         }
 
         [HttpGet("{userId}")]
