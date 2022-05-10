@@ -2,11 +2,13 @@
 @page "/project/addoredit/{id:int}"
 @using System.ComponentModel.DataAnnotations
 @using System.Globalization
+@using EmpAppBlazor.Client.Dialogs
 @inject IProjectServiceClient ProjectService
 @inject IWorkloadServiceClient WorkloadService
 @inject NavigationManager NavigationManager
 @inject IUserServiceClient UserService
 @inject IJSRuntime JSRuntime
+@inject IDialogService DialogService
 
 @if (loading)
 {
@@ -101,8 +103,7 @@ else
                             @foreach (var user in projectGet.Designers)
                             {
                                 <MudStack Row="true">
-                                    <MudListItem Text="@user.Email" Icon="@Icons.Filled.PersonPin" />
-                                    <MudIconButton Icon="@Icons.Filled.PersonRemoveAlt1" Color="Color.Error" Size="Size.Small"></MudIconButton>
+                                    <p>@user.Name @user.Surname / @user.Email</p>
                                 </MudStack>
                             }
                         </MudList>
@@ -114,15 +115,13 @@ else
                 </MudPaper>
                 <MudPaper Class="pa-4 mt-4" Elevation="9">
                     <div class="action-buttons-centered">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="false">Assign</MudButton>
+                        <MudButton OnClick="@((e) => OpenAssignUserToProjectDialog(projectGet))" Variant="Variant.Filled" Color="Color.Primary" DisableElevation="false">Manage</MudButton>
                     </div>
                 </MudPaper>
             </MudItem>
         }
 
     </MudGrid>
-
-
 }
 
 @code {
@@ -140,6 +139,7 @@ else
     protected override async Task OnParametersSetAsync()
     {
         await UserService.GetAllUsers();
+        // await ProjectService.GetProjects();
 
         if (Id == 0)
         {
@@ -223,6 +223,21 @@ else
     void NewWorkloadPage(int id)
     {
         NavigationManager.NavigateTo($"/workload/add/{id}");
+    }
+
+    async Task OpenAssignUserToProjectDialog(ProjectGetDTO project)
+    {
+        var parameters = new DialogParameters { ["project"] = project };
+        var options = new DialogOptions { FullScreen = true, CloseButton = true };
+
+        var dialog = DialogService.Show<AssignUserToProjectDialog>("Assign User to Project", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            //refresh data after dialog closed
+        }
+
     }
 
 }

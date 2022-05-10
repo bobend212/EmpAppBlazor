@@ -1,4 +1,6 @@
 ﻿using EmpAppBlazor.Shared.Auth;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace EmpAppBlazor.Client.Services.UserService
 {
@@ -54,7 +56,18 @@ namespace EmpAppBlazor.Client.Services.UserService
 
         public async Task RemoveUserFromProject(UserProjectAddRemoveDTO model)
         {
-            //to do
+            var request = new HttpRequestMessage(HttpMethod.Delete, "api/userproject");
+            request.Content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+            var result = await _http.SendAsync(request);
+            var x = result.Content.ReadFromJsonAsync<ServiceResponse<bool>>().Result;
+            if (x.Success == true)
+            {
+                DisplaySnackBarMessage(result, "User-Project", x.Message);
+            }
+            else
+            {
+                DisplaySnackBarMessage(result, "User-Project", x.Message);
+            }
         }
 
         private void DisplaySnackBarMessage(HttpResponseMessage result, string entity, string operation)

@@ -36,8 +36,7 @@
         </MudTd>
         <MudTd>
             <div style="display: flex; justify-content: flex-end;">
-                <MudIconButton OnClick="@((e) => OpenAssignUserToProjectDialog(@context))" Class="mr-3" Icon="@Icons.Filled.PersonAddAlt1" Variant="Variant.Outlined" Color="Color.Success" Size="Size.Small" />
-                <MudIconButton Icon="@Icons.Filled.PersonRemoveAlt1" Variant="Variant.Outlined" Color="Color.Warning" Size="Size.Small" />
+                <MudIconButton OnClick="@((e) => OpenAssignUserToProjectDialog(@context))" Class="mr-3" Icon="@Icons.Filled.PeopleAlt" Variant="Variant.Outlined" Color="Color.Success" Size="Size.Large" />
             </div>
         </MudTd>
     </RowTemplate>
@@ -75,7 +74,7 @@
     async Task OpenAssignUserToProjectDialog(ProjectGetDTO project)
     {
         var parameters = new DialogParameters { ["project"] = project };
-        var options = new DialogOptions { FullScreen = true, CloseButton = true };
+        var options = new DialogOptions { FullScreen = true };
 
         var dialog = DialogService.Show<AssignUserToProjectDialog>("Assign User to Project", parameters, options);
         var result = await dialog.Result;

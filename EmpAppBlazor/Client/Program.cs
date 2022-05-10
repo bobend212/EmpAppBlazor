@@ -30,7 +30,7 @@ builder.Services.AddScoped<IUserServiceClient, UserServiceClient>();
 builder.Services.AddMudServices(config =>
 {
     config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
-    config.SnackbarConfiguration.VisibleStateDuration = 500;
+    config.SnackbarConfiguration.VisibleStateDuration = 1000;
 });
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddOptions();
