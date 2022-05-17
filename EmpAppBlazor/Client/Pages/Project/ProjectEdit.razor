@@ -96,7 +96,7 @@ else
         {
             <MudItem xs="12" sm="3">
                 <MudPaper Class="pa-4" Elevation="9">
-                    <MudText Typo="Typo.subtitle2">Design Team</MudText>
+                    <MudText Typo="Typo.subtitle2">Design Team (@projectGet.Designers.Count)</MudText>
                     @if (projectGet.Designers.Count > 0)
                     {
                         <MudList>
@@ -131,6 +131,7 @@ else
     MudForm? form;
     bool success;
     ProjectGetDTO projectGet = new ProjectGetDTO();
+    ProjectGetDTO dbProject = new ProjectGetDTO();
     WorkloadGetDTO workload = new WorkloadGetDTO();
     bool loading = true;
     string btnText = "";
@@ -138,9 +139,7 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        await UserService.GetAllUsers();
-        // await ProjectService.GetProjects();
-
+        
         if (Id == 0)
         {
             workload = new WorkloadGetDTO();
@@ -148,7 +147,7 @@ else
         }
         else
         {
-            ProjectGetDTO dbProject = (await ProjectService.GetSingleProject(Id)).Data;
+            dbProject = (await ProjectService.GetSingleProject(Id)).Data;
             if (dbProject == null)
             {
                 msg = $"Project id: {Id} does not exist!";
@@ -159,6 +158,7 @@ else
 
             if (workload != null)
             {
+                await UserService.GetAllUsers();
                 WorkloadGetDTO dbWorkload = (await WorkloadService.GetSingleWorkloadByProjectId(Id)).Data;
                 workload.Project = projectGet;
                 workload = dbWorkload;
@@ -235,7 +235,7 @@ else
 
         if (!result.Cancelled)
         {
-            //refresh data after dialog closed
+            projectGet = (await ProjectService.GetSingleProject(Id)).Data;
         }
 
     }
