@@ -24,7 +24,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 //services
 builder.Services.AddScoped<IProjectServiceClient, ProjectServiceClient>();
 builder.Services.AddScoped<IWorkloadServiceClient, WorkloadServiceClient>();
-builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuthServiceClient, AuthServiceClient>();
 builder.Services.AddScoped<ITaskItemServiceClient, TaskItemServiceClient>();
 builder.Services.AddScoped<IUserServiceClient, UserServiceClient>();
 builder.Services.AddMudServices(config =>

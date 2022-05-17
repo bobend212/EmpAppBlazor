@@ -1,41 +1,98 @@
 ﻿@page "/register"
-@inject IAuthService AuthService
+@using System.ComponentModel.DataAnnotations
+@using System.Text.RegularExpressions
+@inject IAuthServiceClient AuthService
 @inject ISnackbar Snackbar
 
 <PageTitle>Registration</PageTitle>
 
-<h3>Register</h3>
+<MudGrid>
 
-<EditForm Model="user" OnValidSubmit="HandleRegistration">
-    <DataAnnotationsValidator />
-    <div class="mb-3">
-        <label for="email">Email</label>
-        <InputText id="email" @bind-Value="user.Email" class="form-control" />
-        <ValidationMessage For="@(() => user.Email)" />
-    </div>
+    <MudItem xs="10" Class="mx-auto">
+        <MudPaper Class="pa-4 m-2" Elevation="5">
+            <MudText Align="Align.Center" Typo="Typo.h3">Register New User</MudText>
+        </MudPaper>
 
-    <div class="mb-3">
-        <label for="password">Password</label>
-        <InputText id="password" @bind-Value="user.Password" class="form-control" />
-        <ValidationMessage For="@(() => user.Password)" />
-    </div>
+        <MudPaper Class="pa-4 m-2">
+            <MudForm @ref="form" @bind-IsValid="@success">
+                <MudGrid Spacing="2" Justify="Justify.Center">
+                    <MudItem xs="4">
 
-    <div class="mb-3">
-        <label for="confirmPassword">Confirm Password</label>
-        <InputText id="confirmPassword" @bind-Value="user.ConfirmPassword" class="form-control" />
-        <ValidationMessage For="@(() => user.ConfirmPassword)" />
-    </div>
+                        <MudTextField T="string" Label="Email" Required="true" RequiredError="Email is required!" HelperText="Use work email"
+                                      Validation="@(new EmailAddressAttribute() {ErrorMessage = "The email address is invalid"})" @bind-Value="user.Email" />
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudTextField T="string" Label="Password" HelperText="Choose a strong password" @ref="pwField1"
+                                      InputType="InputType.Password"
+                                      Required="true"
+                                      RequiredError="Password is required!"
+                                      Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))"
+                                      @bind-Value="user.Password" />
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudTextField T="string" Label="Confirm Password" HelperText="Repeat the password"
+                                      InputType="InputType.Password" @bind-Value="user.ConfirmPassword"
+                                      Required="true"
+                                      Validation="@(new Func<string, string>(PasswordMatch))" />
+                    </MudItem>
+                    <MudItem xs="6">
+                        <MudTextField @bind-Value="user.Name" Required="true" Label="Name" />
+                        <MudTextField @bind-Value="user.Surname" Required="true" Label="Surname" />
+                    </MudItem>
+                    <MudItem xs="6">
+                        <MudTextField @bind-Value="user.Title" Required="true" Label="Title/Position" />
+                        <MudSelect @bind-Value="user.Department" Required="true" T="string" Label="Department" AnchorOrigin="Origin.BottomCenter">
+                            <MudSelectItem Value="@("HR")" />
+                            <MudSelectItem Value="@("Design")" />
+                            <MudSelectItem Value="@("Production")" />
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <div class="d-flex justify-content-end mr-2">
+                            <div>
+                                <MudButton Variant="Variant.Filled" Color="Color.Secondary" DisableElevation="true" OnClick="@(()=>form.Reset())">Reset form</MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-2" OnClick="HandleRegistration">Register</MudButton>
+                            </div>
+                        </div>
+                    </MudItem>
 
-    <button type="submit" class="btn btn-primary">Register</button>
-</EditForm>
+                </MudGrid>
+            </MudForm>
+        </MudPaper>
+
+    </MudItem>
+</MudGrid>
+
 
 @code {
     UserRegister user = new UserRegister();
+    MudForm form;
+    bool success;
+    MudTextField<string> pwField1;
 
     string isSucceedRegister = string.Empty;
 
     async Task HandleRegistration()
     {
         var result = await AuthService.Register(user);
+        if (result.Success == true) form.Reset();
+    }
+
+    private IEnumerable<string> PasswordStrength(string pw)
+    {
+        if (string.IsNullOrWhiteSpace(pw))
+        {
+            yield return "Password is required!";
+            yield break;
+        }
+        if (pw.Length < 6)
+            yield return "Password must be at least of length 6";
+    }
+
+    private string PasswordMatch(string arg)
+    {
+        if (pwField1.Value != arg)
+            return "Passwords don't match";
+        return null;
     }
 }

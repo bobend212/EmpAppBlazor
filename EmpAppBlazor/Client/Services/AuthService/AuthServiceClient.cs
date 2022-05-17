@@ -3,12 +3,12 @@ using MudBlazor;
 
 namespace EmpAppBlazor.Client.Services.AuthService
 {
-    public class AuthService : IAuthService
+    public class AuthServiceClient : IAuthServiceClient
     {
         private readonly HttpClient _http;
         private readonly ISnackbar _snackBar;
 
-        public AuthService(HttpClient http, ISnackbar snackBar)
+        public AuthServiceClient(HttpClient http, ISnackbar snackBar)
         {
             _http = http;
             _snackBar = snackBar;
@@ -45,15 +45,17 @@ namespace EmpAppBlazor.Client.Services.AuthService
         public async Task<ServiceResponse<int>> Register(UserRegister request)
         {
             var result = await _http.PostAsJsonAsync("api/auth/register", request);
-            if (result.IsSuccessStatusCode)
+            var x = result.Content.ReadFromJsonAsync<ServiceResponse<int>>().Result;
+
+            if (x.Success == true)
             {
                 _snackBar.Add("New User Registered", Severity.Success);
             }
             else
             {
-                _snackBar.Add("Registration failure", Severity.Error);
+                _snackBar.Add($"Registration failure: {x.Message}", Severity.Error);
             }
-            return await result.Content.ReadFromJsonAsync<ServiceResponse<int>>();
+            return x;
         }
     }
 }

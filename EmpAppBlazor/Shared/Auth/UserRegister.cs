@@ -12,5 +12,10 @@ namespace EmpAppBlazor.Shared.Auth
 
         [Compare("Password", ErrorMessage = "The passwords do not match!")]
         public string ConfirmPassword { get; set; } = string.Empty;
+
+        public string Name { get; set; } = string.Empty;
+        public string Surname { get; set; } = string.Empty;
+        public string Department { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
     }
 }

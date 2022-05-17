@@ -2,7 +2,7 @@
 
 namespace EmpAppBlazor.Client.Services.AuthService
 {
-    public interface IAuthService
+    public interface IAuthServiceClient
     {
         Task<ServiceResponse<int>> Register(UserRegister request);
 

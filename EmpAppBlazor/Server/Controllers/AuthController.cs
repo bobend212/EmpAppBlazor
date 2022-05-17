@@ -20,7 +20,11 @@ namespace EmpAppBlazor.Server.Controllers
         {
             var response = await _authService.Register(new User
             {
-                Email = request.Email
+                Email = request.Email,
+                Name = request.Name,
+                Surname = request.Surname,
+                Department = request.Department,
+                Title = request.Title
             },
             request.Password);
 
