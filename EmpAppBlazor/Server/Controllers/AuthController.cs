@@ -62,5 +62,19 @@ namespace EmpAppBlazor.Server.Controllers
 
             return Ok(response);
         }
+
+        [HttpPost("change-account-details"), Authorize]
+        public async Task<ActionResult<ServiceResponse<bool>>> ChangeAccountDetails(UserAccountDetails model)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var response = await _authService.ChangeAccountDetails(int.Parse(userId), model);
+
+            if (!response.Success)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
     }
 }

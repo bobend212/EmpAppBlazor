@@ -127,5 +127,28 @@ namespace EmpAppBlazor.Server.Services.AuthService
 
             return new ServiceResponse<bool> { Data = true, Message = "Password has been changed." };
         }
+
+        public async Task<ServiceResponse<bool>> ChangeAccountDetails(int userId, UserAccountDetails model)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return new ServiceResponse<bool>
+                {
+                    Success = false,
+                    Message = "User not found."
+                };
+            }
+
+            user.Name = model.Name;
+            user.Surname = model.Surname;
+            user.Title = model.Title;
+            user.Department = model.Department;
+            user.UpdateDate = model.UpdateDate;
+
+            await _context.SaveChangesAsync();
+
+            return new ServiceResponse<bool> { Data = true, Message = "Account Details has been changed." };
+        }
     }
 }

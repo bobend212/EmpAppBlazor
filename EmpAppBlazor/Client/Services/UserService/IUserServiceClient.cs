@@ -10,6 +10,8 @@ namespace EmpAppBlazor.Client.Services.UserService
 
         Task GetAllUsers();
 
+        Task<ServiceResponse<UserDTO>> GetSingleUser(int userId);
+
         Task GetAllUsersAssignedToProject(int projectId);
 
         Task GetAllUsersNotAssignedToProject(int projectId);

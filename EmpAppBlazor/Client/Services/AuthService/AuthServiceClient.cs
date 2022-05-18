@@ -1,5 +1,4 @@
 ﻿using EmpAppBlazor.Shared.Auth;
-using MudBlazor;
 
 namespace EmpAppBlazor.Client.Services.AuthService
 {
@@ -12,20 +11,6 @@ namespace EmpAppBlazor.Client.Services.AuthService
         {
             _http = http;
             _snackBar = snackBar;
-        }
-
-        public async Task<ServiceResponse<bool>> ChangePassword(UserChangePassword request)
-        {
-            var result = await _http.PostAsJsonAsync("api/auth/change-password", request.Password);
-            if (result.IsSuccessStatusCode)
-            {
-                _snackBar.Add("Password has been changed.", Severity.Success);
-            }
-            else
-            {
-                _snackBar.Add("Password change failure", Severity.Error);
-            }
-            return await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
         }
 
         public async Task<ServiceResponse<string>> Login(UserLogin request)
@@ -56,6 +41,34 @@ namespace EmpAppBlazor.Client.Services.AuthService
                 _snackBar.Add($"Registration failure: {x.Message}", Severity.Error);
             }
             return x;
+        }
+
+        public async Task<ServiceResponse<bool>> ChangePassword(UserChangePassword request)
+        {
+            var result = await _http.PostAsJsonAsync("api/auth/change-password", request.Password);
+            if (result.IsSuccessStatusCode)
+            {
+                _snackBar.Add("Password has been changed.", Severity.Success);
+            }
+            else
+            {
+                _snackBar.Add("Password change failure", Severity.Error);
+            }
+            return await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
+        }
+
+        public async Task<ServiceResponse<bool>> ChangeAccountDetails(UserDTO request)
+        {
+            var result = await _http.PostAsJsonAsync("api/auth/change-account-details", request);
+            if (result.IsSuccessStatusCode)
+            {
+                _snackBar.Add("Account Details has been changed.", Severity.Success);
+            }
+            else
+            {
+                _snackBar.Add("Account Details change failure", Severity.Error);
+            }
+            return await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
         }
     }
 }

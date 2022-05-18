@@ -9,5 +9,7 @@ namespace EmpAppBlazor.Client.Services.AuthService
         Task<ServiceResponse<string>> Login(UserLogin request);
 
         Task<ServiceResponse<bool>> ChangePassword(UserChangePassword request);
+
+        Task<ServiceResponse<bool>> ChangeAccountDetails(UserDTO request);
     }
 }

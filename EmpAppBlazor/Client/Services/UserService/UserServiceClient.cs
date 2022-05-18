@@ -26,6 +26,12 @@ namespace EmpAppBlazor.Client.Services.UserService
                 Users = result.Data;
         }
 
+        public async Task<ServiceResponse<UserDTO>> GetSingleUser(int userId)
+        {
+            var result = await _http.GetFromJsonAsync<ServiceResponse<UserDTO>>($"/api/User/{userId}");
+            return result;
+        }
+
         public async Task GetAllUsersAssignedToProject(int projectId)
         {
             var result = await _http.GetFromJsonAsync<ServiceResponse<List<User>>>($"/api/User/{projectId}/users-assigned");
