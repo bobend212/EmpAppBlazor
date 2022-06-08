@@ -185,7 +185,7 @@
     async Task OpenEditTaskItemDialog(TaskItemGetDTO taskItem)
     {
         var parameters = new DialogParameters { ["taskItem"] = taskItem };
-        var options = new DialogOptions { FullWidth = true };
+        var options = new MudBlazor.DialogOptions { FullWidth = true };
 
         var dialog = DialogService.Show<EditTaskItemDialog>("Edit Task", parameters, options);
         var result = await dialog.Result;

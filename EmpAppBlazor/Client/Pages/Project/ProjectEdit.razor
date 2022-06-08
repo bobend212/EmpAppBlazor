@@ -228,7 +228,7 @@ else
     async Task OpenAssignUserToProjectDialog(ProjectGetDTO project)
     {
         var parameters = new DialogParameters { ["project"] = project };
-        var options = new DialogOptions { FullScreen = true, CloseButton = true };
+        var options = new MudBlazor.DialogOptions { FullScreen = true, CloseButton = true };
 
         var dialog = DialogService.Show<AssignUserToProjectDialog>("Assign User to Project", parameters, options);
         var result = await dialog.Result;
