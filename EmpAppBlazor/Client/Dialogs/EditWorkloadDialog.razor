@@ -39,7 +39,7 @@
             </MudItem>
             <MudItem xs="6">
                 <MudDatePicker class="mr-5" Label="Delivery Date" DateFormat="dd/MMMM/yyyy" Culture="@CultureInfo.GetCultureInfo("pl-pl")" @bind-Date="workload.DeliveryDate" />
-                <MudDatePicker class="mr-5" Label="Required Date" DateFormat="dd/MMMM/yyyy" Culture="@CultureInfo.GetCultureInfo("pl-pl")" @bind-Date="workload.RequiredDate" />
+                <MudDatePicker class="mr-5" Label="Required Date" DateFormat="dd/MMMM/yyyy" Culture="@CultureInfo.GetCultureInfo("pl-pl")" @bind-Date="workload.BregsRequired" />
                 <MudDatePicker class="mr-5" Label="Order Placed" DateFormat="dd/MMMM/yyyy" Culture="@CultureInfo.GetCultureInfo("pl-pl")" @bind-Date="workload.OrderPlaced" />
             </MudItem>
             <MudTextField T="string" Label="Comments/description/notes" Variant="Variant.Outlined" Lines="5" @bind-Value="workload.Comments" />

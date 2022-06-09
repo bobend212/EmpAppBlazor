@@ -63,13 +63,19 @@
 
             findWorkload.ProductionStage = workload.ProductionStage;
             findWorkload.DeliveryDate = workload.DeliveryDate;
-            findWorkload.RequiredDate = workload.RequiredDate;
+            //findWorkload.RequiredDate = workload.RequiredDate;
             findWorkload.OrderPlaced = workload.OrderPlaced;
             findWorkload.Comments = workload.Comments;
             findWorkload.DesignLeaderId = workload.DesignLeaderId;
             findWorkload.ProjectId = workload.ProjectId;
             findWorkload.EditorId = workload.EditorId;
             findWorkload.LastUpdate = DateTime.Now;
+            findWorkload.DesignInfo = workload.DesignInfo;
+            findWorkload.DrawingsReceived = workload.DrawingsReceived;
+            findWorkload.EngReceived = workload.EngReceived;
+            findWorkload.SlabStage = workload.SlabStage;
+            findWorkload.BregsStage = workload.BregsStage;
+            findWorkload.ProductionStage = workload.ProductionStage;
 
             await _context.SaveChangesAsync();
 

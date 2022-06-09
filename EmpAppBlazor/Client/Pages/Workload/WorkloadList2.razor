@@ -1,0 +1,196 @@
+﻿@page "/workload/list2"
+@using Radzen.Blazor
+@inject IWorkloadServiceClient WorkloadService
+@inject IProjectServiceClient ProjectService
+
+<RadzenButton Icon="add_circle_outline" style="margin: 10px" Text="Add New Workload" Click="@InsertRow" Disabled=@(workloadToInsert != null) />
+<RadzenDataGrid @ref="workloadsGrid" AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true" EditMode="Radzen.DataGridEditMode.Single"
+                Data="@WorkloadService.Workloads" TItem="WorkloadGetDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" CellRender="@CellRender">
+    <Columns>
+        <RadzenDataGridColumn TItem="WorkloadGetDTO" Property="Id" Filterable="false" Title="ID" Frozen="true" Width="40px" TextAlign="TextAlign.Center" />
+
+        <RadzenDataGridColumn TItem="WorkloadGetDTO" Property="Project.Number" Title="Project" Frozen="true" TextAlign="TextAlign.Center" Width="250px">
+            <Template Context="project">
+                @project.Project?.Number @project.Project?.Name
+            </Template>
+            <EditTemplate Context="project">
+                <RadzenDropDown @bind-Value="project.ProjectId"
+                                Data="@ProjectService.Projects"
+                                TextProperty="Number"
+                                ValueProperty="Project.Id"
+                                Style="width:100%; display: block;"
+                                AllowClear="true"
+                                AllowFiltering="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        @*<RadzenDataGridColumn TItem="WorkloadGetDTO" Property="Project.Name" Filterable="true" Title="Client" Frozen="true" TextAlign="TextAlign.Center" Width="150px" />*@
+        <RadzenDataGridColumn TItem="WorkloadGetDTO" Property="Project.Site" Filterable="true" Title="Site" Frozen="false" TextAlign="TextAlign.Center" Width="100px" />
+
+        <RadzenDataGridColumn TItem="WorkloadGetDTO" Property="OrderPlaced" Title="Order Placed" TextAlign="TextAlign.Center">
+            <Template Context="order">
+                @order.OrderPlaced?.ToString("dd-MMM-yyyy")
+            </Template>
+            <EditTemplate Context="order">
+                <RadzenDatePicker @bind-Value="order.OrderPlaced" DateFormat="dd-MMM-yyyy" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="WorkloadGetDTO" Property="DesignInfo" Title="Design Info" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+            <Template Context="data">
+                @if (!string.IsNullOrWhiteSpace(data.DesignInfo))
+                {
+                    <a href="@($"{data.DesignInfo}")" target="_blank">Link</a>
+                }
+            </Template>
+            <EditTemplate Context="workload">
+                <RadzenTextBox @bind-Value="workload.DesignInfo" Style="width:100%; display: block" Name="Design Info" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="WorkloadGetDTO" Property="DrawingsReceived" Title="Drgs. Rec" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+            <Template Context="data">
+                @if (data.DrawingsReceived == true)
+                {
+                    <RadzenCheckBox @bind-Value="data.DrawingsReceived" Disabled="true" />
+                }
+            </Template>
+            <EditTemplate Context="workload">
+                <RadzenCheckBox @bind-Value="workload.DrawingsReceived" Name="DrgsRec" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="WorkloadGetDTO" Property="EngReceived" Title="Eng. Rec" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+            <Template Context="data">
+                @if (data.EngReceived == true)
+                {
+                    <RadzenCheckBox @bind-Value="data.EngReceived" Disabled="true" />
+                }
+            </Template>
+            <EditTemplate Context="workload">
+                <RadzenCheckBox @bind-Value="workload.EngReceived" Name="EngRec" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="WorkloadGetDTO" Property="SlabStage" Title="Slab Stage" Frozen="false" TextAlign="TextAlign.Center">
+            <Template Context="workload">
+                @workload.SlabStage
+            </Template>
+            <EditTemplate Context="workload">
+                <RadzenDropDown @bind-Value="workload.SlabStage"
+                                Data="@stages"
+                                TextProperty="SlabStage"
+                                ValueProperty="SlabStage"
+                                Style="width:100%; display: block;" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+
+        @*//*@
+        <RadzenDataGridColumn TItem="WorkloadGetDTO" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
+            <Template Context="workload">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(workload))" @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+            <EditTemplate Context="workload">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Primary" Class="m-1" Click="@((args) => SaveRow(workload))">
+                </RadzenButton>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@((args) => CancelEdit(workload))">
+                </RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="WorkloadGetDTO" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
+            <Template Context="workload">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(workload))" @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+            <EditTemplate Context="workload">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(workload))">
+                </RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    RadzenDataGrid<WorkloadGetDTO> workloadsGrid;
+    IList<WorkloadGetDTO> workloads;
+    WorkloadGetDTO workloadToInsert;
+
+    List<string> stages = new List<string>
+    {
+        "Not Started",
+        "In Progress",
+        "Done"
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ProjectService.GetProjects();
+        await WorkloadService.GetWorkloads();
+    }
+
+    async Task EditRow(WorkloadGetDTO workload)
+    {
+        await workloadsGrid.EditRow(workload);
+    }
+
+    async Task OnUpdateRow(WorkloadGetDTO workload)
+    {
+    }
+
+    async Task SaveRow(WorkloadGetDTO workload)
+    {
+        if (workload.Id != 0)
+        {
+            Console.WriteLine("edit.");
+            await workloadsGrid.UpdateRow(workload);
+            await WorkloadService.UpdateWorkload(workload);
+        }
+        else
+        {
+            Console.WriteLine("save new.");
+            await workloadsGrid.UpdateRow(workload);
+
+        }
+        await WorkloadService.GetWorkloads();
+    }
+
+    void CancelEdit(WorkloadGetDTO workload)
+    {
+        Console.WriteLine("exit.");
+        if (workload == workloadToInsert)
+        {
+            workloadToInsert = null;
+        }
+
+        workloadsGrid.CancelEditRow(workload);
+    }
+
+    async Task DeleteRow(WorkloadGetDTO workload)
+    {
+    }
+
+    async Task InsertRow()
+    {
+        workloadToInsert = new WorkloadGetDTO();
+        await workloadsGrid.InsertRow(workloadToInsert);
+        Console.WriteLine("insert row.");
+    }
+
+    async Task OnCreateRow(WorkloadGetDTO workload)
+    {
+        Console.WriteLine("on create row.");
+        await WorkloadService.CreateWorkload(workloadToInsert);
+    }
+
+    void CellRender(DataGridCellRenderEventArgs<WorkloadGetDTO> args)
+    {
+        if (args.Column.Property == "SlabStage")
+        {
+            args.Attributes.Add("style", $"background-color: {(args.Data.SlabStage == "Not Started" ? "#ff6d41" : "white")};");
+        }
+    }
+}

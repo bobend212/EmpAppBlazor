@@ -4,6 +4,7 @@ using EmpAppBlazor.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmpAppBlazor.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220609083026_WorkloadEntityExtended")]
+    partial class WorkloadEntityExtended
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -207,9 +209,6 @@ namespace EmpAppBlazor.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("AuthorId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("BregsEstimated")
                         .HasColumnType("datetime2");
 
@@ -290,6 +289,10 @@ namespace EmpAppBlazor.Server.Migrations
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ProjectType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("SlabEstimated")
                         .HasColumnType("datetime2");
 
@@ -299,13 +302,11 @@ namespace EmpAppBlazor.Server.Migrations
                     b.Property<DateTime?>("SlabRequired")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("SlabStage")
+                    b.Property<string>("SlabnStage")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
 
                     b.HasIndex("DesignLeaderId");
 
@@ -367,10 +368,6 @@ namespace EmpAppBlazor.Server.Migrations
 
             modelBuilder.Entity("EmpAppBlazor.Shared.Workload", b =>
                 {
-                    b.HasOne("EmpAppBlazor.Shared.Auth.User", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId");
-
                     b.HasOne("EmpAppBlazor.Shared.Auth.User", "DesignLeader")
                         .WithMany()
                         .HasForeignKey("DesignLeaderId");
@@ -384,8 +381,6 @@ namespace EmpAppBlazor.Server.Migrations
                         .HasForeignKey("EmpAppBlazor.Shared.Workload", "ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Author");
 
                     b.Navigation("DesignLeader");
 

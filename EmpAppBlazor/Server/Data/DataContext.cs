@@ -8,33 +8,6 @@
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Workload>().HasData(
-                new Workload()
-                {
-                    Id = 1,
-                    DeliveryDate = DateTime.Now.AddDays(12),
-                    RequiredDate = DateTime.Now.AddDays(45),
-                    OrderPlaced = DateTime.Now.AddDays(4),
-                    ProjectId = 1
-                },
-                new Workload()
-                {
-                    Id = 2,
-                    DeliveryDate = DateTime.Now.AddDays(54),
-                    RequiredDate = DateTime.Now.AddDays(25),
-                    OrderPlaced = DateTime.Now.AddDays(62),
-                    ProjectId = 2
-                },
-                new Workload()
-                {
-                    Id = 3,
-                    DeliveryDate = DateTime.Now.AddDays(72),
-                    RequiredDate = DateTime.Now.AddDays(55),
-                    OrderPlaced = DateTime.Now.AddDays(6),
-                    ProjectId = 3
-                }
-                );
-
             modelBuilder.Entity<Project>().HasData(
                 new Project
                 {
