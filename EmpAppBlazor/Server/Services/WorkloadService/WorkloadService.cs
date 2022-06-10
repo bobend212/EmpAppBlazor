@@ -63,7 +63,6 @@
 
             findWorkload.ProductionStage = workload.ProductionStage;
             findWorkload.DeliveryDate = workload.DeliveryDate;
-            //findWorkload.RequiredDate = workload.RequiredDate;
             findWorkload.OrderPlaced = workload.OrderPlaced;
             findWorkload.Comments = workload.Comments;
             findWorkload.DesignLeaderId = workload.DesignLeaderId;
@@ -76,6 +75,8 @@
             findWorkload.SlabStage = workload.SlabStage;
             findWorkload.BregsStage = workload.BregsStage;
             findWorkload.ProductionStage = workload.ProductionStage;
+            findWorkload.Issued = workload.Issued;
+            findWorkload.Planner = workload.Planner;
 
             await _context.SaveChangesAsync();
 

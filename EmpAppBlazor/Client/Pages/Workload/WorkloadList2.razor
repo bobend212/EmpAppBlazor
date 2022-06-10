@@ -4,8 +4,10 @@
 @inject IProjectServiceClient ProjectService
 
 <RadzenButton Icon="add_circle_outline" style="margin: 10px" Text="Add New Workload" Click="@InsertRow" Disabled=@(workloadToInsert != null) />
-<RadzenDataGrid @ref="workloadsGrid" AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true" EditMode="Radzen.DataGridEditMode.Single"
-                Data="@WorkloadService.Workloads" TItem="WorkloadGetDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" CellRender="@CellRender">
+
+<RadzenDataGrid @ref="workloadsGrid" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="Radzen.DataGridEditMode.Single"
+                Data="@WorkloadService.Workloads" TItem="WorkloadGetDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" CellRender="@CellRender"
+                ColumnWidth="150px">
     <Columns>
         <RadzenDataGridColumn TItem="WorkloadGetDTO" Property="Id" Filterable="false" Title="ID" Frozen="true" Width="40px" TextAlign="TextAlign.Center" />
 
@@ -24,7 +26,6 @@
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        @*<RadzenDataGridColumn TItem="WorkloadGetDTO" Property="Project.Name" Filterable="true" Title="Client" Frozen="true" TextAlign="TextAlign.Center" Width="150px" />*@
         <RadzenDataGridColumn TItem="WorkloadGetDTO" Property="Project.Site" Filterable="true" Title="Site" Frozen="false" TextAlign="TextAlign.Center" Width="100px" />
 
         <RadzenDataGridColumn TItem="WorkloadGetDTO" Property="OrderPlaced" Title="Order Placed" TextAlign="TextAlign.Center">
@@ -74,7 +75,7 @@
 
         <RadzenDataGridColumn TItem="WorkloadGetDTO" Property="SlabStage" Title="Slab Stage" Frozen="false" TextAlign="TextAlign.Center">
             <Template Context="workload">
-                @workload.SlabStage
+                <span style='color:white'>@workload.SlabStage</span>
             </Template>
             <EditTemplate Context="workload">
                 <RadzenDropDown @bind-Value="workload.SlabStage"
@@ -85,9 +86,58 @@
             </EditTemplate>
         </RadzenDataGridColumn>
 
+        <RadzenDataGridColumn TItem="WorkloadGetDTO" Property="BregsStage" Title="B'Regs Stage" Frozen="false" TextAlign="TextAlign.Center">
+            <Template Context="workload">
+                <span style='color:white'>@workload.BregsStage</span>
+            </Template>
+            <EditTemplate Context="workload">
+                <RadzenDropDown @bind-Value="workload.BregsStage"
+                                Data="@stages"
+                                TextProperty="BregsStage"
+                                ValueProperty="BregsStage"
+                                Style="width:100%; display: block;" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="WorkloadGetDTO" Property="ProductionStage" Title="Production Stage" Frozen="false" TextAlign="TextAlign.Center">
+            <Template Context="workload">
+                <span style='color:white'>@workload.ProductionStage</span>
+            </Template>
+            <EditTemplate Context="workload">
+                <RadzenDropDown @bind-Value="workload.ProductionStage"
+                                Data="@stages"
+                                TextProperty="ProductionStage"
+                                ValueProperty="ProductionStage"
+                                Style="width:100%; display: block;" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="WorkloadGetDTO" Property="Issued" Title="Issued" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+            <Template Context="data">
+                @if (data.Issued == true)
+                {
+                    <RadzenCheckBox @bind-Value="data.Issued" Disabled="true" />
+                }
+            </Template>
+            <EditTemplate Context="workload">
+                <RadzenCheckBox @bind-Value="workload.Issued" Name="Issued" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="WorkloadGetDTO" Property="Planner" Title="Planner" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+            <Template Context="data">
+                @if (!string.IsNullOrWhiteSpace(data.Planner))
+                {
+                    <a href="@($"{data.Planner}")" target="_blank">Planner</a>
+                }
+            </Template>
+            <EditTemplate Context="workload">
+                <RadzenTextBox @bind-Value="workload.Planner" Style="width:100%; display: block" Name="Planner" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
 
         @*//*@
-        <RadzenDataGridColumn TItem="WorkloadGetDTO" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
+        <RadzenDataGridColumn TItem="WorkloadGetDTO" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px" Frozen="true">
             <Template Context="workload">
                 <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(workload))" @onclick:stopPropagation="true">
                 </RadzenButton>
@@ -100,7 +150,7 @@
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="WorkloadGetDTO" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
+        <RadzenDataGridColumn TItem="WorkloadGetDTO" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="50px">
             <Template Context="workload">
                 <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(workload))" @onclick:stopPropagation="true">
                 </RadzenButton>
@@ -190,7 +240,50 @@
     {
         if (args.Column.Property == "SlabStage")
         {
-            args.Attributes.Add("style", $"background-color: {(args.Data.SlabStage == "Not Started" ? "#ff6d41" : "white")};");
+            if (args.Data.SlabStage == "Not Started")
+            {
+                args.Attributes.Add("style", "background-color: #fc4103");
+            }
+            else if (args.Data.SlabStage == "In Progress")
+            {
+                args.Attributes.Add("style", "background-color: #e0d610");
+            }
+            else if (args.Data.SlabStage == "Done")
+            {
+                args.Attributes.Add("style", "background-color: #48d415");
+            }
+        }
+
+        if (args.Column.Property == "BregsStage")
+        {
+            if (args.Data.BregsStage == "Not Started")
+            {
+                args.Attributes.Add("style", "background-color: #fc4103");
+            }
+            else if (args.Data.BregsStage == "In Progress")
+            {
+                args.Attributes.Add("style", "background-color: #e0d610");
+            }
+            else if (args.Data.BregsStage == "Done")
+            {
+                args.Attributes.Add("style", "background-color: #48d415");
+            }
+        }
+
+        if (args.Column.Property == "ProductionStage")
+        {
+            if (args.Data.ProductionStage == "Not Started")
+            {
+                args.Attributes.Add("style", "background-color: #fc4103");
+            }
+            else if (args.Data.ProductionStage == "In Progress")
+            {
+                args.Attributes.Add("style", "background-color: #e0d610");
+            }
+            else if (args.Data.ProductionStage == "Done")
+            {
+                args.Attributes.Add("style", "background-color: #48d415");
+            }
         }
     }
 }
